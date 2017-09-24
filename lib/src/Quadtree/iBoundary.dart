@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The interface for boundary types.
 abstract class IBoundary {

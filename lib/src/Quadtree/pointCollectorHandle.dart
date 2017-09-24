@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// This is a point handler which collects the points into a set.
 class PointCollectorHandle implements IPointHandler {

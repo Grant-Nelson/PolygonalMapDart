@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The geometric boundary in a quad-tree.
 class Boundary implements IBoundary {

@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The node handler is used to process
 /// or match points with custom handlers inside for each methods.

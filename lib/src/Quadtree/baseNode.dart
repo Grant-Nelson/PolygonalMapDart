@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// This is the base node for all non-empty nodes.
 abstract class BaseNode implements INode, IBoundary {

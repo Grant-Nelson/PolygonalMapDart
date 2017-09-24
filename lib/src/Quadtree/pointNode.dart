@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The point node represents a point in the quad-tree. It can have edges
 /// starting or ending on it as well as edges which pass through it.

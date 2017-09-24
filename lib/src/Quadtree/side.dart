@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The side of the edge that a point can be.
 /// The side is determined by looking down the edge

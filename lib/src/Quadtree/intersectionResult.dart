@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The result information for a two edge intersection.
 class IntersectionResult implements Comparable<IntersectionResult> {

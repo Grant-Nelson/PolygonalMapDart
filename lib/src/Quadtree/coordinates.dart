@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The coordinate converter is used for getting the desired coordinates.
 class Coordinates implements IFormatter {

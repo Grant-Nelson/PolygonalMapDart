@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The nearest edge arguments to handle multiple returns
 /// objects for determining the nearest edge to a point.

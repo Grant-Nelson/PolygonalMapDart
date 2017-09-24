@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// A set of edge nodes.
 class PointSet extends Set<IPoint> {

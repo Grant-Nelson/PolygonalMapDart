@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The empty node represents a node which has no data, no points nor edges.
 /// It is a leaf in all locations that have no information in the tree.

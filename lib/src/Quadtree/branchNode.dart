@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The branch node is a quad-tree branching node with four children nodes.
 class BranchNode extends BaseNode {

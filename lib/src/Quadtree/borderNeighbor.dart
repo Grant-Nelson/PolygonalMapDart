@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// An edge handler for determining a border neighbor.
 /// The border neighbor is the most clockwise (or counter-clockwise) line sharing a point

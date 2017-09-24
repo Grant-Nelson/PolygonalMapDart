@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The boundary regions are a set of values that can be used to
 class BoundaryRegion {

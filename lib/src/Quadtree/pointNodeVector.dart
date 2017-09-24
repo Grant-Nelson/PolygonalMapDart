@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// A vector of point nodes which can represent
 /// a polygon, poly-line, or point stack.

@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// A point handler for ignoring the start and end point of an edge.
 class EdgePointIgnorer implements IPointHandler {

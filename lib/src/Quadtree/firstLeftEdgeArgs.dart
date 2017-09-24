@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The first left edge arguments to handle multiple returns objects for
 /// determining the first left edge to a point.

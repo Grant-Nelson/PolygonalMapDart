@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// An edge handler to ignore a neighboring edge to the given edge.
 class NeighborEdgeIgnorer implements IEdgeHandler {

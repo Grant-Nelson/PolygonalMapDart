@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The edge node is a connection in the quad-tree between two point nodes. It
 /// represents a two dimensional directed line segment.

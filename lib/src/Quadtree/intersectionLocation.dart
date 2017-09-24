@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// Indicates where an intersection occurs on an edge.
 enum IntersectionLocation {

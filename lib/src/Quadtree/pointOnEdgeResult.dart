@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The multiple results from a point on the edge method call.
 class PointOnEdgeResult {

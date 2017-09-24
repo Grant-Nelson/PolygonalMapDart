@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// This is an edge handler which collects the edges into a set.
 class EdgeCollectorHandle implements IEdgeHandler {

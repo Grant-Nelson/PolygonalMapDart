@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// A stack of nodes.
 class NodeStack extends ArrayDeque<INode> {

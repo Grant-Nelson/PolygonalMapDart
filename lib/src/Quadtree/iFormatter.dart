@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The interface for the formatting used for outputting data as strings.
 abstract class IFormatter {

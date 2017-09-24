@@ -1,3 +1,3 @@
-library PolygonalMap.Quadtree;
+library PolygonalMapDart.Quadtree;
 
-export 'src/Qaudtree/quadtree.dart';
+export 'src/Quadtree/Quadtree.dart';

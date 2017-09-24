@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// An edge represents a directed line segment between two integer points.
 class Edge implements IEdge, Comparable<Edge> {

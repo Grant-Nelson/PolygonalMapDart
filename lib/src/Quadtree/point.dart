@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// A point is a two dimensional integer coordinate.
 class Point implements IPoint {

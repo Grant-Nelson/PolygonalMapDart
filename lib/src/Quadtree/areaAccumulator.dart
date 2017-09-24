@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// An edge handler which can be used to accumulate a shapes area.
 class AreaAccumulator implements IEdgeHandler {

@@ -1,4 +1,4 @@
-part of PolygonalMap.Quadtree;
+part of PolygonalMapDart.Quadtree;
 
 /// The result from a edge insertion into the tree.
 class InsertEdgeResult {

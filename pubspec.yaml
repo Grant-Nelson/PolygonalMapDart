@@ -1,0 +1,7 @@
+name: PolygonalMap
+version: 0.0.1
+description: Polygonal mapping tool built on a quadtree.
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+dependencies:
+  browser: any

@@ -2,10 +2,6 @@ part of PolygonalMapDart.Quadtree;
 
 /// The branch node is a quad-tree branching node with four children nodes.
 class BranchNode extends BaseNode {
-  /// Determine if the given node is an instance of the branch node.
-  /// Returns true if the instance is the branch node, false otherwise.
-  static bool IsInstance(INode node) => node is BranchNode;
-
   /// The north-east child node.
   INode _ne;
 
@@ -19,25 +15,24 @@ class BranchNode extends BaseNode {
   INode _sw;
 
   /// Creates a new branch node.
-  BranchNode() {
-    this._ne = EmptyNode.getInstance();
-    this._nw = EmptyNode.getInstance();
-    this._se = EmptyNode.getInstance();
-    this._sw = EmptyNode.getInstance();
+  BranchNode(): super._() {
+    this._ne = EmptyNode.instance;
+    this._nw = EmptyNode.instance;
+    this._se = EmptyNode.instance;
+    this._sw = EmptyNode.instance;
   }
 
   /// Adds an edge to this node and/or children nodes.
   /// Returns the node that should be the new root of the subtree that was
   /// defined by this node.
-  @Override
   INode insertEdge(EdgeNode edge) {
     bool changed = false;
-    if (this.overlaps(edge)) {
-      for (Quadrant quad in Quadrant.values()) {
+    if (this.overlapsEdge(edge)) {
+      for (int quad in Quadrant.All) {
         INode node = this.child(quad);
         INode newChild;
-        if (EmptyNode.IsInstance(node)) {
-          newChild = EmptyNode.getInstance().addEdge(this.childX(quad), this.childY(quad), this.width / 2, edge);
+        if (node is EmptyNode) {
+          newChild = EmptyNode.instance.addEdge(this.childX(quad), this.childY(quad), this.width ~/ 2, edge);
         } else
           newChild = (node as BaseNode).insertEdge(edge);
         if (this.setChild(quad, newChild)) {
@@ -55,12 +50,11 @@ class BranchNode extends BaseNode {
   /// Adds a point to this node.
   /// Returns the node that should be the new root of the subtree that was
   /// defined by this node.
-  @Override
   INode insertPoint(PointNode point) {
-    Quadrant quad = this.childQuad(point.x(), point.y());
+    int quad = this.childQuad(point.x, point.y);
     INode node = this.child(quad);
-    if (EmptyNode.IsInstance(node)) {
-      INode child = EmptyNode.getInstance().addPoint(this.childX(quad), this.childY(quad), width() / 2, point);
+    if (node is EmptyNode) {
+      INode child = EmptyNode.instance.addPoint(this.childX(quad), this.childY(quad), this.width ~/ 2, point);
       if (this.setChild(quad, child)) return this.reduce();
     } else {
       INode child = (node as BaseNode).insertPoint(point);
@@ -74,13 +68,12 @@ class BranchNode extends BaseNode {
   /// removed if no other edges begins or ends at that point.
   /// Returns the node that should be the new root of the subtree that was
   /// defined by this node.
-  @Override
   INode removeEdge(EdgeNode edge, bool trimTree) {
     bool changed = false;
-    if (this.overlaps(edge)) {
-      for (Quadrant quad in Quadrant.values()) {
+    if (this.overlapsEdge(edge)) {
+      for (int quad in Quadrant.All) {
         INode node = this.child(quad);
-        if (!EmptyNode.IsInstance(node)) {
+        if (node is! EmptyNode) {
           if (this.setChild(quad, (node as BaseNode).removeEdge(edge, trimTree))) {
             changed = true;
             // Even if child changes don't skip others.
@@ -96,9 +89,8 @@ class BranchNode extends BaseNode {
   }
 
   /// This handles the first found intersecting edge.
-  @Override
   IntersectionResult findFirstIntersection(IEdge edge, IEdgeHandler hndl) {
-    if (this.overlaps(edge)) {
+    if (this.overlapsEdge(edge)) {
       IntersectionResult result;
       result = this._ne.findFirstIntersection(edge, hndl);
       if (result != null) return result;
@@ -113,10 +105,9 @@ class BranchNode extends BaseNode {
   }
 
   /// This handles all the intersections.
-  @Override
   bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
-    if (this.overlaps(edge)) {
+    if (this.overlapsEdge(edge)) {
       if (this._ne.findAllIntersections(edge, hndl, intersections)) result = true;
       if (this._nw.findAllIntersections(edge, hndl, intersections)) result = true;
       if (this._se.findAllIntersections(edge, hndl, intersections)) result = true;
@@ -137,30 +128,16 @@ class BranchNode extends BaseNode {
   /// Gets the south-west child node.
   INode get sw => this._sw;
 
-  /// Handles each point node reachable from this node.
-  /// Returns true if all points were run, false if stopped.
-  @Override
-  bool foreach(IPointHandler handle) =>
-      this._ne.foreach(handle) && this._nw.foreach(handle) && this._se.foreach(handle) && this._sw.foreach(handle);
-
   /// Handles each point node reachable from this node in the boundary.
   /// Returns true if all points in the boundary were run, false if stopped.
-  @Override
-  bool foreach(IPointHandler handle, IBoundary bounds) {
-    if (this.overlaps(bounds)) {
-      return this._ne.foreach(handle, bounds) &&
-          this._nw.foreach(handle, bounds) &&
-          this._se.foreach(handle, bounds) &&
-          this._sw.foreach(handle, bounds);
+  bool foreachPoint(IPointHandler handle, [IBoundary bounds = null]) {
+    if ((bounds == null) || this.overlapsBoundary(bounds)) {
+      return this._ne.foreachPoint(handle, bounds) &&
+          this._nw.foreachPoint(handle, bounds) &&
+          this._se.foreachPoint(handle, bounds) &&
+          this._sw.foreachPoint(handle, bounds);
     }
     return true;
-  }
-
-  /// Handles each edge node reachable from this node.
-  /// Returns true if all edges were run, false if stopped.
-  @Override
-  bool foreach(IEdgeHandler handle) {
-    return this._ne.foreach(handle) && this._nw.foreach(handle) && this._se.foreach(handle) && this._sw.foreach(handle);
   }
 
   /// Handles each edge node reachable from this node in the boundary.
@@ -168,38 +145,26 @@ class BranchNode extends BaseNode {
   /// inside the region are collected, otherwise any edge which
   /// exists even partially in the region are collected.
   /// Returns true if all edges in the boundary were run, false if stopped.
-  @Override
-  bool foreach(IEdgeHandler handle, IBoundary bounds, bool exclusive) {
-    if (this.overlaps(bounds)) {
-      return this._ne.foreach(handle, bounds, exclusive) &&
-          this._nw.foreach(handle, bounds, exclusive) &&
-          this._se.foreach(handle, bounds, exclusive) &&
-          this._sw.foreach(handle, bounds, exclusive);
+  bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) {
+    if ((bounds == null) || this.overlapsBoundary(bounds)) {
+      return this._ne.foreachEdge(handle, bounds, exclusive) &&
+          this._nw.foreachEdge(handle, bounds, exclusive) &&
+          this._se.foreachEdge(handle, bounds, exclusive) &&
+          this._sw.foreachEdge(handle, bounds, exclusive);
     }
     return true;
   }
 
-  /// Handles each node reachable from this node.
-  /// Returns true if all nodes were run, false if stopped.
-  @Override
-  bool foreach(INodeHandler handle) =>
-      handle.handle(this) &&
-      this._ne.foreach(handle) &&
-      this._nw.foreach(handle) &&
-      this._se.foreach(handle) &&
-      this._sw.foreach(handle);
-
   /// Handles each node reachable from this node in the boundary.
   /// Returns true if all nodes in the boundary were run,
   /// false if stopped.
-  @Override
-  bool foreach(INodeHandler handle, IBoundary bounds) {
-    if (this.overlaps(bounds)) {
+  bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) {
+    if ((bounds == null) || this.overlapsBoundary(bounds)) {
       return handle.handle(this) &&
-          this._ne.foreach(handle, bounds) &&
-          this._nw.foreach(handle, bounds) &&
-          this._se.foreach(handle, bounds) &&
-          this._sw.foreach(handle, bounds);
+          this._ne.foreachNode(handle, bounds) &&
+          this._nw.foreachNode(handle, bounds) &&
+          this._se.foreachNode(handle, bounds) &&
+          this._sw.foreachNode(handle, bounds);
     }
     return true;
   }
@@ -209,43 +174,40 @@ class BranchNode extends BaseNode {
   ///
   /// The only way this branch hasn't been reduced is
   /// because there is at least two points in it.
-  @Override
   bool get hasPoints => true;
 
   /// Determines if the node has any edge nodes inside it.
   /// Returns true if this edge has any edges in it, false otherwise.
-  @Override
   bool get hasEdges => this._ne.hasEdges && this._nw.hasEdges && this._se.hasEdges && this._sw.hasEdges;
 
   /// Gets the first edge to the left of the given point.
-  @Override
   void firstLeftEdge(FirstLeftEdgeArgs args) {
-    if ((args.queryPoint().y() <= this.ymax()) && (args.queryPoint().y() >= this.ymin())) {
-      Quadrant quad = this.childQuad(args.queryPoint().x(), args.queryPoint().y());
+    if ((args.queryPoint.y <= this.ymax) && (args.queryPoint.y >= this.ymin)) {
+      int quad = this.childQuad(args.queryPoint.x, args.queryPoint.y);
       switch (quad) {
-        case NorthEast:
+        case BoundaryRegion.NorthEast:
           this._ne.firstLeftEdge(args);
-          if (args.found()) {
+          if (args.found) {
             // If no edges in the NW child could have a larger right value, skip.
-            if (args.rightValue() > (this.xmin() + width() / 2)) break;
+            if (args.rightValue > (this.xmin + this.width / 2)) break;
           }
           this._nw.firstLeftEdge(args);
           break;
 
-        case NorthWest:
+        case BoundaryRegion.NorthWest:
           this._nw.firstLeftEdge(args);
           break;
 
-        case SouthEast:
+        case BoundaryRegion.SouthEast:
           this._se.firstLeftEdge(args);
-          if (args.found()) {
+          if (args.found) {
             // If no edges in the SW child could have a larger right value, skip.
-            if (args.rightValue() > (this.xmin() + width() / 2)) break;
+            if (args.rightValue > (this.xmin + this.width / 2)) break;
           }
           this._sw.firstLeftEdge(args);
           break;
 
-        case SouthWest:
+        case BoundaryRegion.SouthWest:
           this._sw.firstLeftEdge(args);
           break;
       }
@@ -255,29 +217,29 @@ class BranchNode extends BaseNode {
   /// Handles all the edges to the left of the given point.
   /// Returns true if all the edges were processed,
   /// false if the handle stopped early.
-  @Override
+
   bool foreachLeftEdge(IPoint point, IEdgeHandler hndl) {
     bool result = true;
-    if ((point.y() <= this.ymax()) && (point.y() >= this.ymin())) {
-      Quadrant quad = this.childQuad(point.x(), point.y());
+    if ((point.y <= this.ymax) && (point.y >= this.ymin)) {
+      int quad = this.childQuad(point.x, point.y);
       switch (quad) {
-        case NorthEast:
+        case BoundaryRegion.NorthEast:
           result = this._ne.foreachLeftEdge(point, hndl);
           if (!result) break;
           result = this._nw.foreachLeftEdge(point, hndl);
           break;
 
-        case NorthWest:
+        case BoundaryRegion.NorthWest:
           result = this._nw.foreachLeftEdge(point, hndl);
           break;
 
-        case SouthEast:
+        case BoundaryRegion.SouthEast:
           result = this._se.foreachLeftEdge(point, hndl);
           if (!result) break;
           result = this._sw.foreachLeftEdge(point, hndl);
           break;
 
-        case SouthWest:
+        case BoundaryRegion.SouthWest:
           result = this._sw.foreachLeftEdge(point, hndl);
           break;
       }
@@ -288,10 +250,10 @@ class BranchNode extends BaseNode {
   /// Gets the quadrant of the child in the direction of the given point.
   /// This doesn't check that the point is actually contained by the child indicated,
   /// only the child in the direction of the point.
-  Quadrant childQuad(int x, int y) {
-    int half = this.width() / 2;
-    bool south = (y < (this.ymin() + half));
-    bool west = (x < (this.xmin() + half));
+  int childQuad(int x, int y) {
+    int half = this.width ~/ 2;
+    bool south = (y < (this.ymin + half));
+    bool west = (x < (this.xmin + half));
     if (south) {
       if (west)
         return Quadrant.SouthWest;
@@ -306,7 +268,7 @@ class BranchNode extends BaseNode {
   }
 
   /// Gets the quadrant of the given child node.
-  Quadrant childNodeQuad(INode node) {
+  int childNodeQuad(INode node) {
     if (this._ne == node)
       return Quadrant.NorthEast;
     else if (this._nw == node)
@@ -319,43 +281,43 @@ class BranchNode extends BaseNode {
   }
 
   /// Gets the minimum x location of the child of the given quadrant.
-  int childX(Quadrant quad) {
+  int childX(int quad) {
     switch (quad) {
-      case NorthEast:
-      case SouthEast:
-        return this.xmin() + this.width() / 2;
-      case NorthWest:
-      case SouthWest:
-        return this.xmin();
+      case Quadrant.NorthEast:
+      case Quadrant.SouthEast:
+        return this.xmin + this.width ~/ 2;
+      case Quadrant.NorthWest:
+      case Quadrant.SouthWest:
+        return this.xmin;
       default:
         return 0;
     }
   }
 
   /// Gets the minimum y location of the child of the given quadrant.
-  int childY(Quadrant quad) {
+  int childY(int quad) {
     switch (quad) {
-      case NorthEast:
-      case NorthWest:
-        return this.ymin() + this.width() / 2;
-      case SouthEast:
-      case SouthWest:
-        return this.ymin();
+      case Quadrant.NorthEast:
+      case Quadrant.NorthWest:
+        return this.ymin + this.width ~/ 2;
+      case Quadrant.SouthEast:
+      case Quadrant.SouthWest:
+        return this.ymin;
       default:
         return 0;
     }
   }
 
   /// Gets the child at a given quadrant.
-  INode child(Quadrant childQuad) {
+  INode child(int childQuad) {
     switch (childQuad) {
-      case NorthEast:
+      case Quadrant.NorthEast:
         return this._ne;
-      case NorthWest:
+      case Quadrant.NorthWest:
         return this._nw;
-      case SouthEast:
+      case Quadrant.SouthEast:
         return this._se;
-      case SouthWest:
+      case Quadrant.SouthWest:
         return this._sw;
       default:
         return null;
@@ -364,25 +326,25 @@ class BranchNode extends BaseNode {
 
   /// This sets the child at a given quadrant.
   /// Returns true if the child was changed, false if there was not change.
-  bool setChild(Quadrant childQuad, INode node) {
+  bool setChild(int childQuad, INode node) {
     assert(node != this);
     switch (childQuad) {
-      case NorthEast:
+      case Quadrant.NorthEast:
         if (this._ne == node) return false;
         this._ne = node;
         break;
 
-      case NorthWest:
+      case Quadrant.NorthWest:
         if (this._nw == node) return false;
         this._nw = node;
         break;
 
-      case SouthEast:
+      case Quadrant.SouthEast:
         if (this._se == node) return false;
         this._se = node;
         break;
 
-      case SouthWest:
+      case Quadrant.SouthWest:
         if (this._sw == node) return false;
         this._sw = node;
         break;
@@ -391,7 +353,7 @@ class BranchNode extends BaseNode {
         return false;
     }
     if (node is! EmptyNode) {
-      (node as BaseNode).setParent(this);
+      (node as BaseNode).parent = this;
     }
     return true;
   }
@@ -402,11 +364,11 @@ class BranchNode extends BaseNode {
   /// Returns the first point node in the given boundary,
   /// or null if none was found.
   PointNode findFirstPoint(IBoundary boundary, IPointHandler handle) {
-    if ((boundary == null) || this.overlaps(boundary)) {
-      for (Quadrant quad in Quadrant.values()) {
+    if ((boundary == null) || this.overlapsBoundary(boundary)) {
+      for (int quad in Quadrant.All) {
         INode node = this.child(quad);
         if (node is PointNode) {
-          if ((boundary == null) || boundary.contains(node)) {
+          if ((boundary == null) || boundary.containsPoint(node)) {
             if ((handle != null) && (!handle.handle(node))) continue;
             return node;
           }
@@ -425,11 +387,11 @@ class BranchNode extends BaseNode {
   /// Returns the last point node in the given boundary,
   /// or null if none was found.
   PointNode findLastPoint(IBoundary boundary, IPointHandler handle) {
-    if ((boundary == null) || this.overlaps(boundary)) {
-      for (Quadrant quad in Quadrant.values()) {
+    if ((boundary == null) || this.overlapsBoundary(boundary)) {
+      for (int quad in Quadrant.All) {
         INode node = this.child(quad);
         if (node is PointNode) {
-          if ((boundary == null) || boundary.contains(node)) {
+          if ((boundary == null) || boundary.containsPoint(node)) {
             if ((handle != null) && (!handle.handle(node))) continue;
             return node;
           }
@@ -447,28 +409,28 @@ class BranchNode extends BaseNode {
   /// Returns the next point node in the given region,
   /// or null if none was found.
   PointNode findNextPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
-    List<Quadrant> others = null;
+    List<int> others = null;
     switch (this.childNodeQuad(curNode)) {
-      case NorthWest:
+      case Quadrant.NorthWest:
         others = [Quadrant.NorthEast, Quadrant.SouthWest, Quadrant.SouthEast];
         break;
-      case NorthEast:
+      case Quadrant.NorthEast:
         others = [Quadrant.SouthWest, Quadrant.SouthEast];
         break;
-      case SouthWest:
+      case Quadrant.SouthWest:
         others = [Quadrant.SouthEast];
         break;
-      case SouthEast:
+      case Quadrant.SouthEast:
         others = [];
         break;
       default:
         return null;
     }
 
-    for (Quadrant quad in others) {
+    for (int quad in others) {
       INode node = this.child(quad);
       if (node is PointNode) {
-        if ((boundary == null) || boundary.contains(node)) {
+        if ((boundary == null) || boundary.containsPoint(node)) {
           if ((handle != null) && (!handle.handle(node)))
             continue;
           else
@@ -491,28 +453,28 @@ class BranchNode extends BaseNode {
   /// Returns the previous point node in the given region,
   /// or null if none was found.
   PointNode findPreviousPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
-    List<Quadrant> others = null;
+    List<int> others = null;
     switch (this.childNodeQuad(curNode)) {
-      case NorthWest:
+      case Quadrant.NorthWest:
         others = [];
         break;
-      case NorthEast:
+      case Quadrant.NorthEast:
         others = [Quadrant.NorthWest];
         break;
-      case SouthWest:
+      case Quadrant.SouthWest:
         others = [Quadrant.NorthWest, Quadrant.NorthEast];
         break;
-      case SouthEast:
+      case Quadrant.SouthEast:
         others = [Quadrant.NorthWest, Quadrant.NorthEast, Quadrant.SouthWest];
         break;
       default:
         return null;
     }
 
-    for (Quadrant quad in others) {
+    for (int quad in others) {
       INode node = this.child(quad);
       if (node is PointNode) {
-        if ((boundary == null) || boundary.contains(node)) {
+        if ((boundary == null) || boundary.containsPoint(node)) {
           if ((handle != null) && (!handle.handle(node)))
             continue;
           else
@@ -536,24 +498,24 @@ class BranchNode extends BaseNode {
   INode reduce() {
     // A branch node can be reduced any time the all of the children
     // contain no points or only one point.
-    int pointCount = this.pointWeight(this._ne) +
-        this.pointWeight(this._nw) +
-        this.pointWeight(this._se) +
-        this.pointWeight(this._sw);
+    int pointCount = this._pointWeight(this._ne) +
+        this._pointWeight(this._nw) +
+        this._pointWeight(this._se) +
+        this._pointWeight(this._sw);
     if (pointCount == 0) {
       // Find a dark node and populate it with the other dark nodes' lines.
       PassNode pass = null;
-      for (Quadrant quad in Quadrant.values) {
+      for (int quad in Quadrant.All) {
         INode node = this.child(quad);
         if (node is PassNode) {
           if (pass == null) {
             pass = node;
             pass.setLocation(this.xmin, this.ymin, this.width);
-            pass.setParent(null);
+            pass.parent = null;
             this.setChild(quad, EmptyNode.instance);
           } else {
             // Copy all edges from this pass node into the already found pass node.
-            pass.passEdges().addAll(node.passEdges());
+            pass.passEdges.addAll(node.passEdges);
           }
         }
       }
@@ -562,34 +524,34 @@ class BranchNode extends BaseNode {
       if (pass != null)
         return pass;
       else
-        return EmptyNode.getInstance();
+        return EmptyNode.instance;
     } else if (pointCount == 1) {
       // Find the point node in the children.
       PointNode point = null;
-      for (Quadrant quad in Quadrant.values()) {
+      for (int quad in Quadrant.All) {
         INode node = this.child(quad);
         if (node is PointNode) {
           // Point node found, relocate and remove the node
           // from this parent node so that it isn't deleted later.
           point = node;
-          point.setLocation(this.xmin(), this.ymin(), this.width());
-          point.setParent(null);
-          this.setChild(quad, EmptyNode.getInstance());
+          point.setLocation(this.xmin, this.ymin, this.width);
+          point.parent = null;
+          this.setChild(quad, EmptyNode.instance);
           break;
         }
       }
-      if (point == null) return EmptyNode.getInstance();
+      if (point == null) return EmptyNode.instance;
 
       // Find any dark nodes and copy all lines into the black node.
-      for (Quadrant quad in Quadrant.values()) {
+      for (int quad in Quadrant.All) {
         INode node = this.child(quad);
         if (node is PassNode) {
           // Add all passing lines to black node unless the line starts or ends
           // on the black node, since the line will already be in the start or end line lists.
-          for (EdgeNode edge in node.passEdges()) {
-            if (edge.startNode() == point) continue;
-            if (edge.endNode() == point) continue;
-            point.passEdges().add(edge);
+          for (EdgeNode edge in node.passEdges) {
+            if (edge.startNode == point) continue;
+            if (edge.endNode == point) continue;
+            point.passEdges.add(edge);
           }
         }
       }
@@ -617,13 +579,13 @@ class BranchNode extends BaseNode {
   }
 
   //// Validates this node.
-  @Override
+
   bool validate(StringBuffer sout, IFormatter format, bool recursive) {
     bool result = true;
-    if (!this.validateChild(sout, format, recursive, this._ne, "NE", true, true)) result = false;
-    if (!this.validateChild(sout, format, recursive, this._nw, "NW", true, false)) result = false;
-    if (!this.validateChild(sout, format, recursive, this._sw, "SW", false, false)) result = false;
-    if (!this.validateChild(sout, format, recursive, this._se, "SE", false, true)) result = false;
+    if (!this._validateChild(sout, format, recursive, this._ne, "NE", true, true)) result = false;
+    if (!this._validateChild(sout, format, recursive, this._nw, "NW", true, false)) result = false;
+    if (!this._validateChild(sout, format, recursive, this._sw, "SW", false, false)) result = false;
+    if (!this._validateChild(sout, format, recursive, this._se, "SE", false, true)) result = false;
     return result;
   }
 
@@ -631,63 +593,63 @@ class BranchNode extends BaseNode {
   bool _validateChild(
       StringBuffer sout, IFormatter format, bool recursive, INode child, String name, bool north, bool east) {
     if (child == null) {
-      sout.append("Error in ");
-      this.toString(sout, format);
-      sout.append(": The ");
-      sout.append(name);
-      sout.append(" child was null.\n");
+      sout.write("Error in ");
+      this.toBuffer(sout, format: format);
+      sout.write(": The ");
+      sout.write(name);
+      sout.write(" child was null.\n");
       return false;
     }
 
     bool result = true;
     if (child is! EmptyNode) {
       BaseNode bnode = child as BaseNode;
-      if (bnode.parent() != this) {
-        sout.append("Error in ");
-        this.toString(sout, format);
-        sout.append(": The ");
-        sout.append(name);
-        sout.append(" child, ");
-        child.toString(sout, format);
-        sout.append(", parent wasn't this node, it was ");
-        child.parent().toString(sout, format);
-        sout.append(".\n");
+      if (bnode.parent != this) {
+        sout.write("Error in ");
+        this.toBuffer(sout, format: format);
+        sout.write(": The ");
+        sout.write(name);
+        sout.write(" child, ");
+        child.toBuffer(sout,format:  format);
+        sout.write(", parent wasn't this node, it was ");
+        (child as BaseNode).parent.toBuffer(sout, format:format);
+        sout.write(".\n");
         result = false;
       }
 
-      if (this.width() / 2 != bnode.width()) {
-        sout.append("Error in ");
-        this.toString(sout, format);
-        sout.append(": The ");
-        sout.append(name);
-        sout.append(" child, ");
-        child.toString(sout, format);
-        sout.append(", was ");
-        sout.append(bnode.width());
-        sout.append(" wide, but should have been ");
-        sout.append(this.width() / 2);
-        sout.append(".\n");
+      if (this.width / 2 != bnode.width) {
+        sout.write("Error in ");
+        this.toBuffer(sout, format:format);
+        sout.write(": The ");
+        sout.write(name);
+        sout.write(" child, ");
+        child.toBuffer(sout, format:format);
+        sout.write(", was ");
+        sout.write(bnode.width);
+        sout.write(" wide, but should have been ");
+        sout.write(this.width / 2);
+        sout.write(".\n");
         result = false;
       }
 
-      int left = east ? (this.xmin() + bnode.width()) : this.xmin();
-      int top = north ? (this.ymin() + bnode.width()) : this.ymin();
-      if ((left != bnode.xmin()) || (top != bnode.ymin())) {
-        sout.append("Error in ");
-        this.toString(sout, format);
-        sout.append(": The ");
-        sout.append(name);
-        sout.append(" child, ");
-        child.toString(sout, format);
-        sout.append(", was at [");
-        sout.append(bnode.xmin());
-        sout.append(", ");
-        sout.append(bnode.ymin());
-        sout.append("], but should have been [");
-        sout.append(left);
-        sout.append(", ");
-        sout.append(top);
-        sout.append("].\n");
+      int left = east ? (this.xmin + bnode.width) : this.xmin;
+      int top = north ? (this.ymin + bnode.width) : this.ymin;
+      if ((left != bnode.xmin) || (top != bnode.ymin)) {
+        sout.write("Error in ");
+        this.toBuffer(sout, format:format);
+        sout.write(": The ");
+        sout.write(name);
+        sout.write(" child, ");
+        child.toBuffer(sout, format:format);
+        sout.write(", was at [");
+        sout.write(bnode.xmin);
+        sout.write(", ");
+        sout.write(bnode.ymin);
+        sout.write("], but should have been [");
+        sout.write(left);
+        sout.write(", ");
+        sout.write(top);
+        sout.write("].\n");
         result = false;
       }
     }
@@ -702,34 +664,33 @@ class BranchNode extends BaseNode {
   /// [children] indicates any child should also be string-ified.
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
-  @Override
-  void toString(StringBuffer sout, String indent, bool children, bool contained, bool last, IFormatter format) {
+  void toBuffer(StringBuffer sout, {String indent: "", bool children: false, bool contained: false, bool last: true, IFormatter format: null}) {
     if (contained) {
       if (last)
-        sout.append(StringParts.Last);
+        sout.write(StringParts.Last);
       else
-        sout.append(StringParts.Child);
+        sout.write(StringParts.Child);
     }
 
-    sout.append("BranchNode: ");
-    sout.append(this.boundary().toString(format));
+    sout.write("BranchNode: ");
+    sout.write(this.boundary.toString(format: format));
 
     if (children) {
-      sout.append(StringParts.Sep);
-      sout.append(indent);
-      this._ne.toString(sout, indent + StringParts.Bar, true, true, false, format);
+      sout.write(StringParts.Sep);
+      sout.write(indent);
+      this._ne.toBuffer(sout, indent: indent + StringParts.Bar, children: true, contained: true, last: false, format: format);
 
-      sout.append(StringParts.Sep);
-      sout.append(indent);
-      this._nw.toString(sout, indent + StringParts.Bar, true, true, false, format);
+      sout.write(StringParts.Sep);
+      sout.write(indent);
+      this._nw.toBuffer(sout, indent: indent + StringParts.Bar, children: true, contained: true, last: false, format: format);
 
-      sout.append(StringParts.Sep);
-      sout.append(indent);
-      this._se.toString(sout, indent + StringParts.Bar, true, true, false, format);
+      sout.write(StringParts.Sep);
+      sout.write(indent);
+      this._se.toBuffer(sout, indent: indent + StringParts.Bar, children: true, contained: true, last: false, format: format);
 
-      sout.append(StringParts.Sep);
-      sout.append(indent);
-      this._sw.toString(sout, indent + StringParts.Space, true, true, true, format);
+      sout.write(StringParts.Sep);
+      sout.write(indent);
+      this._sw.toBuffer(sout, indent: indent + StringParts.Space, children: true, contained: true, last: true, format: format);
     }
   }
 }

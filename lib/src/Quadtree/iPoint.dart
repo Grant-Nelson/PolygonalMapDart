@@ -13,4 +13,7 @@ abstract class IPoint {
 
   /// Sets additional data that this point should contain.
   void set data(Object data);
+
+  /// Determines if the given [o] point is equal to this point.
+  bool equals(IPoint o);
 }

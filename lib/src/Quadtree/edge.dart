@@ -36,7 +36,7 @@ class Edge implements IEdge, Comparable<Edge> {
 
   /// Checks the equality of the two given edges.
   /// [undirected] indicates if true to compare the edges undirected, false to compare directed.
-  static bool equals(IEdge a, IEdge b, bool undirected) {
+  static bool equalEdges(IEdge a, IEdge b, bool undirected) {
     if (a == null) return b == null;
     if (b == null) return false;
     if ((a.x1 == b.x1) && (a.y1 == b.y1) && (a.x2 == b.x2) && (a.y2 == b.y2)) return true;
@@ -56,16 +56,16 @@ class Edge implements IEdge, Comparable<Edge> {
     double dx, dy;
     double leng2 = Edge.length2(edge);
     if (leng2 <= 0.0) {
-      dx = edge.x1 - x;
-      dy = edge.y1 - y;
+      dx = (edge.x1 - x).toDouble();
+      dy = (edge.y1 - y).toDouble();
     } else {
       double r = ((x - edge.x1) * edge.dx + (y - edge.y1) * edge.dy) / leng2;
       if (r <= 0.0) {
-        dx = edge.x1 - x;
-        dy = edge.y1 - y;
+        dx = (edge.x1 - x).toDouble();
+        dy = (edge.y1 - y).toDouble();
       } else if (r >= 1.0) {
-        dx = edge.x2 - x;
-        dy = edge.y2 - y;
+        dx = (edge.x2 - x).toDouble();
+        dy = (edge.y2 - y).toDouble();
       } else {
         dx = edge.x1 + r * edge.dx - x;
         dy = edge.y1 + r * edge.dy - y;
@@ -94,7 +94,7 @@ class Edge implements IEdge, Comparable<Edge> {
   static bool obtuse(IEdge edge1, IEdge edge2) => dot(edge1, edge2) < 0.0;
 
   /// Gets the side of the edge the given point is on.
-  static Side side(IEdge edge, IPoint point) {
+  static int side(IEdge edge, IPoint point) {
     double value = Point.cross(edge.dx, edge.dy, point.x - edge.x1, point.y - edge.y1);
     double epsilon = 1.0e-12;
     if (Math.abs(value) <= epsilon)
@@ -442,33 +442,27 @@ class Edge implements IEdge, Comparable<Edge> {
   Object _data;
 
   /// Creates a new edge.
-  Edge(IPoint start, IPoint end, [Object data = null]) {
-    this._start = start;
-    this._end = end;
-    this._data = data;
-  }
+  Edge.FromPoints(IPoint this._start, IPoint this._end, [Object this._data = null]);
 
   /// Creates a new edge.
-  Edge(int x1, int y1, int x2, int y2, [Object data = null]) {
-    this._start = new Point(x1, y1);
-    this._end = new Point(x2, y2);
-    this._data = data;
+  factory Edge(int x1, int y1, int x2, int y2, [Object data = null]) {
+    return new Edge.FromPoints(new Point(x1, y1), new Point(x2, y2), data);
   }
 
   /// Gets the first component of the start point of the edge.
-  @Override
+
   int get x1 => this._start.x;
 
   /// Gets the second component of the start point of the edge.
-  @Override
+
   int get y1 => this._start.y;
 
   /// Gets the first component of the end point of the edge.
-  @Override
+
   int get x2 => this._end.x;
 
   /// Gets the second component of the end point of the edge.
-  @Override
+
   int get y2 => this._end.y;
 
   /// Gets any additional data that this edge should contain.
@@ -480,19 +474,19 @@ class Edge implements IEdge, Comparable<Edge> {
   }
 
   /// Gets the start point for this edge.
-  @Override
+
   IPoint get start => this._start;
 
   /// Gets the end point for this edge.
-  @Override
+
   IPoint get end => this._end;
 
   /// Gets the change in the first component, delta X.
-  @Override
+
   int get dx => this.x2 - this.x1;
 
   /// Gets the change in the second component, delta Y.
-  @Override
+
   int get dy => this.y2 - this.y1;
 
   /// Gets the opposite direction edge.
@@ -502,11 +496,11 @@ class Edge implements IEdge, Comparable<Edge> {
   /// Returns 1 if this line is greater than the other line,
   /// -1 if this line is less than the other line,
   /// 0 if this line is the same as the other line.
-  @Override
+
   int compareTo(Edge other) => compare(this, other);
 
   /// Determines if the given object is equal to this edge.
-  @Override
+
   bool equals(Object o) {
     if (o == null) return false;
     if (o is Edge) return false;

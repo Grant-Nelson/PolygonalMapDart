@@ -36,18 +36,14 @@ class BorderNeighbor implements IEdgeHandler {
   /// The given [query] point is usually the other point on the border.
   /// Set [ccw] to true to use a counter-clockwise border, false if clockwise.
   /// The given [matcher] will filter possible neighbors.
-  BorderNeighbor(IPoint origin, IPoint query, bool ccw, IEdgeHandler matcher) {
-    this(new Edge(origin, query), ccw, matcher);
-  }
+  BorderNeighbor.Points(IPoint origin, IPoint query, bool ccw, IEdgeHandler matcher):
+    this(new Edge.FromPoints(origin, query), ccw, matcher);
 
   /// Creates a new border neighbor finder.
   /// The given [query] point is usually the other point on the border.
   /// Set [ccw] to true to use a counter-clockwise border, false if clockwise.
   /// The given [matcher] will filter possible neighbors.
-  BorderNeighbor(IEdge query, bool ccw, IEdgeHandler matcher) {
-    this._query = query;
-    this._ccw = ccw;
-    this._matcher = matcher;
+  BorderNeighbor(IEdge this._query, bool this._ccw, IEdgeHandler this._matcher) {
     this._result = null;
     this._allowFore = true;
     this._allowBack = true;
@@ -61,7 +57,6 @@ class BorderNeighbor implements IEdgeHandler {
 
   /// Updates the border neighbor with the given edge.
   /// Always returns true.
-  @Override
   bool handle(EdgeNode edge) {
     this.update(edge);
     return true;
@@ -75,28 +70,28 @@ class BorderNeighbor implements IEdgeHandler {
       }
     }
     if (this._ccw)
-      this.ccwNeighbor(edge);
+      this._ccwNeighbor(edge);
     else
-      this.cwNeighbor(edge);
+      this._cwNeighbor(edge);
   }
 
   /// Updates the counter-clockwise border neighbor.
   void _ccwNeighbor(IEdge edge) {
     // Get the far point in the other edge.
     IPoint point = null;
-    if (edge.start().equals(this._query.start())) {
-      point = edge.end();
-    } else if (edge.end().equals(this._query.start())) {
-      point = edge.start();
-    } else if (edge.start().equals(this._query.end())) {
-      point = edge.end();
-    } else if (edge.end().equals(this._query.end())) {
-      point = edge.start();
+    if (edge.start.equals(this._query.start)) {
+      point = edge.end;
+    } else if (edge.end.equals(this._query.start)) {
+      point = edge.start;
+    } else if (edge.start.equals(this._query.end)) {
+      point = edge.end;
+    } else if (edge.end.equals(this._query.end)) {
+      point = edge.start;
     } else
       return;
 
     // Check if edge is opposite.
-    if (point.equals(this._query.end())) {
+    if (point.equals(this._query.end)) {
       if (this._allowBack) {
         this._result = edge;
         this._allowBack = false;
@@ -106,7 +101,7 @@ class BorderNeighbor implements IEdgeHandler {
 
     // Determine the side of the query edge that the other edge is on.
     switch (Edge.side(this._query, point)) {
-      case Inside:
+      case Side.Inside:
         if (this._allowFore || this._allowBack) {
           // Bias toward edges heading the same way.
           if (Edge.acute(this._query, edge)) {
@@ -123,7 +118,7 @@ class BorderNeighbor implements IEdgeHandler {
         }
         break;
 
-      case Left:
+      case Side.Left:
         if (this._allowTurn) {
           if (!this._hasLeft) {
             this._result = edge;
@@ -135,7 +130,7 @@ class BorderNeighbor implements IEdgeHandler {
         }
         break;
 
-      case Right:
+      case Side.Right:
         if (!this._hasRight) {
           this._result = edge;
           this._hasRight = true;
@@ -153,19 +148,19 @@ class BorderNeighbor implements IEdgeHandler {
   void _cwNeighbor(IEdge edge) {
     // Get the far point in the other edge.
     IPoint point = null;
-    if (edge.start().equals(this._query.start())) {
-      point = edge.end();
-    } else if (edge.end().equals(this._query.start())) {
-      point = edge.start();
-    } else if (edge.start().equals(this._query.end())) {
-      point = edge.end();
-    } else if (edge.end().equals(this._query.end())) {
-      point = edge.start();
+    if (edge.start.equals(this._query.start)) {
+      point = edge.end;
+    } else if (edge.end.equals(this._query.start)) {
+      point = edge.start;
+    } else if (edge.start.equals(this._query.end)) {
+      point = edge.end;
+    } else if (edge.end.equals(this._query.end)) {
+      point = edge.start;
     } else
       return;
 
     // Check if edge is opposite.
-    if (point.equals(this._query.end())) {
+    if (point.equals(this._query.end)) {
       if (this._allowBack) {
         this._result = edge;
         this._allowBack = false;
@@ -175,7 +170,7 @@ class BorderNeighbor implements IEdgeHandler {
 
     // Determine the side of the query edge that the other edge is on.
     switch (Edge.side(this._query, point)) {
-      case Inside:
+      case Side.Inside:
         if (this._allowFore || this._allowBack) {
           // Bias toward edges heading the same way.
           if (Edge.acute(this._query, edge)) {
@@ -192,7 +187,7 @@ class BorderNeighbor implements IEdgeHandler {
         }
         break;
 
-      case Left:
+      case Side.Left:
         if (!this._hasLeft) {
           this._result = edge;
           this._hasLeft = true;
@@ -204,7 +199,7 @@ class BorderNeighbor implements IEdgeHandler {
         }
         break;
 
-      case Right:
+      case Side.Right:
         if (this._allowTurn) {
           if (!this._hasRight) {
             this._result = edge;

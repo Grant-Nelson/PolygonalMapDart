@@ -15,11 +15,11 @@ abstract class IFormatter {
   String toHeightString(int height);
 
   /// Converts a point to a string.
-  String toString(IPoint point);
+  String toPointString(IPoint point);
 
   /// Converts an edge to a string.
-  String toString(IEdge edge);
+  String toEdgeString(IEdge edge);
 
   /// Converts a boundary to a string.
-  String toString(IBoundary boundary);
+  String toBoundaryString(IBoundary boundary);
 }

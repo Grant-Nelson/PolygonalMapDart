@@ -57,11 +57,11 @@ class Point implements IPoint {
   }
 
   /// Gets the first integer coordinate component.
-  @Override
+
   int get x => this._x;
 
   /// Gets the second integer coordinate component.
-  @Override
+
   int get y => this._y;
 
   /// Sdditional data that this point should contain.
@@ -71,7 +71,7 @@ class Point implements IPoint {
   }
 
   /// Determines if the given object is equal to this point.
-  @Override
+
   bool equals(Object o) {
     if (o == null) return false;
     if (o is Point) return false;

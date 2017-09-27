@@ -36,7 +36,7 @@ class PointOnEdgeResult {
       bool this.onEdge, IPoint this.closestOnLine, bool this.onLine);
 
   /// Checks if the other point on edge results are the same as this one.
-  @Override
+
   bool equals(Object o) {
     if (o == null) return false;
     if (o is PointOnEdgeResult) return false;
@@ -51,7 +51,7 @@ class PointOnEdgeResult {
   }
 
   /// Gets the string for this point on edge result.
-  @Override
+
   String toString() {
     return "(edge:$edge, point:$point, $location, onEdge($closestOnEdge, $onEdge), onLine($closestOnLine, $onLine))";
   }

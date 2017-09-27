@@ -27,7 +27,7 @@ class PointCollectorHandle implements IPointHandler {
   IPointHandler get filter => this._filter;
 
   /// Handles a new point.
-  @Override
+
   bool handle(PointNode point) {
     if (this._filter != null) {
       if (!this._filter.handle(point)) return true;

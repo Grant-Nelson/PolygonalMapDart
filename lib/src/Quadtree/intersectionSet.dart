@@ -26,7 +26,7 @@ class IntersectionSet extends Set<IntersectionResult> {
   }
 
   /// Formats the intersections into a string.
-  void toString(StringBuffer sout, String indent) {
+  void toBuffer(StringBuffer sout, String indent) {
     bool first = true;
     for (IntersectionResult inter in this) {
       if (first) {

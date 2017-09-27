@@ -1,25 +1,28 @@
 part of PolygonalMapDart.Quadtree;
 
 /// The types of intersections between two lines.
-enum IntersectionType {
+class IntersectionType {
+  /// The intersect between two the two edges could not be determined.
+  static const int None = 0;
+
   /// The two edges are the same.
-  Same,
+  static const int Same = 1;
 
   /// The two edges are the opposite.
-  Opposite,
+  static const int Opposite = 2;
 
   /// The two lines defined with the given edges are parallel.
-  Parallel,
+  static const int Parallel = 4;
 
   /// The two lines defined with the given edges share multiple points.
-  Coincide,
+  static const int Coincide = 5;
 
   /// The two lines coincide but the edges don't touch.
-  Collinear,
+  static const int Collinear = 6;
 
   /// The two lines defined with the given edges share a single a point.
-  Point,
+  static const int Point = 7;
 
-  /// The intersect between two the two edges could not be determined.
-  None
+  // Keep this class from being constructed.
+  IntersectionType._();
 }

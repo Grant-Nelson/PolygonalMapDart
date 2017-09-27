@@ -1,7 +1,5 @@
 library ThreeDart.web;
 
-import 'package:PolygonalMap/Quadtree.dart' as quadtree;
+import 'package:PolygonalMapDart/Quadtree.dart' as quadtree;
 
-void main() {
-
-}
+void main() {}

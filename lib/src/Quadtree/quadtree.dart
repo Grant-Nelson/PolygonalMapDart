@@ -1,5 +1,16 @@
 library PolygonalMapDart.Quadtree;
 
+import 'package:intl/intl.dart';
+
+part 'AreaAccumulator.dart';
+part 'BaseNode.dart';
+part 'BorderNeighbor.dart';
+part 'Boundary.dart';
+part 'BoundaryRegion.dart';
+part 'BranchNode.dart';
+part 'Coordinates.dart';
+part 'Edge.dart';
+part 'EdgeCollectorHandle.dart';
 part 'EdgeNode.dart';
 part 'EdgeNodeSet.dart';
 part 'EdgePointIgnorer.dart';
@@ -41,7 +52,6 @@ class ValidateHandler implements IPointHandler {
   int pointCount = 0;
   int edgeCount = 0;
 
-  @Override
   bool handle(PointNode point) {
     this.bounds = Boundary.expand(this.bounds, point);
     this.pointCount++;
@@ -793,7 +803,7 @@ class QuadTree {
   /// [contained] indicates this node is part of another output.
   /// [last] indicates this is the last output of the parent.
   /// [format] is the format used for printing, null to use default.
-  void toString(StringBuffer sout,
+  void toBuffer(StringBuffer sout,
       {String indent: "", bool contained: false, bool last: true, IFormatter format: null}) {
     if (contained) {
       if (last)
@@ -833,7 +843,7 @@ class QuadTree {
   }
 
   /// Gets the string for this quad-tree.
-  @Override
+
   String toString() {
     StringBuffer sout = new StringBuffer();
     this.toString(sout, null);

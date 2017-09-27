@@ -32,11 +32,11 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   }
 
   /// Gets the first integer coordinate component.
-  @Override
+
   int get x => this._x;
 
   /// Gets the second integer coordinate component.
-  @Override
+
   int get y => this._y;
 
   /// Gets the point for this node.
@@ -97,7 +97,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// Adds an edge to this node and/or children nodes.
   /// Returns the node that should be the new root of the subtree that was
   /// defined by this node.
-  @Override
+
   INode insertEdge(EdgeNode edge) {
     if (edge.startNode == this)
       this._startEdges.add(edge);
@@ -110,7 +110,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// Adds a point to this node.
   /// Returns the node that should be the new root of the subtree that was
   /// defined by this node.
-  @Override
+
   INode insertPoint(PointNode point) {
     BranchNode branch = new BranchNode();
     branch.setLocation(this.xmin, this.ymin, this.width);
@@ -122,7 +122,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     branch.setChild(childQuad, this);
 
     // Copy lines to new siblings, keep any non-empty sibling.
-    for (Quadrant quad in Quadrant.values) {
+    for (int quad in Quadrant.All) {
       if (quad != childQuad) {
         PassNode sibling = new PassNode();
         sibling.setLocation(branch.childX(quad), branch.childY(quad), halfSize);
@@ -158,7 +158,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// removed if no other edges begins or ends at that point.
   /// Returns the node that should be the new root of the subtree that was
   /// defined by this node.
-  @Override
+
   INode removeEdge(EdgeNode edge, bool trimTree) {
     INode result = this;
     if (edge.startNode == this) {
@@ -173,7 +173,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   }
 
   /// This handles the first found intersecting edge.
-  @Override
+
   IntersectionResult findFirstIntersection(IEdge edge, IEdgeHandler hndl) {
     if (this.overlaps(edge)) {
       IntersectionResult result;
@@ -188,7 +188,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   }
 
   /// This handles all the intersections.
-  @Override
+
   bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
     if (this.overlaps(edge)) {
@@ -199,39 +199,20 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     return result;
   }
 
-  /// Handles each point node reachable from this node.
-  @Override
-  bool foreach(IPointHandler handle) {
-    return handle.handle(this);
-  }
-
   /// Handles each point node reachable from this node in the boundary.
-  @Override
-  bool foreach(IPointHandler handle, IBoundary bounds) {
-    if (bounds.contains(this)) {
+  bool foreachPoint(IPointHandler handle, [IBoundary bounds = null]) {
+    if ((bounds == null) || bounds.contains(this)) {
       return handle.handle(this);
     } else
       return true;
-  }
-
-  /// Handles each edge node reachable from this node.
-  @Override
-  bool foreach(IEdgeHandler handle) {
-    // Since all nodes are checked only look at the start edges
-    // so that edges are looked at only once.
-    for (EdgeNode edge in this._startEdges) {
-      if (!handle.handle(edge)) return false;
-    }
-    return true;
   }
 
   /// Handles each edge node reachable from this node in the boundary.
   /// [exclusive] indicates that only edge which have both end points
   /// inside the region are collected, otherwise any edge which
   // exists even partially in the region are collected.
-  @Override
-  bool foreach(IEdgeHandler handle, IBoundary bounds, bool exclusive) {
-    if (this.overlaps(bounds)) {
+  bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = true]) {
+    if ((bounds == null) || this.overlaps(bounds)) {
       if (exclusive) {
         // Check all edges which start at this node to see if they end in the bounds.
         // No need to check passEdges nor endEdges because for all exclusive edges
@@ -256,29 +237,19 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     return true;
   }
 
-  /// Handles each node reachable from this node.
-  @Override
-  bool foreach(INodeHandler handle) {
-    return handle.handle(this);
-  }
-
   /// Handles each node reachable from this node in the boundary.
-  @Override
-  bool foreach(INodeHandler handle, IBoundary bounds) {
-    return this.overlaps(bounds) && handle.handle(this);
+  bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) {
+    return ((bounds == null) || this.overlaps(bounds)) && handle.handle(this);
   }
 
   /// Determines if the node has any point nodes inside it.
   /// Since this is a point node then it will always return true.
-  @Override
   bool get hasPoints => true;
 
   /// Determines if the node has any edge nodes inside it.
-  @Override
   bool get hasEdges => !(this._passEdges.isEmpty() || this._endEdges.isEmpty() || this._startEdges.isEmpty());
 
   /// Gets the first edge to the left of the given point.
-  @Override
   void firstLeftEdge(FirstLeftEdgeArgs args) {
     this.firstLineLeft(this._startEdges, args);
     this.firstLineLeft(this._endEdges, args);
@@ -286,7 +257,6 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   }
 
   /// Handles all the edges to the left of the given point.
-  @Override
   bool foreachLeftEdge(IPoint point, IEdgeHandler handle) {
     if (!this.foreachLeftEdge(this._startEdges, point, handle)) return false;
     if (!this.foreachLeftEdge(this._endEdges, point, handle)) return false;
@@ -295,15 +265,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   }
 
   /// This finds the next point in the tree.
-  PointNode nextPoint(IPointHandler handle) {
-    if (this.parent == null)
-      return null;
-    else
-      return this.parent.findNextPoint(this, null, handle);
-  }
-
-  /// This finds the next point within the given region in the tree.
-  PointNode nextPoint(IBoundary boundary, IPointHandler handle) {
+  PointNode nextPoint(IPointHandler handle, [IBoundary boundary = null]) {
     if (this.parent == null)
       return null;
     else
@@ -311,15 +273,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   }
 
   /// This finds the previous point in the tree.
-  PointNode previousPoint(IPointHandler handle) {
-    if (this.parent == null)
-      return null;
-    else
-      return this.parent.findPreviousPoint(this, null, handle);
-  }
-
-  /// This finds the previous point within the given region in the tree.
-  PointNode previousPoint(IBoundary boundary, IPointHandler handle) {
+  PointNode previousPoint(IPointHandler handle, [IBoundary boundary = null]) {
     if (this.parent == null)
       return null;
     else
@@ -332,7 +286,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// check passing edges, only beginning and ending edges because the nearest
   /// edge starts or ends at this node.
   EdgeNode nearEndEdge(IPoint queryPoint) {
-    Edge queryEdge = new Edge(queryPoint.x(), queryPoint.y(), this.x(), this.y());
+    Edge queryEdge = new Edge(queryPoint.x, queryPoint.y, this.x, this.y);
 
     EdgeNode rightMost = null;
     EdgeNode leftMost = null;
@@ -409,7 +363,6 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   }
 
   /// Validates this node.
-  @Override
   bool validate(StringBuffer sout, final IFormatter format, bool recursive) {
     bool result = true;
     if (!this.contains(this._x, this._y)) {
@@ -515,7 +468,6 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// Return 1 if this point is greater than the other point,
   /// -1 if this point is less than the other point,
   /// 0 if this point is the same as the other point.
-  @Override
   int compareTo(PointNode other) {
     if (this._y < other._y) return -1;
     if (this._y > other._y) return 1;
@@ -528,8 +480,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// [children] indicates any child should also be concatenated.
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
-  @Override
-  void toString(StringBuffer sout, String indent, bool children, bool contained, bool last, IFormatter format) {
+  void toBuffer(StringBuffer sout, String indent, bool children, bool contained, bool last, IFormatter format) {
     if (contained) {
       if (last)
         sout.append(StringParts.Last);

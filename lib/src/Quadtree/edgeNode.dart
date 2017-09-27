@@ -14,9 +14,12 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
 
   /// Creates a new edge node.
   EdgeNode._(PointNode start, PointNode end) {
-    assert(start != null); // May not initialize an edge node with a null start node.
-    assert(end != null); // May not initialize an edge node with a null end node.
-    assert(start != end); // May not initialize an edge node with the same node for both the start and end.
+// May not initialize an edge node with a null start node.
+    assert(start != null);
+// May not initialize an edge node with a null end node.
+    assert(end != null);
+// May not initialize an edge node with the same node for both the start and end.
+    assert(start != end);
 
     this._start = start;
     this._end = end;
@@ -53,7 +56,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   /// or end node of this edge.
   /// Returns true if the given node was either the start or end node of this edge,
   /// false if not or the node was null.
-  bool connectsTo(PointNode point) => (this._start == point) || (this._end == point);
+  bool connectsToPoint(PointNode point) => (this._start == point) || (this._end == point);
 
   /// Determines if this edge is connected to the given edge. To be connected
   /// either the start node or end node of this edge must be the same node as
@@ -61,7 +64,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   /// [edge] is the edge to determine if it shares a node with this edge.
   /// Returns true if the given edge shared a node with this edge,
   /// false if not or the edge was null.
-  bool connectsTo(EdgeNode edge) =>
+  bool connectsToEdge(EdgeNode edge) =>
       (edge != null) &&
       ((this._start == edge._end) ||
           (this._end == edge._start) ||
@@ -79,35 +82,35 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   EdgeNode findOpposite() => this._end.findEdgeTo(this._start);
 
   /// Gets the first component of the start point of the edge.
-  @Override
+
   int get x1 => this._start.x;
 
   /// Gets the second component of the start point of the edge.
-  @Override
+
   int get y1 => this._start.y;
 
   /// Gets the first component of the end point of the edge.
-  @Override
+
   int get x2 => this._end.x;
 
   /// Gets the second component of the end point of the edge.
-  @Override
+
   int get y2 => this._end.y;
 
   /// Gets the start point for this edge.
-  @Override
+
   IPoint get start => this._start;
 
   /// Gets the end point for this edge.
-  @Override
+
   IPoint get end => this._end;
 
   /// Gets the change in the first component, delta X.
-  @Override
+
   int get dx => this._end.x - this._start.x;
 
   /// Gets the change in the second component, delta Y.
-  @Override
+
   int get dy => this._end.y - this._start.y;
 
   /// Determines the next neighbor edge on a properly wound polygon.
@@ -173,7 +176,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   /// Formats the nodes into a string.
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
-  void toString(StringBuffer sout,
+  void toBuffer(StringBuffer sout,
       {String indent: "", bool contained: false, bool last: true, IFormatter format: null}) {
     if (contained) {
       if (last)
@@ -191,10 +194,9 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   }
 
   /// Gets the string for this edge node.
-  @Override
   String toString() {
     StringBuffer sout = new StringBuffer();
-    this.toString(sout);
+    this.toBuffer(sout);
     return sout.toString();
   }
 }

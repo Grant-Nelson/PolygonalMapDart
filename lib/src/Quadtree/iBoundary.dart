@@ -24,29 +24,29 @@ abstract class IBoundary {
   int region(int x, int y);
 
   /// Gets the boundary region the given point was in.
-  int region(IPoint point);
+  int regionPoint(IPoint point);
 
   /// Checks if the given point is completely contained within this boundary.
   bool contains(int x, int y);
 
   /// Checks if the given point is completely contained within this boundary.
-  bool contains(IPoint point);
+  bool containsPoint(IPoint point);
 
   /// Checks if the given edge is completely contained within this boundary.
-  bool contains(IEdge edge);
+  bool containsEdge(IEdge edge);
 
   /// Checks if the given boundary is completely contains by this boundary.
-  bool contains(IBoundary boundary);
+  bool containsBoundary(IBoundary boundary);
 
   /// Checks if the given edge overlaps this boundary.
-  bool overlaps(IEdge edge);
+  bool overlapsEdge(IEdge edge);
 
   /// Checks if the given boundary overlaps this boundary.
-  bool overlaps(IBoundary boundary);
+  bool overlapsBoundary(IBoundary boundary);
 
   /// Gets the distance squared from this boundary to the given point.
   double distance2(int x, int y);
 
   /// Gets the distance squared from this boundary to the given point.
-  double distance2(IPoint point);
+  double distance2Point(IPoint point);
 }

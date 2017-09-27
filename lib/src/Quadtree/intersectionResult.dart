@@ -60,7 +60,7 @@ class IntersectionResult implements Comparable<IntersectionResult> {
   /// Returns 1 if this intersection's edges are larger,
   /// -1 if the other intersection is larger,
   /// 0 if they have the same edges.
-  @Override
+
   int compareTo(IntersectionResult o) {
     int cmp = Edge.compare(this.edgeA, o.edgeA);
     if (cmp != 0) return cmp;
@@ -69,7 +69,7 @@ class IntersectionResult implements Comparable<IntersectionResult> {
 
   /// Checks if this intersection is the same as the other intersection.
   /// Returns true if the two intersection results are the same, false otherwise.
-  @Override
+
   bool equals(Object o) {
     if (o == null) return false;
     if (o is IntersectionResult) return false;

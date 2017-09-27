@@ -9,7 +9,7 @@ class EdgeNodeSet extends Set<EdgeNode> {
   /// Formats the edges into a string.
   /// [contained] indicates this output is part of another part.
   /// [last] indicate this is the last set in a list of parents.
-  void toString(StringBuffer sout,
+  void toBuffer(StringBuffer sout,
       {String indent: "", bool contained: false, bool last: true, IFormatter format: null}) {
     int count = this.size();
     int index = 0;

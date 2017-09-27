@@ -27,7 +27,7 @@ class EdgeCollectorHandle implements IEdgeHandler {
   IEdgeHandler get filter => this._filter;
 
   /// Handles a new edge.
-  @Override
+
   bool handle(EdgeNode edge) {
     if (this._filter != null) {
       if (!this._filter.handle(edge)) return true;

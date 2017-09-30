@@ -23,10 +23,7 @@ class NearestEdgeArgs {
   /// [queryPoint] is the query point to find an edge nearest to.
   /// [cutoffDist2] is the maximum allowable distance squared to the nearest edge.
   /// The [handle] is the filter acceptable edges with, or null to not filter.
-  NearestEdgeArgs(IPoint queryPoint, double cutoffDist2, IEdgeHandler handle) {
-    this._queryPoint = queryPoint;
-    this._handle = handle;
-    this._cutoffDist2 = cutoffDist2;
+  NearestEdgeArgs(IPoint this._queryPoint, double this._cutoffDist2, IEdgeHandler this._handle) {
     this._resultEdge = null;
     this._resultPoint = null;
   }
@@ -36,27 +33,27 @@ class NearestEdgeArgs {
     NodeStack stack = new NodeStack();
     stack.push(rootNode);
     while (!stack.isEmpty) {
-      INode node = stack.pop();
+      INode node = stack.pop;
       if (node is PointNode) {
-        for (EdgeNode edge in node.startEdges) {
-          this.checkEdge(edge);
+        for (EdgeNode edge in node.startEdges.nodes) {
+          this._checkEdge(edge);
         }
-        for (EdgeNode edge in node.endEdges) {
-          this.checkEdge(edge);
+        for (EdgeNode edge in node.endEdges.nodes) {
+          this._checkEdge(edge);
         }
-        for (EdgeNode edge in node.passEdges) {
-          this.checkEdge(edge);
+        for (EdgeNode edge in node.passEdges.nodes) {
+          this._checkEdge(edge);
         }
       } else if (node is PassNode) {
-        for (EdgeNode edge in node.passEdges) {
-          this.checkEdge(edge);
+        for (EdgeNode edge in node.passEdges.nodes) {
+          this._checkEdge(edge);
         }
       } else if (node is BranchNode) {
         int width = node.width;
-        int x = node.xmin + width / 2;
-        int y = node.ymin + width / 2;
+        int x = node.xmin + width ~/ 2;
+        int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
-        double dist2 = Point.distance2(this._queryPoint, x, y) - diagDist2;
+        double dist2 = Point.distance2(this._queryPoint.x, this._queryPoint.y, x, y) - diagDist2;
         if (dist2 <= this._cutoffDist2) {
           stack.pushChildren(node);
         }
@@ -84,29 +81,29 @@ class NearestEdgeArgs {
     // Determine how the point is relative to the edge.
     PointOnEdgeResult result = Edge.pointOnEdge(edge, this._queryPoint);
     switch (result.location) {
-      case InMiddle:
-        this.updateWithEdge(edge, result.closestOnEdge);
+      case IntersectionLocation.InMiddle:
+        this._updateWithEdge(edge, result.closestOnEdge);
         break;
-      case BeforeStart:
-        this.updateWithPoint(edge.startNode());
+      case IntersectionLocation.BeforeStart:
+        this._updateWithPoint(edge.startNode);
         break;
-      case AtStart:
-        this.updateWithPoint(edge.startNode());
+      case IntersectionLocation.AtStart:
+        this._updateWithPoint(edge.startNode);
         break;
-      case PastEnd:
-        this.updateWithPoint(edge.endNode());
+      case IntersectionLocation.PastEnd:
+        this._updateWithPoint(edge.endNode);
         break;
-      case AtEnd:
-        this.updateWithPoint(edge.endNode());
+      case IntersectionLocation.AtEnd:
+        this._updateWithPoint(edge.endNode);
         break;
-      case None:
+      case IntersectionLocation.None:
         break;
     }
   }
 
   /// Update with the edge with the middle of the edge the closest.
   void _updateWithEdge(EdgeNode edge, IPoint closePoint) {
-    double dist2 = Point.distance2(this._queryPoint, closePoint);
+    double dist2 = Point.distance2Points(this._queryPoint, closePoint);
     if (dist2 <= this._cutoffDist2) {
       this._resultEdge = edge;
       this._resultPoint = null;
@@ -116,7 +113,7 @@ class NearestEdgeArgs {
 
   /// Update with the point at the end of the edge.
   void _updateWithPoint(PointNode point) {
-    double dist2 = Point.distance2(_queryPoint, point);
+    double dist2 = Point.distance2Points(_queryPoint, point);
     if (dist2 <= this._cutoffDist2) {
       // Do not set _resultEdge here, leave it as the previous value.
       this._resultPoint = point;

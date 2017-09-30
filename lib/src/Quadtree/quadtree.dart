@@ -53,9 +53,9 @@ class ValidateHandler implements IPointHandler {
   int edgeCount = 0;
 
   bool handle(PointNode point) {
-    this.bounds = Boundary.expand(this.bounds, point);
+    this.bounds = Boundary.expandWithPoint(this.bounds, point);
     this.pointCount++;
-    this.edgeCount += point.startEdges().size();
+    this.edgeCount += point.startEdges.nodes.length;
     return true;
   }
 }
@@ -77,7 +77,7 @@ class QuadTree {
 
   /// Creates a new quad-tree.
   QuadTree() {
-    this._root = EmptyNode.getInstance();
+    this._root = EmptyNode.instance;
     this._boundary = new Boundary(0, 0, 0, 0);
     this._pointCount = 0;
     this._edgeCount = 0;
@@ -98,14 +98,14 @@ class QuadTree {
   /// Clears all the points, edges, and nodes from the quad-tree.
   /// Does not clear the additional data.
   void clear() {
-    this._root = EmptyNode.getInstance();
+    this._root = EmptyNode.instance;
     this._boundary = new Boundary(0, 0, 0, 0);
     this._pointCount = 0;
     this._edgeCount = 0;
   }
 
   /// Finds a point node from this node for the given point.
-  PointNode find(IPoint point) => this.find(point.x, point.y);
+  PointNode findPoint(IPoint point) => this.find(point.x, point.y);
 
   /// Finds a point node from this node for the given point.
   PointNode find(int x, int y) {
@@ -113,13 +113,14 @@ class QuadTree {
     INode node = this._root;
     while (true) {
       if (node is PointNode) {
-        if (Point.equals(node, x, y))
+        if (Point.equalsPoint(node, x, y))
           return node;
         else
           return null;
       } else if (node is BranchNode) {
-        Quadrant quad = node.childQuad(x, y);
-        node = node.child(quad);
+        BranchNode branch = node as BranchNode;
+        int quad = branch.childQuad(x, y);
+        node = branch.child(quad);
       } else
         return null; // Pass nodes and empty nodes have no points.
     }
@@ -128,19 +129,20 @@ class QuadTree {
   /// This will locate the smallest non-empty node containing the given point.
   /// Returns this is the smallest non-empty node containing the given point.
   /// If no non-empty node could be found from this node then null is returned.
-  BaseNode nodeContainingPoint(IPoint point) => this.nodeContainingPoint(point.x, point.y);
+  BaseNode nodeContainingPoint(IPoint point) => this.nodeContaining(point.x, point.y);
 
   /// This will locate the smallest non-empty node containing the given point.
   /// Returns this is the smallest non-empty node containing the given point.
   /// If no non-empty node could be found from this node then null is returned.
-  BaseNode nodeContainingPoint(int x, int y) {
+  BaseNode nodeContaining(int x, int y) {
     if (!this._boundary.contains(x, y)) return null;
     INode node = this._root;
     while (true) {
       if (node is BranchNode) {
-        Quadrant quad = node.childQuad(x, y);
-        node = node.child(quad);
-        if (node is EmptyNode) return node;
+        BranchNode branch = node as BranchNode;
+        int quad = branch.childQuad(x, y);
+        node = branch.child(quad);
+        if (node is EmptyNode) return branch;
       } else if (node is EmptyNode)
         return null;
       else
@@ -150,7 +152,7 @@ class QuadTree {
 
   /// Finds an edge node from this node for the given edge.
   /// Set [undirected] to true if the opposite edge may also be returned, false if not.
-  EdgeNode find(IEdge edge, bool undirected) {
+  EdgeNode findEdge(IEdge edge, bool undirected) {
     PointNode node = this.find(edge.x1, edge.y1);
     if (node == null) return null;
     EdgeNode result = node.findEdgeTo(edge.x2, edge.y2);
@@ -164,22 +166,24 @@ class QuadTree {
   /// [queryPoint] is the query point to find a point nearest to.
   /// [cutoffDist2] is the maximum allowable distance squared to the nearest point.
   /// [handle] is the handle to filter acceptable points with, or null to not filter.
-  PointNode findNearestPoint(IPoint queryPoint, {double cutoffDist2: Double.MAX_VALUE, IPointHandler handle: null}) {
+  PointNode findNearestPoint(IPoint queryPoint, {double cutoffDist2: double.MAX_FINITE, IPointHandler handle: null}) {
     PointNode result = null;
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
-        double dist2 = Point.distance2(queryPoint, node);
+        PointNode point = node as PointNode;
+        double dist2 = Point.distance2Points(queryPoint, point);
         if (dist2 < cutoffDist2) {
-          if ((handle == null) || handle.handle(node)) {
-            result = node;
+          if ((handle == null) || handle.handle(point)) {
+            result = point;
             cutoffDist2 = dist2;
           }
         }
       } else if (node is BranchNode) {
-        double dist2 = node.distance2(queryPoint);
-        if (dist2 <= cutoffDist2) stack.pushChildren(node);
+        BranchNode branch = node as BranchNode;
+        double dist2 = branch.distance2Point(queryPoint);
+        if (dist2 <= cutoffDist2) stack.pushChildren(branch);
       }
       // else, Pass nodes and empty nodes have no points.
     }

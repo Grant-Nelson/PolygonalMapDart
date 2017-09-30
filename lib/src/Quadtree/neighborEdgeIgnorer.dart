@@ -7,17 +7,14 @@ class NeighborEdgeIgnorer implements IEdgeHandler {
 
   /// Creates a new neighbor edge ignorer.
   /// The given [edge] is the edge to ignore and ignore the neighbors of.
-  NeighborEdgeIgnorer(IEdge edge) {
-    this._edge = edge;
-  }
+  NeighborEdgeIgnorer(IEdge this._edge);
 
   /// Gets the edge to ignore and ignore the neighbors of.
   IEdge get edge => this._edge;
 
   /// Handles an edge to check if it should be ignored.
-
-  bool handle(EdgeNode edge) => !(Point.equals(edge.start, this._edge.start) ||
-      Point.equals(edge.start, this._edge.end) ||
-      Point.equals(edge.end, this._edge.start) ||
-      Point.equals(edge.end, this._edge.end));
+  bool handle(EdgeNode edge) => !(Point.equalPoints(edge.start, this._edge.start) ||
+      Point.equalPoints(edge.start, this._edge.end) ||
+      Point.equalPoints(edge.end, this._edge.start) ||
+      Point.equalPoints(edge.end, this._edge.end));
 }

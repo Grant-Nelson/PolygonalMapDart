@@ -3,7 +3,7 @@ part of PolygonalMapDart.Quadtree;
 /// The result information for a two edge intersection.
 class IntersectionResult implements Comparable<IntersectionResult> {
   /// Checks if the two results are the same.
-  static bool equals(IntersectionResult a, IntersectionResult b) {
+  static bool equalResults(IntersectionResult a, IntersectionResult b) {
     if (a == null) return b == null;
     return a.equals(b);
   }
@@ -19,16 +19,16 @@ class IntersectionResult implements Comparable<IntersectionResult> {
   final bool intersects;
 
   /// The type of intersection.
-  final IntersectionType type;
+  final int type;
 
   /// The intersection point or null if no intersection.
   final IPoint point;
 
   /// The location on the first edge that the second edge intersects it.
-  final IntersectionLocation locA;
+  final int locA;
 
   /// The location on the second edge that the first edge intersects it.
-  final IntersectionLocation locB;
+  final int locB;
 
   /// The location the second edge's start point is on the first edge.
   final PointOnEdgeResult startBOnEdgeA;
@@ -47,10 +47,10 @@ class IntersectionResult implements Comparable<IntersectionResult> {
       IEdge this.edgeA,
       IEdge this.edgeB,
       bool this.intersects,
-      IntersectionType this.type,
+      int this.type,
       IPoint this.point,
-      IntersectionLocation this.locA,
-      IntersectionLocation this.locB,
+      int this.locA,
+      int this.locB,
       PointOnEdgeResult this.startBOnEdgeA,
       PointOnEdgeResult this.endBOnEdgeA,
       PointOnEdgeResult this.startAOnEdgeB,
@@ -60,7 +60,6 @@ class IntersectionResult implements Comparable<IntersectionResult> {
   /// Returns 1 if this intersection's edges are larger,
   /// -1 if the other intersection is larger,
   /// 0 if they have the same edges.
-
   int compareTo(IntersectionResult o) {
     int cmp = Edge.compare(this.edgeA, o.edgeA);
     if (cmp != 0) return cmp;
@@ -69,21 +68,21 @@ class IntersectionResult implements Comparable<IntersectionResult> {
 
   /// Checks if this intersection is the same as the other intersection.
   /// Returns true if the two intersection results are the same, false otherwise.
-
   bool equals(Object o) {
     if (o == null) return false;
     if (o is IntersectionResult) return false;
-    if (!Edge.equals(this.edgeA, o.edgeA, false)) return false;
-    if (!Edge.equals(this.edgeB, o.edgeB, false)) return false;
-    if (this.intersects != o.intersects) return false;
-    if (this.type != o.type) return false;
-    if (this.locA != o.locA) return false;
-    if (this.locB != o.locB) return false;
-    if (!Point.equals(this.point, o.point)) return false;
-    if (!PointOnEdgeResult.equals(this.startBOnEdgeA, o.startBOnEdgeA)) return false;
-    if (!PointOnEdgeResult.equals(this.endBOnEdgeA, o.endBOnEdgeA)) return false;
-    if (!PointOnEdgeResult.equals(this.startAOnEdgeB, o.startAOnEdgeB)) return false;
-    if (!PointOnEdgeResult.equals(this.endAOnEdgeB, o.endAOnEdgeB)) return false;
+    IntersectionResult other = o as IntersectionResult;
+    if (!Edge.equalEdges(this.edgeA, other.edgeA, false)) return false;
+    if (!Edge.equalEdges(this.edgeB, other.edgeB, false)) return false;
+    if (this.intersects != other.intersects) return false;
+    if (this.type != other.type) return false;
+    if (this.locA != other.locA) return false;
+    if (this.locB != other.locB) return false;
+    if (!Point.equalPoints(this.point, other.point)) return false;
+    if (!PointOnEdgeResult.equalResults(this.startBOnEdgeA, other.startBOnEdgeA)) return false;
+    if (!PointOnEdgeResult.equalResults(this.endBOnEdgeA, other.endBOnEdgeA)) return false;
+    if (!PointOnEdgeResult.equalResults(this.startAOnEdgeB, other.startAOnEdgeB)) return false;
+    if (!PointOnEdgeResult.equalResults(this.endAOnEdgeB, other.endAOnEdgeB)) return false;
     return true;
   }
 

@@ -174,14 +174,14 @@ abstract class BaseNode implements INode, IBoundary {
   /// The [args] are an argument class used to store all the arguments and
   /// results for running this methods.
   void _firstLineLeft(EdgeNodeSet edgeSet, FirstLeftEdgeArgs args) {
-    for (EdgeNode edge in edgeSet) {
+    for (EdgeNode edge in edgeSet.nodes) {
       args.update(edge);
     }
   }
 
   /// This handles all the edges in the given set to the left of the given point.
   bool _foreachLeftEdge(EdgeNodeSet edgeSet, IPoint point, IEdgeHandler handle) {
-    for (EdgeNode edge in edgeSet) {
+    for (EdgeNode edge in edgeSet.nodes) {
       if (edge.y1 > point.y) {
         if (edge.y2 > point.y) continue;
       } else if (edge.y1 < point.y) {
@@ -199,7 +199,7 @@ abstract class BaseNode implements INode, IBoundary {
 
   /// This handles the first found intersecting edge in the given edge set.
   IntersectionResult _findFirstIntersection(EdgeNodeSet edgeSet, IEdge edge, IEdgeHandler hndl) {
-    for (EdgeNode other in edgeSet) {
+    for (EdgeNode other in edgeSet.nodes) {
       if ((hndl == null) || hndl.handle(other)) {
         IntersectionResult inter = Edge.intersect(edge, other);
         if (inter.intersects) {
@@ -213,12 +213,12 @@ abstract class BaseNode implements INode, IBoundary {
   /// This handles all the intersections in the given edge set.
   bool _findAllIntersections(EdgeNodeSet edgeSet, IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
-    for (EdgeNode other in edgeSet) {
+    for (EdgeNode other in edgeSet.nodes) {
       if ((hndl == null) || hndl.handle(other)) {
         if (!intersections.constainsB(other)) {
           IntersectionResult inter = Edge.intersect(edge, other);
           if (inter.intersects) {
-            intersections.add(inter);
+            intersections.results.add(inter);
             result = true;
           }
         }

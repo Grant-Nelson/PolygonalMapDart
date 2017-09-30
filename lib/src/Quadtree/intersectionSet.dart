@@ -1,13 +1,22 @@
 part of PolygonalMapDart.Quadtree;
 
 /// A set of edge nodes.
-class IntersectionSet extends Set<IntersectionResult> {
+class IntersectionSet  {
+
+  /// The internal set of results.
+  Set<IntersectionResult> _set;
+
   /// Create a set of edge nodes.
-  IntersectionSet();
+  IntersectionSet() {
+    this._set = new Set<IntersectionResult>();
+  }
+
+  /// Gets the internal set of results.
+  Set<IntersectionResult> get results => this._set;
 
   /// Contains an edge in the first, "A", intersection edge.
   bool constainsA(IEdge edge) {
-    for (IntersectionResult inter in this) {
+    for (IntersectionResult inter in this._set) {
       if (inter.edgeA.equals(edge)) {
         return true;
       }
@@ -17,7 +26,7 @@ class IntersectionSet extends Set<IntersectionResult> {
 
   /// Contains an edge in the second, "B", intersection edge.
   bool constainsB(IEdge edge) {
-    for (IntersectionResult inter in this) {
+    for (IntersectionResult inter in this._set) {
       if (inter.edgeB.equals(edge)) {
         return true;
       }
@@ -28,20 +37,20 @@ class IntersectionSet extends Set<IntersectionResult> {
   /// Formats the intersections into a string.
   void toBuffer(StringBuffer sout, String indent) {
     bool first = true;
-    for (IntersectionResult inter in this) {
+    for (IntersectionResult inter in this._set) {
       if (first) {
         first = false;
       } else {
-        sout.append("\n" + indent);
+        sout.write("\n" + indent);
       }
-      sout.append(inter.toString("\n" + indent + "   "));
+      sout.write(inter.toString("\n" + indent + "   "));
     }
   }
 
   /// Formats the set into a string.
   String toString() {
     StringBuffer sout = new StringBuffer();
-    this.toString(sout, "");
+    this.toBuffer(sout, "");
     return sout.toString();
   }
 }

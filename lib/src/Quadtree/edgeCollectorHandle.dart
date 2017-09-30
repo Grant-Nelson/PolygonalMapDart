@@ -9,12 +9,6 @@ class EdgeCollectorHandle implements IEdgeHandler {
   IEdgeHandler _filter;
 
   /// Create a new edge collector.
-  EdgeCollectorHandle() {
-    this._set = new EdgeNodeSet();
-    this._filter = null;
-  }
-
-  /// Create a new edge collector.
   EdgeCollectorHandle({EdgeNodeSet set: null, IEdgeHandler filter: null}) {
     this._set = (set == null) ? new EdgeNodeSet() : set;
     this._filter = filter;
@@ -27,12 +21,11 @@ class EdgeCollectorHandle implements IEdgeHandler {
   IEdgeHandler get filter => this._filter;
 
   /// Handles a new edge.
-
   bool handle(EdgeNode edge) {
     if (this._filter != null) {
       if (!this._filter.handle(edge)) return true;
     }
-    this._set.add(edge);
+    this._set.nodes.add(edge);
     return true;
   }
 }

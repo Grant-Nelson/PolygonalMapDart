@@ -217,7 +217,6 @@ class BranchNode extends BaseNode {
   /// Handles all the edges to the left of the given point.
   /// Returns true if all the edges were processed,
   /// false if the handle stopped early.
-
   bool foreachLeftEdge(IPoint point, IEdgeHandler hndl) {
     bool result = true;
     if ((point.y <= this.ymax) && (point.y >= this.ymin)) {
@@ -515,7 +514,7 @@ class BranchNode extends BaseNode {
             this.setChild(quad, EmptyNode.instance);
           } else {
             // Copy all edges from this pass node into the already found pass node.
-            pass.passEdges.addAll(node.passEdges);
+            pass.passEdges.nodes.addAll(node.passEdges.nodes);
           }
         }
       }
@@ -548,10 +547,10 @@ class BranchNode extends BaseNode {
         if (node is PassNode) {
           // Add all passing lines to black node unless the line starts or ends
           // on the black node, since the line will already be in the start or end line lists.
-          for (EdgeNode edge in node.passEdges) {
+          for (EdgeNode edge in node.passEdges.nodes) {
             if (edge.startNode == point) continue;
             if (edge.endNode == point) continue;
-            point.passEdges.add(edge);
+            point.passEdges.nodes.add(edge);
           }
         }
       }
@@ -579,7 +578,6 @@ class BranchNode extends BaseNode {
   }
 
   //// Validates this node.
-
   bool validate(StringBuffer sout, IFormatter format, bool recursive) {
     bool result = true;
     if (!this._validateChild(sout, format, recursive, this._ne, "NE", true, true)) result = false;

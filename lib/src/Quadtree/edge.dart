@@ -75,7 +75,7 @@ class Edge implements IEdge, Comparable<Edge> {
   }
 
   /// Gets the minimum squared distance between the point and the edge.
-  static double distance2(IEdge edge, IPoint point) => distance2(edge, point.x, point.y);
+  static double distance2Point(IEdge edge, IPoint point) => distance2(edge, point.x, point.y);
 
   /// Finds the start point based cross product for the given edges.
   /// Returs the z component of the cross product vector for the two given edges.
@@ -97,7 +97,7 @@ class Edge implements IEdge, Comparable<Edge> {
   static int side(IEdge edge, IPoint point) {
     double value = Point.cross(edge.dx, edge.dy, point.x - edge.x1, point.y - edge.y1);
     double epsilon = 1.0e-12;
-    if (Math.abs(value) <= epsilon)
+    if (value.abs() <= epsilon)
       return Side.Inside;
     else if (value < 0.0)
       return Side.Right;
@@ -109,15 +109,15 @@ class Edge implements IEdge, Comparable<Edge> {
   static PointOnEdgeResult pointOnEdge(IEdge edge, IPoint point) {
     if (Edge.degenerate(edge))
       return null;
-    else if (Point.equals(point, edge.x1, edge.y1))
+    else if (Point.equalsPoint(point, edge.x1, edge.y1))
       return new PointOnEdgeResult(edge, point, IntersectionLocation.AtStart, point, true, point, true);
-    else if (Point.equals(point, edge.x2, edge.y2))
+    else if (Point.equalsPoint(point, edge.x2, edge.y2))
       return new PointOnEdgeResult(edge, point, IntersectionLocation.AtEnd, point, true, point, true);
     else {
       // Calculate closest point on the edge's line.
       // The denominator can't be zero because the edge isn't degenerate.
-      double dx = edge.dx;
-      double dy = edge.dy;
+      double dx = edge.dx.toDouble();
+      double dy = edge.dy.toDouble();
       double numer = (point.x - edge.x1) * dx + (point.y - edge.y1) * dy;
       double denom = dx * dx + dy * dy;
       double t = numer / denom;
@@ -125,17 +125,17 @@ class Edge implements IEdge, Comparable<Edge> {
       int y = (edge.y1 + t * dy).round();
       IPoint closestOnLine = new Point(x, y);
       bool onLine = false;
-      if (Point.equals(closestOnLine, point)) {
+      if (Point.equalPoints(closestOnLine, point)) {
         closestOnLine = point;
         onLine = true;
       }
       IPoint closestOnEdge = closestOnLine;
       bool onEdge = onLine;
 
-      IntersectionLocation location;
-      if (Point.equals(closestOnLine, edge.x1, edge.y1)) {
+      int location;
+      if (Point.equalsPoint(closestOnLine, edge.x1, edge.y1)) {
         location = IntersectionLocation.AtStart;
-      } else if (Point.equals(closestOnLine, edge.x2, edge.y2)) {
+      } else if (Point.equalsPoint(closestOnLine, edge.x2, edge.y2)) {
         location = IntersectionLocation.AtEnd;
       } else if (t <= 0.0) {
         location = IntersectionLocation.BeforeStart;
@@ -164,14 +164,14 @@ class Edge implements IEdge, Comparable<Edge> {
     PointOnEdgeResult endAOnEdgeB = pointOnEdge(edgeB, edgeA.end);
 
     bool intersects;
-    IntersectionType intType;
+    int intType;
     IPoint intPnt;
-    IntersectionLocation locA;
-    IntersectionLocation locB;
+    int locA;
+    int locB;
 
-    long dAx = edgeA.dx, dAy = edgeA.dy;
-    long dBx = edgeB.dx, dBy = edgeB.dy;
-    long denom = (dAx * dBy) - (dAy * dBx);
+    int dAx = edgeA.dx, dAy = edgeA.dy;
+    int dBx = edgeB.dx, dBy = edgeB.dy;
+    int denom = (dAx * dBy) - (dAy * dBx);
 
     if (startBOnEdgeA.onEdge) {
       if (endBOnEdgeA.onEdge) {
@@ -186,12 +186,12 @@ class Edge implements IEdge, Comparable<Edge> {
             intPnt = null;
             if (startBOnEdgeA.location == IntersectionLocation.AtStart) {
               intType = IntersectionType.Same;
-              assert(Point.equals(edgeA.start, edgeB.start));
-              assert(Point.equals(edgeA.end, edgeB.end));
+              assert(Point.equalPoints(edgeA.start, edgeB.start));
+              assert(Point.equalPoints(edgeA.end, edgeB.end));
             } else {
               intType = IntersectionType.Opposite;
-              assert(Point.equals(edgeA.start, edgeB.end));
-              assert(Point.equals(edgeA.end, edgeB.start));
+              assert(Point.equalPoints(edgeA.start, edgeB.end));
+              assert(Point.equalPoints(edgeA.end, edgeB.start));
             }
           } else {
             // OnEdge: startBOnEdgeA, endBOnEdgeA, and startAOnEdgeB
@@ -244,7 +244,7 @@ class Edge implements IEdge, Comparable<Edge> {
             locB = IntersectionLocation.AtStart;
             intPnt = edgeA.start;
             intType = (denom == 0) ? IntersectionType.Collinear : IntersectionType.Point;
-            assert(Point.equals(edgeA.start, edgeB.start));
+            assert(Point.equalPoints(edgeA.start, edgeB.start));
           }
         }
       } else if (endAOnEdgeB.onEdge) {
@@ -263,7 +263,7 @@ class Edge implements IEdge, Comparable<Edge> {
           locB = IntersectionLocation.AtStart;
           intPnt = edgeB.start;
           intType = (denom == 0) ? IntersectionType.Collinear : IntersectionType.Point;
-          assert(Point.equals(edgeB.start, edgeA.end));
+          assert(Point.equalPoints(edgeB.start, edgeA.end));
         }
       } else {
         // OnEdge: startBOnEdgeA
@@ -302,7 +302,7 @@ class Edge implements IEdge, Comparable<Edge> {
             locB = IntersectionLocation.AtEnd;
             intPnt = edgeA.start;
             intType = (denom == 0) ? IntersectionType.Collinear : IntersectionType.Point;
-            assert(Point.equals(edgeA.start, edgeB.end));
+            assert(Point.equalPoints(edgeA.start, edgeB.end));
           }
         }
       } else if (endAOnEdgeB.onEdge) {
@@ -321,7 +321,7 @@ class Edge implements IEdge, Comparable<Edge> {
           locB = IntersectionLocation.AtEnd;
           intPnt = edgeA.end;
           intType = (denom == 0) ? IntersectionType.Collinear : IntersectionType.Point;
-          assert(Point.equals(edgeA.end, edgeB.end));
+          assert(Point.equalPoints(edgeA.end, edgeB.end));
         }
       } else {
         // OnEdge: endBOnEdgeA
@@ -377,22 +377,22 @@ class Edge implements IEdge, Comparable<Edge> {
       }
     } else {
       // Lines intersect at a point.
-      long dABx = edgeA.x1 - edgeB.x1;
-      long dABy = edgeA.y1 - edgeB.y1;
-      long numA = (dABy * dBx) - (dABx * dBy);
+      int dABx = edgeA.x1 - edgeB.x1;
+      int dABy = edgeA.y1 - edgeB.y1;
+      int numA = (dABy * dBx) - (dABx * dBy);
       double rA = numA / denom;
 
       // Calculate the point of intersection.
       intPnt = new Point((edgeA.x1 + rA * dAx).round(), (edgeA.y1 + rA * dAy).round());
 
-      long numB = (dABy * dAx) - (dABx * dAy);
+      int numB = (dABy * dAx) - (dABx * dAy);
       double rB = numB / denom;
 
       // Find location of intersection location on edgeA.
-      if (Point.equals(intPnt, edgeA.x1, edgeA.y1)) {
+      if (Point.equalsPoint(intPnt, edgeA.x1, edgeA.y1)) {
         locA = IntersectionLocation.AtStart;
         intersects = true;
-      } else if (Point.equals(intPnt, edgeA.x2, edgeA.y2)) {
+      } else if (Point.equalsPoint(intPnt, edgeA.x2, edgeA.y2)) {
         locA = IntersectionLocation.AtEnd;
         intersects = true;
       } else if (rA <= 0.0) {
@@ -407,9 +407,9 @@ class Edge implements IEdge, Comparable<Edge> {
       }
 
       // Find location of intersection location on edgeB.
-      if (Point.equals(intPnt, edgeB.x1, edgeB.y1)) {
+      if (Point.equalsPoint(intPnt, edgeB.x1, edgeB.y1)) {
         locB = IntersectionLocation.AtStart;
-      } else if (Point.equals(intPnt, edgeB.x2, edgeB.y2)) {
+      } else if (Point.equalsPoint(intPnt, edgeB.x2, edgeB.y2)) {
         locB = IntersectionLocation.AtEnd;
       } else if (rB <= 0.0) {
         locB = IntersectionLocation.BeforeStart;
@@ -450,19 +450,15 @@ class Edge implements IEdge, Comparable<Edge> {
   }
 
   /// Gets the first component of the start point of the edge.
-
   int get x1 => this._start.x;
 
   /// Gets the second component of the start point of the edge.
-
   int get y1 => this._start.y;
 
   /// Gets the first component of the end point of the edge.
-
   int get x2 => this._end.x;
 
   /// Gets the second component of the end point of the edge.
-
   int get y2 => this._end.y;
 
   /// Gets any additional data that this edge should contain.
@@ -474,37 +470,31 @@ class Edge implements IEdge, Comparable<Edge> {
   }
 
   /// Gets the start point for this edge.
-
   IPoint get start => this._start;
 
   /// Gets the end point for this edge.
-
   IPoint get end => this._end;
 
   /// Gets the change in the first component, delta X.
-
   int get dx => this.x2 - this.x1;
 
   /// Gets the change in the second component, delta Y.
-
   int get dy => this.y2 - this.y1;
 
   /// Gets the opposite direction edge.
-  Edge get opposite => new Edge(this._end, this._start);
+  Edge get opposite => new Edge.FromPoints(this._end, this._start);
 
   /// Compares the given line with this line.
   /// Returns 1 if this line is greater than the other line,
   /// -1 if this line is less than the other line,
   /// 0 if this line is the same as the other line.
-
   int compareTo(Edge other) => compare(this, other);
 
   /// Determines if the given object is equal to this edge.
-
   bool equals(Object o) {
     if (o == null) return false;
     if (o is Edge) return false;
-    return equals(this, o, false);
+    return equalEdges(this, o as Edge, false);
   }
 
   /// Gets the string for this edge.
@@ -512,6 +502,6 @@ class Edge implements IEdge, Comparable<Edge> {
     if (format == null)
       return "[ $x1, $y1, $x2, $y2]";
     else
-      return format.toString(this);
+      return format.toEdgeString(this);
   }
 }

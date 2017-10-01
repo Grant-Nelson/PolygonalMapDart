@@ -36,14 +36,16 @@ class BorderNeighbor implements IEdgeHandler {
   /// The given [query] point is usually the other point on the border.
   /// Set [ccw] to true to use a counter-clockwise border, false if clockwise.
   /// The given [matcher] will filter possible neighbors.
-  BorderNeighbor.Points(IPoint origin, IPoint query, bool ccw, IEdgeHandler matcher):
-    this(new Edge.FromPoints(origin, query), ccw, matcher);
+  BorderNeighbor.Points(
+      IPoint origin, IPoint query, bool ccw, IEdgeHandler matcher)
+      : this(new Edge.FromPoints(origin, query), ccw, matcher);
 
   /// Creates a new border neighbor finder.
   /// The given [query] point is usually the other point on the border.
   /// Set [ccw] to true to use a counter-clockwise border, false if clockwise.
   /// The given [matcher] will filter possible neighbors.
-  BorderNeighbor(IEdge this._query, bool this._ccw, IEdgeHandler this._matcher) {
+  BorderNeighbor(
+      IEdge this._query, bool this._ccw, IEdgeHandler this._matcher) {
     this._result = null;
     this._allowFore = true;
     this._allowBack = true;

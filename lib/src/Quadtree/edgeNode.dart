@@ -13,7 +13,8 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   Object _data;
 
   /// Creates a new edge node.
-  EdgeNode._(PointNode this._start, PointNode this._end, [Object this._data = null]) {
+  EdgeNode._(PointNode this._start, PointNode this._end,
+      [Object this._data = null]) {
     // May not initialize an edge node with a null start node.
     assert(start != null);
 
@@ -54,7 +55,8 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   /// or end node of this edge.
   /// Returns true if the given node was either the start or end node of this edge,
   /// false if not or the node was null.
-  bool connectsToPoint(PointNode point) => (this._start == point) || (this._end == point);
+  bool connectsToPoint(PointNode point) =>
+      (this._start == point) || (this._end == point);
 
   /// Determines if this edge is connected to the given edge. To be connected
   /// either the start node or end node of this edge must be the same node as
@@ -73,7 +75,8 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   // Set [next] to true to return the start edges from the end node,
   /// false to return the end edges from the start node..
   /// Returns the edge set of neighbors to this edge.
-  EdgeNodeSet neighborEdges(bool next) => next ? this._end.startEdges : this._start.endEdges;
+  EdgeNodeSet neighborEdges(bool next) =>
+      next ? this._end.startEdges : this._start.endEdges;
 
   /// This will attempt to find an edge which ends where this one starts and
   /// starts where this one ends, coincident and opposite.
@@ -114,7 +117,8 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
 
   /// Determines the previous neighbor edge on a properly wound polygon.
   IEdge previousBorder(IEdgeHandler matcher) {
-    BorderNeighbor border = new BorderNeighbor.Points(this._end, this._start, false, matcher);
+    BorderNeighbor border =
+        new BorderNeighbor.Points(this._end, this._start, false, matcher);
     for (EdgeNode neighbor in this._start.endEdges.nodes) {
       border.handle(neighbor);
     }
@@ -127,14 +131,14 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
 
     if (this._start.commonAncestor(this._end) == null) {
       sout.write("Error in ");
-      this.toBuffer(sout, format:format);
+      this.toBuffer(sout, format: format);
       sout.write(": The nodes don't have a common ancestor.\n");
       result = false;
     }
 
     if (!this._start.startEdges.nodes.contains(this)) {
       sout.write("Error in ");
-      this.toBuffer(sout, format:format);
+      this.toBuffer(sout, format: format);
       sout.write(":  The start node, ");
       sout.write(this._start);
       sout.write(", doesn't have this edge in it's starting list.\n");
@@ -143,7 +147,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
 
     if (!this._end.endEdges.nodes.contains(this)) {
       sout.write("Error in ");
-      this.toBuffer(sout, format:format);
+      this.toBuffer(sout, format: format);
       sout.write(":  The end node, ");
       sout.write(this._end);
       sout.write(", doesn't have this edge in it's ending list.\n");
@@ -167,7 +171,10 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
   void toBuffer(StringBuffer sout,
-      {String indent: "", bool contained: false, bool last: true, IFormatter format: null}) {
+      {String indent: "",
+      bool contained: false,
+      bool last: true,
+      IFormatter format: null}) {
     if (contained) {
       if (last)
         sout.write(StringParts.Last);

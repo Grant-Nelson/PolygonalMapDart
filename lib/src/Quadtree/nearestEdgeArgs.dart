@@ -23,7 +23,8 @@ class NearestEdgeArgs {
   /// [queryPoint] is the query point to find an edge nearest to.
   /// [cutoffDist2] is the maximum allowable distance squared to the nearest edge.
   /// The [handle] is the filter acceptable edges with, or null to not filter.
-  NearestEdgeArgs(IPoint this._queryPoint, double this._cutoffDist2, IEdgeHandler this._handle) {
+  NearestEdgeArgs(IPoint this._queryPoint, double this._cutoffDist2,
+      IEdgeHandler this._handle) {
     this._resultEdge = null;
     this._resultPoint = null;
   }
@@ -53,7 +54,9 @@ class NearestEdgeArgs {
         int x = node.xmin + width ~/ 2;
         int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
-        double dist2 = Point.distance2(this._queryPoint.x, this._queryPoint.y, x, y) - diagDist2;
+        double dist2 =
+            Point.distance2(this._queryPoint.x, this._queryPoint.y, x, y) -
+                diagDist2;
         if (dist2 <= this._cutoffDist2) {
           stack.pushChildren(node);
         }

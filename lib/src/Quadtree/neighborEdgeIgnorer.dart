@@ -13,8 +13,9 @@ class NeighborEdgeIgnorer implements IEdgeHandler {
   IEdge get edge => this._edge;
 
   /// Handles an edge to check if it should be ignored.
-  bool handle(EdgeNode edge) => !(Point.equalPoints(edge.start, this._edge.start) ||
-      Point.equalPoints(edge.start, this._edge.end) ||
-      Point.equalPoints(edge.end, this._edge.start) ||
-      Point.equalPoints(edge.end, this._edge.end));
+  bool handle(EdgeNode edge) =>
+      !(Point.equalPoints(edge.start, this._edge.start) ||
+          Point.equalPoints(edge.start, this._edge.end) ||
+          Point.equalPoints(edge.end, this._edge.start) ||
+          Point.equalPoints(edge.end, this._edge.end));
 }

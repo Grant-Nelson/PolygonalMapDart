@@ -15,7 +15,7 @@ class BranchNode extends BaseNode {
   INode _sw;
 
   /// Creates a new branch node.
-  BranchNode(): super._() {
+  BranchNode() : super._() {
     this._ne = EmptyNode.instance;
     this._nw = EmptyNode.instance;
     this._se = EmptyNode.instance;
@@ -32,7 +32,8 @@ class BranchNode extends BaseNode {
         INode node = this.child(quad);
         INode newChild;
         if (node is EmptyNode) {
-          newChild = EmptyNode.instance.addEdge(this.childX(quad), this.childY(quad), this.width ~/ 2, edge);
+          newChild = EmptyNode.instance.addEdge(
+              this.childX(quad), this.childY(quad), this.width ~/ 2, edge);
         } else
           newChild = (node as BaseNode).insertEdge(edge);
         if (this.setChild(quad, newChild)) {
@@ -54,7 +55,8 @@ class BranchNode extends BaseNode {
     int quad = this.childQuad(point.x, point.y);
     INode node = this.child(quad);
     if (node is EmptyNode) {
-      INode child = EmptyNode.instance.addPoint(this.childX(quad), this.childY(quad), this.width ~/ 2, point);
+      INode child = EmptyNode.instance.addPoint(
+          this.childX(quad), this.childY(quad), this.width ~/ 2, point);
       if (this.setChild(quad, child)) return this.reduce();
     } else {
       INode child = (node as BaseNode).insertPoint(point);
@@ -74,7 +76,8 @@ class BranchNode extends BaseNode {
       for (int quad in Quadrant.All) {
         INode node = this.child(quad);
         if (node is! EmptyNode) {
-          if (this.setChild(quad, (node as BaseNode).removeEdge(edge, trimTree))) {
+          if (this
+              .setChild(quad, (node as BaseNode).removeEdge(edge, trimTree))) {
             changed = true;
             // Even if child changes don't skip others.
           }
@@ -105,13 +108,18 @@ class BranchNode extends BaseNode {
   }
 
   /// This handles all the intersections.
-  bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
+  bool findAllIntersections(
+      IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
     if (this.overlapsEdge(edge)) {
-      if (this._ne.findAllIntersections(edge, hndl, intersections)) result = true;
-      if (this._nw.findAllIntersections(edge, hndl, intersections)) result = true;
-      if (this._se.findAllIntersections(edge, hndl, intersections)) result = true;
-      if (this._sw.findAllIntersections(edge, hndl, intersections)) result = true;
+      if (this._ne.findAllIntersections(edge, hndl, intersections))
+        result = true;
+      if (this._nw.findAllIntersections(edge, hndl, intersections))
+        result = true;
+      if (this._se.findAllIntersections(edge, hndl, intersections))
+        result = true;
+      if (this._sw.findAllIntersections(edge, hndl, intersections))
+        result = true;
     }
     return result;
   }
@@ -145,7 +153,8 @@ class BranchNode extends BaseNode {
   /// inside the region are collected, otherwise any edge which
   /// exists even partially in the region are collected.
   /// Returns true if all edges in the boundary were run, false if stopped.
-  bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) {
+  bool foreachEdge(IEdgeHandler handle,
+      [IBoundary bounds = null, bool exclusive = false]) {
     if ((bounds == null) || this.overlapsBoundary(bounds)) {
       return this._ne.foreachEdge(handle, bounds, exclusive) &&
           this._nw.foreachEdge(handle, bounds, exclusive) &&
@@ -178,7 +187,11 @@ class BranchNode extends BaseNode {
 
   /// Determines if the node has any edge nodes inside it.
   /// Returns true if this edge has any edges in it, false otherwise.
-  bool get hasEdges => this._ne.hasEdges && this._nw.hasEdges && this._se.hasEdges && this._sw.hasEdges;
+  bool get hasEdges =>
+      this._ne.hasEdges &&
+      this._nw.hasEdges &&
+      this._se.hasEdges &&
+      this._sw.hasEdges;
 
   /// Gets the first edge to the left of the given point.
   void firstLeftEdge(FirstLeftEdgeArgs args) {
@@ -407,7 +420,8 @@ class BranchNode extends BaseNode {
   /// The [curNode] is the child node to find the next from.
   /// Returns the next point node in the given region,
   /// or null if none was found.
-  PointNode findNextPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
+  PointNode findNextPoint(
+      INode curNode, IBoundary boundary, IPointHandler handle) {
     List<int> others = null;
     switch (this.childNodeQuad(curNode)) {
       case Quadrant.NorthWest:
@@ -451,7 +465,8 @@ class BranchNode extends BaseNode {
   /// The [curNode] is the child node to find the next from.
   /// Returns the previous point node in the given region,
   /// or null if none was found.
-  PointNode findPreviousPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
+  PointNode findPreviousPoint(
+      INode curNode, IBoundary boundary, IPointHandler handle) {
     List<int> others = null;
     switch (this.childNodeQuad(curNode)) {
       case Quadrant.NorthWest:
@@ -580,16 +595,20 @@ class BranchNode extends BaseNode {
   //// Validates this node.
   bool validate(StringBuffer sout, IFormatter format, bool recursive) {
     bool result = true;
-    if (!this._validateChild(sout, format, recursive, this._ne, "NE", true, true)) result = false;
-    if (!this._validateChild(sout, format, recursive, this._nw, "NW", true, false)) result = false;
-    if (!this._validateChild(sout, format, recursive, this._sw, "SW", false, false)) result = false;
-    if (!this._validateChild(sout, format, recursive, this._se, "SE", false, true)) result = false;
+    if (!this._validateChild(
+        sout, format, recursive, this._ne, "NE", true, true)) result = false;
+    if (!this._validateChild(
+        sout, format, recursive, this._nw, "NW", true, false)) result = false;
+    if (!this._validateChild(
+        sout, format, recursive, this._sw, "SW", false, false)) result = false;
+    if (!this._validateChild(
+        sout, format, recursive, this._se, "SE", false, true)) result = false;
     return result;
   }
 
   /// Validates the given child node.
-  bool _validateChild(
-      StringBuffer sout, IFormatter format, bool recursive, INode child, String name, bool north, bool east) {
+  bool _validateChild(StringBuffer sout, IFormatter format, bool recursive,
+      INode child, String name, bool north, bool east) {
     if (child == null) {
       sout.write("Error in ");
       this.toBuffer(sout, format: format);
@@ -608,20 +627,20 @@ class BranchNode extends BaseNode {
         sout.write(": The ");
         sout.write(name);
         sout.write(" child, ");
-        child.toBuffer(sout,format:  format);
+        child.toBuffer(sout, format: format);
         sout.write(", parent wasn't this node, it was ");
-        (child as BaseNode).parent.toBuffer(sout, format:format);
+        (child as BaseNode).parent.toBuffer(sout, format: format);
         sout.write(".\n");
         result = false;
       }
 
       if (this.width / 2 != bnode.width) {
         sout.write("Error in ");
-        this.toBuffer(sout, format:format);
+        this.toBuffer(sout, format: format);
         sout.write(": The ");
         sout.write(name);
         sout.write(" child, ");
-        child.toBuffer(sout, format:format);
+        child.toBuffer(sout, format: format);
         sout.write(", was ");
         sout.write(bnode.width);
         sout.write(" wide, but should have been ");
@@ -634,11 +653,11 @@ class BranchNode extends BaseNode {
       int top = north ? (this.ymin + bnode.width) : this.ymin;
       if ((left != bnode.xmin) || (top != bnode.ymin)) {
         sout.write("Error in ");
-        this.toBuffer(sout, format:format);
+        this.toBuffer(sout, format: format);
         sout.write(": The ");
         sout.write(name);
         sout.write(" child, ");
-        child.toBuffer(sout, format:format);
+        child.toBuffer(sout, format: format);
         sout.write(", was at [");
         sout.write(bnode.xmin);
         sout.write(", ");
@@ -662,7 +681,12 @@ class BranchNode extends BaseNode {
   /// [children] indicates any child should also be string-ified.
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
-  void toBuffer(StringBuffer sout, {String indent: "", bool children: false, bool contained: false, bool last: true, IFormatter format: null}) {
+  void toBuffer(StringBuffer sout,
+      {String indent: "",
+      bool children: false,
+      bool contained: false,
+      bool last: true,
+      IFormatter format: null}) {
     if (contained) {
       if (last)
         sout.write(StringParts.Last);
@@ -676,19 +700,39 @@ class BranchNode extends BaseNode {
     if (children) {
       sout.write(StringParts.Sep);
       sout.write(indent);
-      this._ne.toBuffer(sout, indent: indent + StringParts.Bar, children: true, contained: true, last: false, format: format);
+      this._ne.toBuffer(sout,
+          indent: indent + StringParts.Bar,
+          children: true,
+          contained: true,
+          last: false,
+          format: format);
 
       sout.write(StringParts.Sep);
       sout.write(indent);
-      this._nw.toBuffer(sout, indent: indent + StringParts.Bar, children: true, contained: true, last: false, format: format);
+      this._nw.toBuffer(sout,
+          indent: indent + StringParts.Bar,
+          children: true,
+          contained: true,
+          last: false,
+          format: format);
 
       sout.write(StringParts.Sep);
       sout.write(indent);
-      this._se.toBuffer(sout, indent: indent + StringParts.Bar, children: true, contained: true, last: false, format: format);
+      this._se.toBuffer(sout,
+          indent: indent + StringParts.Bar,
+          children: true,
+          contained: true,
+          last: false,
+          format: format);
 
       sout.write(StringParts.Sep);
       sout.write(indent);
-      this._sw.toBuffer(sout, indent: indent + StringParts.Space, children: true, contained: true, last: true, format: format);
+      this._sw.toBuffer(sout,
+          indent: indent + StringParts.Space,
+          children: true,
+          contained: true,
+          last: true,
+          format: format);
     }
   }
 }

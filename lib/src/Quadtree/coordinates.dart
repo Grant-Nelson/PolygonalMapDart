@@ -31,7 +31,8 @@ class Coordinates implements IFormatter {
 
   /// Creates a coordinate converter.
   /// [smallest] is the precision of the coordinate components, smallest X and Y change.
-  factory Coordinates.Origin(double smallest, [String format = _defaultFormat]) {
+  factory Coordinates.Origin(double smallest,
+      [String format = _defaultFormat]) {
     NumberFormat numFmt = new NumberFormat(format, "en_US");
     return new Coordinates(0.0, 0.0, smallest, smallest, numFmt, numFmt);
   }
@@ -40,9 +41,11 @@ class Coordinates implements IFormatter {
   /// [centerX] is the first component (X) of the center point of the coordinate system.
   /// [centerY] is the second component (Y) of the center point of the coordinate system.
   /// [smallest] is the precision of the coordinate components, smallest X and Y change.
-  factory Coordinates.Symmetric(double centerX, double centerY, double smallest, [String format = _defaultFormat]) {
+  factory Coordinates.Symmetric(double centerX, double centerY, double smallest,
+      [String format = _defaultFormat]) {
     NumberFormat numFmt = new NumberFormat(format, "en_US");
-    return new Coordinates(centerX, centerY, smallest, smallest, numFmt, numFmt);
+    return new Coordinates(
+        centerX, centerY, smallest, smallest, numFmt, numFmt);
   }
 
   /// Creates a coordinate converter.
@@ -52,8 +55,13 @@ class Coordinates implements IFormatter {
   /// [smallestY] is the precision of the second coordinate component, smallest Y change.
   /// [formatX] is the format for the first component (X).
   /// [formatY] is the format for the second component (Y).
-  Coordinates(double this.centerX, double this.centerY, double this.smallestX, double this.smallestY,
-      NumberFormat this.formatX, NumberFormat this.formatY);
+  Coordinates(
+      double this.centerX,
+      double this.centerY,
+      double this.smallestX,
+      double this.smallestY,
+      NumberFormat this.formatX,
+      NumberFormat this.formatY);
 
   /// Gets the minimum X component in the coordinate system that can be used.
   double get minX => this.toX(Maximum);
@@ -108,10 +116,12 @@ class Coordinates implements IFormatter {
   String toWidthString(int width) => this.formatX.format(this.toWidth(width));
 
   /// Converts a height value to a string.
-  String toHeightString(int height) => this.formatY.format(this.toHeight(height));
+  String toHeightString(int height) =>
+      this.formatY.format(this.toHeight(height));
 
   /// Converts a point to a string.
-  String toPointString(IPoint point) => "[" + this.toXString(point.x) + ", " + this.toYString(point.y) + "]";
+  String toPointString(IPoint point) =>
+      "[" + this.toXString(point.x) + ", " + this.toYString(point.y) + "]";
 
   /// Converts an edge to a string.
   String toEdgeString(IEdge edge) =>

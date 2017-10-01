@@ -99,7 +99,10 @@ class FirstLeftEdgeArgs {
         if ((edge.x1 > this._queryPoint.x) && (edge.x2 > this._queryPoint.x)) {
           // The edge is to the right of the point, do nothing.
         } else {
-          double x = (edge.x1 - edge.x2) * (this._queryPoint.y - edge.y2) / (edge.y1 - edge.y2) + edge.x2;
+          double x = (edge.x1 - edge.x2) *
+                  (this._queryPoint.y - edge.y2) /
+                  (edge.y1 - edge.y2) +
+              edge.x2;
           if (x > this._queryPoint.x) {
             // The horizontal crossing is to the right of the point, do nothing.
           } else {
@@ -124,7 +127,10 @@ class FirstLeftEdgeArgs {
         if ((edge.x1 > this._queryPoint.x) && (edge.x2 > this._queryPoint.x)) {
           // The edge is to the right of the point, do nothing.
         } else {
-          double x = (edge.x1 - edge.x2) * (this._queryPoint.y - edge.y2) / (edge.y1 - edge.y2) + edge.x2;
+          double x = (edge.x1 - edge.x2) *
+                  (this._queryPoint.y - edge.y2) /
+                  (edge.y1 - edge.y2) +
+              edge.x2;
           if (x > this._queryPoint.x) {
             // The horizontal crossing is to the right of the point, do nothing.
           } else {

@@ -15,8 +15,7 @@ class Quadrant {
   static const int SouthEast = 3;
 
   /// Gets a list of all quadrants.
-  static List<int> get All =>
-    [NorthWest, SouthEast, NorthEast, SouthWest];
+  static List<int> get All => [NorthWest, SouthEast, NorthEast, SouthWest];
 
   // Keep this class from being constructed.
   Quadrant._();

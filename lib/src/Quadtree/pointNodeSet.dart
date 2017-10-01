@@ -1,7 +1,7 @@
 part of PolygonalMapDart.Quadtree;
 
 /// A set of point nodes.
-class PointNodeSet  {
+class PointNodeSet {
   /// The internal set of nodes.
   Set<PointNode> _set;
 
@@ -17,7 +17,10 @@ class PointNodeSet  {
   /// [children] indicates any child should also be concatenated.
   /// [contained] indicates this node is part of another part.
   void toBuffer(StringBuffer sout,
-      {String indent: "", bool children: true, bool contained: false, IFormatter format: null}) {
+      {String indent: "",
+      bool children: true,
+      bool contained: false,
+      IFormatter format: null}) {
     int count = this._set.length;
     int index = 0;
     for (PointNode point in this._set) {
@@ -26,7 +29,12 @@ class PointNodeSet  {
         sout.write(indent);
       }
       index++;
-      point.toBuffer(sout, indent: indent, children:children, contained:contained, last:index >= count, format:format);
+      point.toBuffer(sout,
+          indent: indent,
+          children: children,
+          contained: contained,
+          last: index >= count,
+          format: format);
     }
   }
 }

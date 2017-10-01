@@ -54,7 +54,7 @@ class Boundary implements IBoundary {
   }
 
   /// Creates a new boundary.
-  factory Boundary.Corners(IPoint pnt1, IPoint pnt2){
+  factory Boundary.Corners(IPoint pnt1, IPoint pnt2) {
     return new Boundary(pnt1.x, pnt1.y, pnt2.x, pnt2.y);
   }
 
@@ -109,7 +109,10 @@ class Boundary implements IBoundary {
   int regionPoint(IPoint point) => this.region(point.x, point.y);
 
   /// Checks if the given point is completely contained within this boundary.
-  bool contains(int x, int y) => !((this._xmin > x) || (this._xmax < x) || (this._ymin > y) || (this._ymax < y));
+  bool contains(int x, int y) => !((this._xmin > x) ||
+      (this._xmax < x) ||
+      (this._ymin > y) ||
+      (this._ymax < y));
 
   /// Checks if the given point is completely contained within this boundary.
   /// Returns true if the point is fully contained, false otherwise.
@@ -117,12 +120,14 @@ class Boundary implements IBoundary {
 
   /// Checks if the given edge is completely contained within this boundary.
   /// Returns true if the edge is fully contained, false otherwise.
-  bool containsEdge(IEdge edge) => this.contains(edge.x1, edge.y1) && this.contains(edge.x2, edge.y2);
+  bool containsEdge(IEdge edge) =>
+      this.contains(edge.x1, edge.y1) && this.contains(edge.x2, edge.y2);
 
   /// Checks if the given boundary is completely contains by this boundary.
   /// @Returns true if the boundary is fully contained, false otherwise.
   bool containsBoundary(IBoundary boundary) =>
-      this.contains(boundary.xmin, boundary.ymin) && this.contains(boundary.xmax, boundary.ymax);
+      this.contains(boundary.xmin, boundary.ymin) &&
+      this.contains(boundary.xmax, boundary.ymax);
 
   /// Checks if the given edge overlaps this boundary.
   /// Returns true if the edge is overlaps, false otherwise.
@@ -136,7 +141,8 @@ class Boundary implements IBoundary {
     // If the edge is directly above and below or to the left and right,
     // then it will result in a contained segment.
     int orRegion = region1 | region2;
-    if ((orRegion == BoundaryRegion.Horizontal) || (orRegion == BoundaryRegion.Vertical)) return true;
+    if ((orRegion == BoundaryRegion.Horizontal) ||
+        (orRegion == BoundaryRegion.Vertical)) return true;
 
     // Check if both points are on the same side so the edge cannot be
     // contained.
@@ -144,7 +150,8 @@ class Boundary implements IBoundary {
     if (((andRegion & BoundaryRegion.West) == BoundaryRegion.West) ||
         ((andRegion & BoundaryRegion.East) == BoundaryRegion.East) ||
         ((andRegion & BoundaryRegion.North) == BoundaryRegion.North) ||
-        ((andRegion & BoundaryRegion.South) == BoundaryRegion.South)) return false;
+        ((andRegion & BoundaryRegion.South) == BoundaryRegion.South))
+      return false;
 
     // Check for edge intersection point.
     if ((orRegion & BoundaryRegion.West) == BoundaryRegion.West) {
@@ -215,8 +222,10 @@ class Boundary implements IBoundary {
     if (o == null) return false;
     if (o is Boundary) return false;
     Boundary boundary = o as Boundary;
-    return (this._xmin == boundary._xmin) && (this._ymin == boundary._ymin) &&
-(this._xmax == boundary._xmax) && (this._ymax == boundary._ymax);
+    return (this._xmin == boundary._xmin) &&
+        (this._ymin == boundary._ymin) &&
+        (this._xmax == boundary._xmax) &&
+        (this._ymax == boundary._ymax);
   }
 
   /// Gets the string for this boundary.

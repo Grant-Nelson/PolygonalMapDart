@@ -3,7 +3,6 @@ part of PolygonalMapDart.Quadtree;
 /// A vector of point nodes which can represent
 /// a polygon, poly-line, or point stack.
 class PointNodeVector {
-
   /// The list of nodes in this vector.
   List<PointNode> _list;
 

@@ -9,7 +9,8 @@ class PointCollectorHandle implements IPointHandler {
   IPointHandler _filter;
 
   /// Create a new point collector.
-  PointCollectorHandle({PointNodeSet nodes = null, IPointHandler filter: null}) {
+  PointCollectorHandle(
+      {PointNodeSet nodes = null, IPointHandler filter: null}) {
     this._set = (nodes == null) ? new PointNodeSet() : nodes;
     this._filter = filter;
   }

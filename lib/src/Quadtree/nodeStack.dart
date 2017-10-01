@@ -2,7 +2,6 @@ part of PolygonalMapDart.Quadtree;
 
 /// A stack of nodes.
 class NodeStack {
-
   /// The internal stack of nodes.
   List<INode> _stack;
 
@@ -17,18 +16,18 @@ class NodeStack {
 
   /// Indicates if the stask is empty.
   bool get isEmpty {
-  return this._stack.isEmpty;
-}
+    return this._stack.isEmpty;
+  }
 
-/// Pops the the top node off the stack.
-INode get pop {
-  return this._stack.removeLast();
-}
+  /// Pops the the top node off the stack.
+  INode get pop {
+    return this._stack.removeLast();
+  }
 
   /// Pushes the given node onto the top of the stack.
-void push(INode node) {
-  this._stack.add(node);
-}
+  void push(INode node) {
+    this._stack.add(node);
+  }
 
   /// Pushes a set of nodes onto the stack.
   void pushAll(List<INode> nodes) {

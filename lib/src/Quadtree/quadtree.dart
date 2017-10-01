@@ -1,6 +1,7 @@
 library PolygonalMapDart.Quadtree;
 
 import 'package:intl/intl.dart';
+import 'dart:io';
 
 part 'AreaAccumulator.dart';
 part 'BaseNode.dart';
@@ -129,7 +130,8 @@ class QuadTree {
   /// This will locate the smallest non-empty node containing the given point.
   /// Returns this is the smallest non-empty node containing the given point.
   /// If no non-empty node could be found from this node then null is returned.
-  BaseNode nodeContainingPoint(IPoint point) => this.nodeContaining(point.x, point.y);
+  BaseNode nodeContainingPoint(IPoint point) =>
+      this.nodeContaining(point.x, point.y);
 
   /// This will locate the smallest non-empty node containing the given point.
   /// Returns this is the smallest non-empty node containing the given point.
@@ -166,13 +168,14 @@ class QuadTree {
   /// [queryPoint] is the query point to find a point nearest to.
   /// [cutoffDist2] is the maximum allowable distance squared to the nearest point.
   /// [handle] is the handle to filter acceptable points with, or null to not filter.
-  PointNode findNearestPoint(IPoint queryPoint, {double cutoffDist2: double.MAX_FINITE, IPointHandler handle: null}) {
+  PointNode findNearestPointToPoint(IPoint queryPoint,
+      {double cutoffDist2: double.MAX_FINITE, IPointHandler handle: null}) {
     PointNode result = null;
     NodeStack stack = new NodeStack([this._root]);
     while (!stack.isEmpty) {
       INode node = stack.pop;
       if (node is PointNode) {
-        PointNode point = node as PointNode;
+        PointNode point = node;
         double dist2 = Point.distance2Points(queryPoint, point);
         if (dist2 < cutoffDist2) {
           if ((handle == null) || handle.handle(point)) {
@@ -181,7 +184,7 @@ class QuadTree {
           }
         }
       } else if (node is BranchNode) {
-        BranchNode branch = node as BranchNode;
+        BranchNode branch = node;
         double dist2 = branch.distance2Point(queryPoint);
         if (dist2 <= cutoffDist2) stack.pushChildren(branch);
       }
@@ -194,13 +197,14 @@ class QuadTree {
   /// [queryEdge] is the query edge to find a point nearest to.
   /// [cutoffDist2] is the maximum allowable distance squared to the nearest point.
   /// [handle] is the handle to filter acceptable points with, or null to not filter.
-  PointNode findNearestPoint(IEdge queryEdge, {double cutoffDist2: Double.MAX_VALUE, IPointHandler handle: null}) {
+  PointNode findNearestPointToEdge(IEdge queryEdge,
+      {double cutoffDist2: double.MAX_FINITE, IPointHandler handle: null}) {
     PointNode result = null;
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
-        double dist2 = Edge.distance2(queryEdge, node);
+        double dist2 = Edge.distance2Point(queryEdge, node);
         if (dist2 < cutoffDist2) {
           if ((handle == null) || handle.handle(node)) {
             result = node;
@@ -209,8 +213,8 @@ class QuadTree {
         }
       } else if (node is BranchNode) {
         int width = node.width;
-        int x = node.xmin + width / 2;
-        int y = node.ymin + width / 2;
+        int x = node.xmin + width ~/ 2;
+        int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
         double dist2 = Edge.distance2(queryEdge, x, y) - diagDist2;
         if (dist2 <= cutoffDist2) stack.pushChildren(node);
@@ -224,9 +228,9 @@ class QuadTree {
   /// [queryEdge] is the query edge to find a close point to.
   /// [handle] is the handle to filter acceptable points with, or null to not filter.
   PointNode findClosePoint(IEdge queryEdge, IPointHandler handle) {
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
         PointOnEdgeResult pnt = Edge.pointOnEdge(queryEdge, node);
         if (pnt.onEdge) {
@@ -236,8 +240,8 @@ class QuadTree {
         }
       } else if (node is BranchNode) {
         int width = node.width;
-        int x = node.xmin + width / 2;
-        int y = node.ymin + width / 2;
+        int x = node.xmin + width ~/ 2;
+        int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
         double dist2 = Edge.distance2(queryEdge, x, y) - diagDist2;
         if (dist2 <= 1.415) stack.pushChildren(node);
@@ -253,7 +257,8 @@ class QuadTree {
   /// [cutoffDist2] is the maximum distance squared edges may be
   /// away from the given point to be an eligible result.
   /// [handler] is the matcher to filter eligible edges, if null all edges are accepted.
-  EdgeNode findNearestEdge(IPoint point, {double cutoffDist2: Double.MAX_VALUE, IEdgeHandler handler: null}) {
+  EdgeNode findNearestEdge(IPoint point,
+      {double cutoffDist2: double.MAX_FINITE, IEdgeHandler handler: null}) {
     NearestEdgeArgs args = new NearestEdgeArgs(point, cutoffDist2, handler);
     args.run(this._root);
     return args.result();
@@ -265,26 +270,28 @@ class QuadTree {
   EdgeNode firstLeftEdge(IPoint point, {IEdgeHandler handle: null}) {
     FirstLeftEdgeArgs args = new FirstLeftEdgeArgs(point, handle);
     this._root.firstLeftEdge(args);
-    return args.result();
+    return args.result;
   }
 
   /// Handle all the edges to the left of the given point.
   /// [point] is the point to find the left edges from.
   /// [handle] is the handle to process all the edges with.
-  bool foreachLeftEdge(IPoint point, IEdgeHandler handle) => this._root.foreachLeftEdge(point, handle);
+  bool foreachLeftEdge(IPoint point, IEdgeHandler handle) =>
+      this._root.foreachLeftEdge(point, handle);
 
   /// Gets the first point in the tree.
   /// [boundary] is the boundary of the tree to get the point from, or null for whole tree.
   /// [handle] is the point handler to filter points with, or null for no filter.
   PointNode firstPoint(IBoundary boundary, IPointHandler handle) {
     PointNode result = null;
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
-        if ((boundary == null) || boundary.contains(node)) return node;
+        if ((boundary == null) || boundary.containsPoint(node)) return node;
       } else if (node is BranchNode) {
-        if ((boundary == null) || boundary.overlaps(node)) stack.pushChildren(node);
+        if ((boundary == null) || boundary.overlapsBoundary(node))
+          stack.pushChildren(node);
       }
       // else, Pass nodes and empty nodes have no points.
     }
@@ -296,27 +303,23 @@ class QuadTree {
   /// [handle] is the point handler to filter points with, or null for no filter.
   PointNode lastPoint(IBoundary boundary, IPointHandler handle) {
     PointNode result = null;
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
-        if ((boundary == null) || boundary.contains(node)) return node;
+        if ((boundary == null) || boundary.containsPoint(node)) return node;
       } else if (node is BranchNode) {
-        if ((boundary == null) || boundary.overlaps(node)) stack.pushReverseChildren(node);
+        if ((boundary == null) || boundary.overlapsBoundary(node))
+          stack.pushReverseChildren(node);
       }
       // else, Pass nodes and empty nodes have no points.
     }
     return result;
   }
 
-  /// Handles each point node.
-  bool foreach(IPointHandler handle) => this._root.foreach(handle);
-
   /// Handles each point node in the boundary.
-  bool foreach(IPointHandler handle, IBoundary bounds) => this._root.foreach(handle, bounds);
-
-  /// Handles each edge node.
-  bool foreach(IEdgeHandler handle) => this._root.foreach(handle);
+  bool foreachPoint(IPointHandler handle, [IBoundary bounds = null]) =>
+      this._root.foreachPoint(handle, bounds);
 
   /// Handles each edge node in the boundary.
   /// [handle] is the handler to run on each edge in the boundary.
@@ -325,38 +328,39 @@ class QuadTree {
   /// inside the region are collected, otherwise any edge which
   /// exists even partially in the region are collected.
   /// Returns true if all edges in the boundary were run, false if stopped.
-  bool foreach(IEdgeHandler handle, IBoundary bounds, bool exclusive) => this._root.foreach(handle, bounds, exclusive);
-
-  /// Handles each node.
-  /// Returns true if all nodes were run, false if stopped.
-  bool foreach(INodeHandler handle) => this._root.foreach(handle);
+  bool foreachEdge(IEdgeHandler handle,
+          [IBoundary bounds = null, bool exclusive = false]) =>
+      this._root.foreachEdge(handle, bounds, exclusive);
 
   /// Handles each node in the boundary.
   /// [handle] is the handler to run on each node in the boundary.
   /// [bounds] is the boundary containing the nodes to handle.
   /// Returns true if all nodes in the boundary were run, false if stopped.
-  bool foreach(INodeHandler handle, IBoundary bounds) => this._root.foreach(handle, bounds);
+  bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) =>
+      this._root.foreachNode(handle, bounds);
 
   /// Calls given handle for the all the near points to the given point.
   /// [handle] is the handle to handle all near points with.
   /// [queryPoint] is the query point to find the points near to.
   /// [cutoffDist2] is the maximum allowable distance squared to the near points.
   /// Returns true if all points handled, false if the handled returned false and stopped early.
-  bool forNearPoints(IPointHandler handle, IPoint queryPoint, double cutoffDist2) {
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+  bool forNearPointPoints(
+      IPointHandler handle, IPoint queryPoint, double cutoffDist2) {
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
-        double dist2 = Point.distance2(queryPoint, node);
+        double dist2 = Point.distance2Points(queryPoint, node);
         if (dist2 < cutoffDist2) {
           if (!handle.handle(node)) return false;
         }
       } else if (node is BranchNode) {
         int width = node.width;
-        int x = node.xmin + width / 2;
-        int y = node.ymin + width / 2;
+        int x = node.xmin + width ~/ 2;
+        int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
-        double dist2 = Point.distance2(queryPoint, x, y) - diagDist2;
+        double dist2 =
+            Point.distance2(queryPoint.x, queryPoint.y, x, y) - diagDist2;
         if (dist2 <= cutoffDist2) stack.pushChildren(node);
       }
       // else, Pass nodes and empty nodes have no points.
@@ -370,19 +374,20 @@ class QuadTree {
   /// [cutoffDist2] is the maximum allowable distance squared to the near points.
   /// Returns true if all points handled,
   /// false if the handled returned false and stopped early.
-  bool forNearPoints(IPointHandler handle, IEdge queryEdge, double cutoffDist2) {
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+  bool forNearEdgePoints(
+      IPointHandler handle, IEdge queryEdge, double cutoffDist2) {
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
-        double dist2 = Edge.distance2(queryEdge, node);
+        double dist2 = Edge.distance2Point(queryEdge, node);
         if (dist2 < cutoffDist2) {
           if (!handle.handle(node)) return false;
         }
       } else if (node is BranchNode) {
-        int width = node.width();
-        int x = node.xmin() + width / 2;
-        int y = node.ymin() + width / 2;
+        int width = node.width;
+        int x = node.xmin + width ~/ 2;
+        int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
         double dist2 = Edge.distance2(queryEdge, x, y) - diagDist2;
         if (dist2 <= cutoffDist2) stack.pushChildren(node);
@@ -398,18 +403,18 @@ class QuadTree {
   /// Returns true if all points handled,
   /// false if the handled returned false and stopped early.
   bool forClosePoints(IPointHandler handle, IEdge queryEdge) {
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
         PointOnEdgeResult pnt = Edge.pointOnEdge(queryEdge, node);
         if (pnt.onEdge) {
           if (!handle.handle(node)) return false;
         }
       } else if (node is BranchNode) {
-        int width = node.width();
-        int x = node.xmin() + width / 2;
-        int y = node.ymin() + width / 2;
+        int width = node.width;
+        int x = node.xmin + width ~/ 2;
+        int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
         double dist2 = Edge.distance2(queryEdge, x, y) - diagDist2;
         if (dist2 <= 1.415) stack.pushChildren(node);
@@ -425,39 +430,41 @@ class QuadTree {
   /// [cutoffDist2] is the maximum distance for near edges.
   /// Returns true if all edges handled,
   /// false if the handled returned false and stopped early.
-  bool forNearEdges(IEdgeHandler handler, IPoint queryPoint, double cutoffDist2) {
+  bool forNearEdges(
+      IEdgeHandler handler, IPoint queryPoint, double cutoffDist2) {
     NodeStack stack = new NodeStack();
     stack.push(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
-        for (EdgeNode edge in node.startEdges) {
-          if (Edge.distance2(edge, queryPoint) <= cutoffDist2) {
+        for (EdgeNode edge in node.startEdges.nodes) {
+          if (Edge.distance2Point(edge, queryPoint) <= cutoffDist2) {
             if (!handler.handle(edge)) return false;
           }
         }
-        for (EdgeNode edge in node.endEdges) {
-          if (Edge.distance2(edge, queryPoint) <= cutoffDist2) {
+        for (EdgeNode edge in node.endEdges.nodes) {
+          if (Edge.distance2Point(edge, queryPoint) <= cutoffDist2) {
             if (!handler.handle(edge)) return false;
           }
         }
-        for (EdgeNode edge in node.passEdges) {
-          if (Edge.distance2(edge, queryPoint) <= cutoffDist2) {
+        for (EdgeNode edge in node.passEdges.nodes) {
+          if (Edge.distance2Point(edge, queryPoint) <= cutoffDist2) {
             if (!handler.handle(edge)) return false;
           }
         }
       } else if (node is PassNode) {
-        for (EdgeNode edge in node.passEdges) {
-          if (Edge.distance2(edge, queryPoint) <= cutoffDist2) {
+        for (EdgeNode edge in node.passEdges.nodes) {
+          if (Edge.distance2Point(edge, queryPoint) <= cutoffDist2) {
             if (!handler.handle(edge)) return false;
           }
         }
       } else if (node is BranchNode) {
         int width = node.width;
-        int x = node.xmin + width / 2;
-        int y = node.ymin + width / 2;
+        int x = node.xmin + width ~/ 2;
+        int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
-        double dist2 = Point.distance2(queryPoint, x, y) - diagDist2;
+        double dist2 =
+            Point.distance2(queryPoint.x, queryPoint.y, x, y) - diagDist2;
         if (dist2 <= cutoffDist2) stack.pushChildren(node);
       }
       // else, empty nodes have no edges.
@@ -473,29 +480,29 @@ class QuadTree {
   bool forCloseEdges(IEdgeHandler handler, IPoint queryPoint) {
     NodeStack stack = new NodeStack();
     stack.push(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
-        for (EdgeNode edge in node.startEdges) {
+        for (EdgeNode edge in node.startEdges.nodes) {
           PointOnEdgeResult pnt = Edge.pointOnEdge(edge, queryPoint);
           if (pnt.onEdge) {
             if (!handler.handle(edge)) return false;
           }
         }
-        for (EdgeNode edge in node.endEdges) {
+        for (EdgeNode edge in node.endEdges.nodes) {
           PointOnEdgeResult pnt = Edge.pointOnEdge(edge, queryPoint);
           if (pnt.onEdge) {
             if (!handler.handle(edge)) return false;
           }
         }
-        for (EdgeNode edge in node.passEdges) {
+        for (EdgeNode edge in node.passEdges.nodes) {
           PointOnEdgeResult pnt = Edge.pointOnEdge(edge, queryPoint);
           if (pnt.onEdge) {
             if (!handler.handle(edge)) return false;
           }
         }
       } else if (node is PassNode) {
-        for (EdgeNode edge in node.passEdges) {
+        for (EdgeNode edge in node.passEdges.nodes) {
           PointOnEdgeResult pnt = Edge.pointOnEdge(edge, queryPoint);
           if (pnt.onEdge) {
             if (!handler.handle(edge)) return false;
@@ -503,10 +510,11 @@ class QuadTree {
         }
       } else if (node is BranchNode) {
         int width = node.width;
-        int x = node.xmin + width / 2;
-        int y = node.ymin + width / 2;
+        int x = node.xmin + width ~/ 2;
+        int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
-        double dist2 = Point.distance2(queryPoint, x, y) - diagDist2;
+        double dist2 =
+            Point.distance2(queryPoint.x, queryPoint.y, x, y) - diagDist2;
         if (dist2 <= 1.415) stack.pushChildren(node);
       }
       // else, empty nodes have no edges.
@@ -528,33 +536,27 @@ class QuadTree {
   /// [hndl] is the handler to match valid edges with.
   /// [intersections] is the set of intersections to add to.
   /// Returns true if a new intersection was found.
-  bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
+  bool findAllIntersections(
+      IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     if (this._edgeCount > 0) {
-      return (this._root as BaseNode).findAllIntersections(edge, hndl, intersections);
+      return (this._root as BaseNode)
+          .findAllIntersections(edge, hndl, intersections);
     }
     return false;
   }
 
-  /// This handles all the intersections.
-  /// [edge] is the edge to look for intersections with.
-  /// [hndl] is the handler to match valid edges with.
-  /// Returns the set of intersections to add to.
-  IntersectionSet findAllIntersections(IEdge edge, IEdgeHandler hndl) {
-    IntersectionSet intersections = new IntersectionSet();
-    this.findAllIntersections(edge, hndl, intersections);
-    return intersections;
-  }
-
   /// This inserts an edge or finds an existing edge in the quad-tree.
   /// [edge] is the edge to insert into the tree.
   /// Returns the edge in the tree.
-  EdgeNode insertEdge(IEdge edge) => this.insertEdge(edge.start(), edge.end());
+  EdgeNode insertEdge(IEdge edge) =>
+      this.insertEdgeWithPoints(edge.start, edge.end);
 
   /// This inserts an edge or finds an existing edge in the quad-tree.
   /// [edge] is the edge to insert into the tree.
   /// Returns a pair containing the edge in the tree, and true if the edge is
   /// new or false if the edge already existed in the tree.
-  InsertEdgeResult tryInsertEdge(IEdge edge) => this.tryInsertEdge(edge.start(), edge.end());
+  InsertEdgeResult tryInsertEdge(IEdge edge) =>
+      this.tryInsertEdgeWithPoints(edge.start, edge.end);
 
   /// This inserts an edge or finds an existing edge in the quad-tree.
   /// If the start and/or end point are PointNodes they must be from this
@@ -562,7 +564,8 @@ class QuadTree {
   /// [startPoint] is the starting point for the edge.
   /// [endPoint] is the ending point for the edge.
   /// Returns the edge in the tree.
-  EdgeNode insertEdge(IPoint startPoint, IPoint endPoint) => this.tryInsertEdge(startPoint, endPoint).edge;
+  EdgeNode insertEdgeWithPoints(IPoint startPoint, IPoint endPoint) =>
+      this.tryInsertEdgeWithPoints(startPoint, endPoint).edge;
 
   /// This inserts an edge or finds an existing edge in the quad-tree.
   /// If the start and/or end point are PointNodes they must be from this
@@ -571,7 +574,7 @@ class QuadTree {
   /// [endPoint] is the ending point for the edge.
   /// Returns a pair containing the edge in the tree, and true if the edge is
   /// new or false if the edge already existed in the tree.
-  InsertEdgeResult tryInsertEdge(IPoint startPoint, IPoint endPoint) {
+  InsertEdgeResult tryInsertEdgeWithPoints(IPoint startPoint, IPoint endPoint) {
     PointNode startNode, endNode;
     bool startNew, endNew;
 
@@ -579,7 +582,7 @@ class QuadTree {
       startNode = startPoint;
       startNew = false;
     } else {
-      InsertPointResult pair = this.tryInsertPoint(startPoint);
+      InsertPointResult pair = this.tryInsertPointWithPoint(startPoint);
       startNode = pair.point;
       startNew = pair.existed;
     }
@@ -588,7 +591,7 @@ class QuadTree {
       endNode = endPoint;
       endNew = false;
     } else {
-      InsertPointResult pair = this.tryInsertPoint(endPoint);
+      InsertPointResult pair = this.tryInsertPointWithPoint(endPoint);
       endNode = pair.point;
       endNew = pair.existed;
     }
@@ -598,7 +601,7 @@ class QuadTree {
 
     // If both points already existed check if edge exists.
     if (!(startNew || endNew)) {
-      EdgeNode edge = startNode.findEdgeTo(endNode);
+      EdgeNode edge = startNode.findEdgeToPoint(endNode);
       if (edge != null) return new InsertEdgeResult(edge, false);
     }
 
@@ -606,15 +609,15 @@ class QuadTree {
     BranchNode ancestor = startNode.commonAncestor(endNode);
     if (ancestor == null) {
       assert(this.validate());
-      assert(startNode.root() == this._root);
-      assert(endNode.root() == this._root);
+      assert(startNode.root == this._root);
+      assert(endNode.root == this._root);
       assert(ancestor != null);
       return null;
     }
-    EdgeNode newEdge = new EdgeNode(startNode, endNode);
+    EdgeNode newEdge = new EdgeNode._(startNode, endNode);
 
     INode replacement = ancestor.insertEdge(newEdge);
-    this.reduceBranch(ancestor, replacement);
+    this._reduceBranch(ancestor, replacement);
     this._edgeCount++;
     return new InsertEdgeResult(newEdge, true);
   }
@@ -623,13 +626,15 @@ class QuadTree {
   /// [point] is the point to insert into the tree.
   /// Returns the point node for the point inserted into the tree, or
   /// the point node which already existed.
-  PointNode insertPoint(IPoint point) => this.tryInsertPoint(point.x(), point.y()).point;
+  PointNode insertPointWithPoint(IPoint point) =>
+      this.tryInsertPoint(point.x, point.y).point;
 
   /// This inserts a point or finds an existing point in the quad-tree.
   /// [point] is the point to insert into the tree.
   /// Returns a pair containing the point node in the tree, and true if the
   /// point is new or false if the point already existed in the tree.
-  InsertPointResult tryInsertPoint(IPoint point) => this.tryInsertPoint(point.x(), point.y());
+  InsertPointResult tryInsertPointWithPoint(IPoint point) =>
+      this.tryInsertPoint(point.x, point.y);
 
   /// This inserts a point or finds an existing point in the quad-tree.
   /// [x] is the first component of the point to insert into the tree.
@@ -646,45 +651,46 @@ class QuadTree {
   InsertPointResult tryInsertPoint(int x, int y) {
     // Attempt to find the point first.
     PointNode point;
-    BaseNode node = this.nodeContainingPoint(x, y);
+    BaseNode node = this.nodeContaining(x, y);
     if (node != null) {
       // A node containing the point has been found.
       if (node is PointNode) {
-        if (Point.equals(node, x, y)) {
+        if (Point.equalsPoint(node, x, y)) {
           return new InsertPointResult(node, true);
         }
       }
       point = new PointNode(x, y);
-      BranchNode parent = node.parent();
+      BranchNode parent = node.parent;
       if (parent != null) {
-        Quadrant quad = parent.childNodeQuad(node);
+        int quad = parent.childNodeQuad(node);
         INode replacement = node.insertPoint(point);
         parent.setChild(quad, replacement);
         replacement = parent.reduce();
-        this.reduceBranch(parent, replacement);
+        this._reduceBranch(parent, replacement);
       } else {
         INode replacement = node.insertPoint(point);
-        this.setRoot(replacement);
+        this._setRoot(replacement);
       }
     } else if (this._root is EmptyNode) {
       // Tree is empty so create a new tree.
       int initialTreeWidth = 256;
-      int centerX = (x / initialTreeWidth) * initialTreeWidth;
-      int centerY = (y / initialTreeWidth) * initialTreeWidth;
+      int centerX = (x ~/ initialTreeWidth) * initialTreeWidth;
+      int centerY = (y ~/ initialTreeWidth) * initialTreeWidth;
       if (x < 0) centerX -= (initialTreeWidth - 1);
       if (y < 0) centerY -= (initialTreeWidth - 1);
       point = new PointNode(x, y);
-      this.setRoot(this._root.addPoint(centerX, centerY, initialTreeWidth, point));
+      this._setRoot((this._root as EmptyNode)
+          .addPoint(centerX, centerY, initialTreeWidth, point));
     } else {
       // Point outside of tree, expand the tree.
-      BaseNode root = this.expandFootprint(this._root as BaseNode, x, y);
+      BaseNode root = this._expandFootprint(this._root as BaseNode, x, y);
       point = new PointNode(x, y);
-      this.setRoot(root.insertPoint(point));
+      this._setRoot(root.insertPoint(point));
     }
 
     assert(this._root is! EmptyNode);
     this._pointCount++;
-    this.expandBoundingBox(x, y);
+    this._expandBoundingBox(x, y);
     return new InsertPointResult(point, false);
   }
 
@@ -693,20 +699,20 @@ class QuadTree {
   /// [trimTree] indicates if the end points of the edge should be
   /// removed if no other edge begins or ends at that point.
   void removeEdge(EdgeNode edge, bool trimTree) {
-    BranchNode ancestor = edge.startNode().commonAncestor(edge.endNode());
+    BranchNode ancestor = edge.startNode.commonAncestor(edge.endNode);
     assert(ancestor != null);
 
     INode replacement = ancestor.removeEdge(edge, trimTree);
-    this.reduceBranch(ancestor, replacement);
+    this._reduceBranch(ancestor, replacement);
     --this._edgeCount;
 
     // If trimming the tree, see if the black nodes need to be deleted.
     if (trimTree) {
-      if (edge.startNode().orphan()) {
-        this.removePoint(edge.startNode());
+      if (edge.startNode.orphan) {
+        this.removePoint(edge.startNode);
       }
-      if (edge.endNode().orphan()) {
-        this.removePoint(edge.endNode());
+      if (edge.endNode.orphan) {
+        this.removePoint(edge.endNode);
       }
     }
   }
@@ -715,62 +721,64 @@ class QuadTree {
   /// [point] is the point to removed from the tree.
   void removePoint(PointNode point) {
     // Remove any edges on the point.
-    for (EdgeNode edge in point.startEdges()) {
+    for (EdgeNode edge in point.startEdges.nodes) {
       this.removeEdge(edge, false);
     }
-    for (EdgeNode edge in point.endEdges()) {
+    for (EdgeNode edge in point.endEdges.nodes) {
       this.removeEdge(edge, false);
     }
 
     // The point node must not have any edges beginning
     // nor ending on by the time is is removed.
-    assert(point.orphan());
+    assert(point.orphan);
 
     // Remove the point from the tree.
     if (this._root == point) {
       // If the only thing in the tree is the point, simply replace it
       // with an empty node.
-      this._root = EmptyNode.getInstance();
+      this._root = EmptyNode.instance;
     } else {
-      BranchNode parent = point.parent();
-      INode replacement = point.replacement();
-      Quadrant quad = parent.childNodeQuad(point);
+      BranchNode parent = point.parent;
+      INode replacement = point.replacement;
+      int quad = parent.childNodeQuad(point);
       parent.setChild(quad, replacement);
       replacement = parent.reduce();
-      this.reduceBranch(parent, replacement);
+      this._reduceBranch(parent, replacement);
     }
     --this._pointCount;
-    this.collapseBoundingBox(point);
+    this._collapseBoundingBox(point);
   }
-
-  /// Validates this quad-tree.
-  /// Returns true if valid, false if invalid.
-  bool validate() => this.validate(System.out, null);
 
   /// Validates this quad-tree.
   /// [sout] is the output to write errors to.
   /// [format] is the format used for printing, null to use default.
   /// Returns true if valid, false if invalid.
-  bool validate(StringBuffer sout, IFormatter format) {
+  bool validate([StringBuffer sout = null, IFormatter format = null]) {
     bool result = true;
+    bool toConsole = false;
+    if (sout == null) {
+      sout = new StringBuffer();
+      toConsole = true;
+    }
+
     ValidateHandler vHndl = new ValidateHandler();
-    this.foreach(vHndl);
+    this.foreachPoint(vHndl);
 
     if (this._pointCount != vHndl.pointCount) {
-      sout.append("Error: The point count should have been ");
-      sout.append(vHndl.pointCount);
-      sout.append(" but it was ");
-      sout.append(this._pointCount);
-      sout.append(".\n");
+      sout.write("Error: The point count should have been ");
+      sout.write(vHndl.pointCount);
+      sout.write(" but it was ");
+      sout.write(this._pointCount);
+      sout.write(".\n");
       result = false;
     }
 
     if (this._edgeCount != vHndl.edgeCount) {
-      sout.append("Error: The edge count should have been ");
-      sout.append(vHndl.edgeCount);
-      sout.append(" but it was ");
-      sout.append(this._edgeCount);
-      sout.append(".\n");
+      sout.write("Error: The edge count should have been ");
+      sout.write(vHndl.edgeCount);
+      sout.write(" but it was ");
+      sout.write(this._edgeCount);
+      sout.write(".\n");
       result = false;
     }
 
@@ -779,25 +787,28 @@ class QuadTree {
     }
 
     if (!this._boundary.equals(vHndl.bounds)) {
-      sout.append("Error: The boundary should have been ");
-      sout.append(vHndl.bounds.toString());
-      sout.append(" but it was ");
-      sout.append(this._boundary.toString());
-      sout.append(".\n");
+      sout.write("Error: The boundary should have been ");
+      sout.write(vHndl.bounds.toString());
+      sout.write(" but it was ");
+      sout.write(this._boundary.toString());
+      sout.write(".\n");
       result = false;
     }
 
     if (this._root is! EmptyNode) {
       BaseNode root = this._root as BaseNode;
-      if (root.parent() != null) {
-        sout.append("Error: The root node's parent should be null but it is ");
-        root.parent().toString(sout, format);
-        sout.append(".\n");
+      if (root.parent != null) {
+        sout.write("Error: The root node's parent should be null but it is ");
+        root.parent.toBuffer(sout, format: format);
+        sout.write(".\n");
         result = false;
       }
     }
 
     if (!this._root.validate(sout, format, true)) result = false;
+    if (toConsole) {
+      stdout.write(sout.toString());
+    }
     return result;
   }
 
@@ -808,14 +819,17 @@ class QuadTree {
   /// [last] indicates this is the last output of the parent.
   /// [format] is the format used for printing, null to use default.
   void toBuffer(StringBuffer sout,
-      {String indent: "", bool contained: false, bool last: true, IFormatter format: null}) {
+      {String indent: "",
+      bool contained: false,
+      bool last: true,
+      IFormatter format: null}) {
     if (contained) {
       if (last)
-        sout.append(StringParts.Last);
+        sout.write(StringParts.Last);
       else
-        sout.append(StringParts.Child);
+        sout.write(StringParts.Child);
     }
-    sout.append("Tree:");
+    sout.write("Tree:");
 
     String childIndent;
     if (contained && !last)
@@ -823,34 +837,34 @@ class QuadTree {
     else
       childIndent = indent + StringParts.Space;
 
-    sout.append(StringParts.Sep);
-    sout.append(indent);
-    sout.append(StringParts.Child);
-    sout.append("Region: ");
-    sout.append(this._boundary.toString(format));
+    sout.write(StringParts.Sep);
+    sout.write(indent);
+    sout.write(StringParts.Child);
+    sout.write("Region: ");
+    sout.write(this._boundary.toString(format: format));
 
-    sout.append(StringParts.Sep);
-    sout.append(indent);
-    sout.append(StringParts.Child);
-    sout.append("Points: ");
-    sout.append(this._pointCount);
+    sout.write(StringParts.Sep);
+    sout.write(indent);
+    sout.write(StringParts.Child);
+    sout.write("Points: ");
+    sout.write(this._pointCount);
 
-    sout.append(StringParts.Sep);
-    sout.append(indent);
-    sout.append(StringParts.Child);
-    sout.append("Edges: ");
-    sout.append(this._edgeCount);
+    sout.write(StringParts.Sep);
+    sout.write(indent);
+    sout.write(StringParts.Child);
+    sout.write("Edges: ");
+    sout.write(this._edgeCount);
 
-    sout.append(StringParts.Sep);
-    sout.append(indent);
-    this._root.toString(sout, childIndent, true, true, true, format);
+    sout.write(StringParts.Sep);
+    sout.write(indent);
+    this._root.toBuffer(sout,
+        indent: childIndent, children: true, contained: true, format: format);
   }
 
   /// Gets the string for this quad-tree.
-
   String toString() {
     StringBuffer sout = new StringBuffer();
-    this.toString(sout, null);
+    this.toBuffer(sout);
     return sout.toString();
   }
 
@@ -859,12 +873,12 @@ class QuadTree {
   /// [replacement] is the node to replace the original node with.
   void _reduceBranch(BaseNode node, INode replacement) {
     while (replacement != node) {
-      BranchNode parent = node.parent();
+      BranchNode parent = node.parent;
       if (parent == null) {
-        this.setRoot(replacement);
+        this._setRoot(replacement);
         break;
       }
-      Quadrant quad = parent.childNodeQuad(node);
+      int quad = parent.childNodeQuad(node);
       parent.setChild(quad, replacement);
       node = parent;
       replacement = parent.reduce();
@@ -879,7 +893,7 @@ class QuadTree {
     if (this._root == node) return false;
     this._root = node;
     if (this._root is! EmptyNode) {
-      (this._root as BaseNode).setParent(null);
+      (this._root as BaseNode).parent = null;
     }
     return true;
   }
@@ -891,16 +905,16 @@ class QuadTree {
   /// Returns the new expanded root.
   BaseNode _expandFootprint(BaseNode root, int x, int y) {
     while (!root.contains(x, y)) {
-      int xmin = root.xmin();
-      int ymin = root.ymin();
-      int width = root.width();
-      int half = width / 2;
+      int xmin = root.xmin;
+      int ymin = root.ymin;
+      int width = root.width;
+      int half = width ~/ 2;
       int oldCenterX = xmin + half;
       int oldCenterY = ymin + half;
 
       int newXMin = xmin;
       int newYMin = ymin;
-      Quadrant quad;
+      int quad;
       if (y > oldCenterY) {
         if (x > oldCenterX) {
           // New node is in the 'NorthEast'.
@@ -951,24 +965,27 @@ class QuadTree {
     if (this._pointCount <= 0) {
       this._boundary = new Boundary(0, 0, 0, 0);
     } else {
-      if (this._boundary.xmax() <= point.x()) {
-        this._boundary = new Boundary(this._boundary.xmin(), this._boundary.ymin(),
-            this.determineEastSide(this._boundary.xmin()), this._boundary.ymax());
+      if (this._boundary.xmax <= point.x) {
+        this._boundary = new Boundary(this._boundary.xmin, this._boundary.ymin,
+            this._determineEastSide(this._boundary.xmin), this._boundary.ymax);
       }
 
-      if (this._boundary.xmin() >= point.x()) {
-        this._boundary = new Boundary(this.determineWestSide(this._boundary.xmax()), this._boundary.ymin(),
-            this._boundary.xmax(), this._boundary.ymax());
+      if (this._boundary.xmin >= point.x) {
+        this._boundary = new Boundary(
+            this._determineWestSide(this._boundary.xmax),
+            this._boundary.ymin,
+            this._boundary.xmax,
+            this._boundary.ymax);
       }
 
-      if (this._boundary.ymax() <= point.y()) {
-        this._boundary = new Boundary(this._boundary.xmin(), this._boundary.ymin(), this._boundary.xmax(),
-            this.determineNorthSide(this._boundary.ymin()));
+      if (this._boundary.ymax <= point.y) {
+        this._boundary = new Boundary(this._boundary.xmin, this._boundary.ymin,
+            this._boundary.xmax, this._determineNorthSide(this._boundary.ymin));
       }
 
-      if (this._boundary.ymin() >= point.y()) {
-        this._boundary = new Boundary(this._boundary.xmax(), this._boundary.ymax(), this._boundary.xmin(),
-            this.determineSouthSide(this._boundary.ymax()));
+      if (this._boundary.ymin >= point.y) {
+        this._boundary = new Boundary(this._boundary.xmax, this._boundary.ymax,
+            this._boundary.xmin, this._determineSouthSide(this._boundary.ymax));
       }
     }
   }
@@ -976,14 +993,15 @@ class QuadTree {
   /// This finds the north side in the tree.
   /// Return is the value of the north side for the given direction.
   int _determineNorthSide(int value) {
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
         if (value < node.y) value = node.y;
       } else if (node is BranchNode) {
         // The order of the child node calls is important to make this fast.
-        if (value < node.ymax) stack.pushAll(node.sw, node.se, node.nw, node.ne);
+        if (value < node.ymax)
+          stack.pushAll([node.sw, node.se, node.nw, node.ne]);
       }
     }
     return value;
@@ -992,14 +1010,15 @@ class QuadTree {
   /// This finds the east side in the tree.
   /// Returns the value of the east side for the given direction.
   int _determineEastSide(int value) {
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
         if (value < node.x) value = node.x;
       } else if (node is BranchNode) {
         // The order of the child node calls is important to make this fast.
-        if (value < node.xmax) stack.pushAll(node.sw, node.nw, node.se, node.ne);
+        if (value < node.xmax)
+          stack.pushAll([node.sw, node.nw, node.se, node.ne]);
       }
     }
     return value;
@@ -1008,14 +1027,15 @@ class QuadTree {
   /// This finds the south side in the tree.
   /// Returns the value of the south side for the given direction.
   int _determineSouthSide(int value) {
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
         if (value > node.y) value = node.y;
       } else if (node is BranchNode) {
         // The order of the child node calls is important to make this fast.
-        if (value > node.ymin) stack.pushAll(node.nw, node.ne, node.sw, node.se);
+        if (value > node.ymin)
+          stack.pushAll([node.nw, node.ne, node.sw, node.se]);
       }
     }
     return value;
@@ -1024,14 +1044,15 @@ class QuadTree {
   /// This finds the west side in the tree.
   /// Returns the value of the west side for the given direction.
   int _determineWestSide(int value) {
-    NodeStack stack = new NodeStack(this._root);
-    while (!stack.isEmpty()) {
-      INode node = stack.pop();
+    NodeStack stack = new NodeStack([this._root]);
+    while (!stack.isEmpty) {
+      INode node = stack.pop;
       if (node is PointNode) {
         if (value > node.x) value = node.x;
       } else if (node is BranchNode) {
         // The order of the child node calls is important to make this fast.
-        if (value > node.xmin) stack.pushAll(node.se, node.ne, node.sw, node.nw);
+        if (value > node.xmin)
+          stack.pushAll([node.se, node.ne, node.sw, node.nw]);
       }
     }
     return value;

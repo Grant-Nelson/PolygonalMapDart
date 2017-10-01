@@ -41,6 +41,7 @@ class AreaAccumulator implements IEdgeHandler {
 
   /// Adds a new edge of the shape to the accumulated area.
   void add(int x1, int y1, int x2, int y2) {
-    this._area += (x1.toDouble() * y2.toDouble() - x2.toDouble() * y1.toDouble()) * 0.5;
+    this._area +=
+        (x1.toDouble() * y2.toDouble() - x2.toDouble() * y1.toDouble()) * 0.5;
   }
 }

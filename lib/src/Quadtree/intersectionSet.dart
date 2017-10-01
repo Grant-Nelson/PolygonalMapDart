@@ -1,8 +1,7 @@
 part of PolygonalMapDart.Quadtree;
 
 /// A set of edge nodes.
-class IntersectionSet  {
-
+class IntersectionSet {
   /// The internal set of results.
   Set<IntersectionResult> _set;
 

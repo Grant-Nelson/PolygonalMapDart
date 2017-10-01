@@ -2,7 +2,6 @@ part of PolygonalMapDart.Quadtree;
 
 /// A set of edge nodes.
 class EdgeSet {
-
   /// The internal set of edges.
   Set<IEdge> _set;
 

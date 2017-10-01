@@ -10,7 +10,8 @@ class Point implements IPoint {
   }
 
   /// Gets the distance squared between the two given points.
-  static double distance2Points(IPoint a, IPoint b) => distance2(a.x, a.y, b.x, b.y);
+  static double distance2Points(IPoint a, IPoint b) =>
+      distance2(a.x, a.y, b.x, b.y);
 
   /// Checks if the two given points are equal.
   static bool equalsPoint(IPoint a, int x, int y) {
@@ -26,13 +27,15 @@ class Point implements IPoint {
   }
 
   /// Finds the origin based cross product for the given points.
-  static double cross(int x1, int y1, int x2, int y2) => (x1 * y2).toDouble() - (y1 * x2).toDouble();
+  static double cross(int x1, int y1, int x2, int y2) =>
+      (x1 * y2).toDouble() - (y1 * x2).toDouble();
 
   /// Finds the origin based cross product for the given points.
   static double crossPoints(IPoint a, IPoint b) => cross(a.x, a.y, b.x, b.y);
 
   /// Finds the origin based dot product for the given points.
-  static double dot(int x1, int y1, int x2, int y2) => (x1 * x2).toDouble() + (y1 * y2).toDouble();
+  static double dot(int x1, int y1, int x2, int y2) =>
+      (x1 * x2).toDouble() + (y1 * y2).toDouble();
 
   /// Finds the origin based dot product for the given points.
   static double dotPoints(IPoint a, IPoint b) => dot(a.x, a.y, b.x, b.y);

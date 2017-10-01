@@ -1,4 +1,4 @@
-part of quadtree_test;
+part of tests;
 
 /// The arguments for a unit-test.
 class TestArgs {
@@ -47,13 +47,7 @@ class TestArgs {
     }
   }
 
-  /**
-     * Gets the string for the trace elements for the given frame.
-     * @param frame The offset to the top frame of the stack.
-     * @param count The number of frames to return.
-     * @param indent The indent to each line of the trace.
-     * @return The string for the trace.
-     */
+  /// Gets the string for the trace elements for the given frame.
   String getTraceString(int frame, int count, String indent) {
     String trace = StackTrace.current.toString();
     List<String> lines = trace.split("\n");
@@ -61,12 +55,7 @@ class TestArgs {
     return lines.join(",{$indent}");
   }
 
-  /**
-     * Prints the trace elements for the given frame to the test log.
-     * @param frame The offset to the top frame of the stack.
-     * @param count The number of frames to return.
-     * @param indent The indent to each line of the trace.
-     */
+  /// Prints the trace elements for the given frame to the test log.
   void printTrace(int frame, int count, String indent) {
     stdout.writeln(this.getTraceString(frame, count, indent));
   }

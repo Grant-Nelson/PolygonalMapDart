@@ -6,3 +6,5 @@ environment:
 dependencies:
   browser: any
   intl: any
+  plotter:
+    git: https://github.com/Grant-Nelson/plotterDart

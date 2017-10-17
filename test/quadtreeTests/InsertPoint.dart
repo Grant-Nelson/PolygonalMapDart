@@ -1,9 +1,8 @@
 part of tests;
 
-class InsertPoint {
-  InsertPoint._();
+void addInsertPointTests(TestManager tests) {
 
-  static void run(TestArgs args) {
-
-  }
+  tests.add("Region3 Point Expand Test", (TestArgs args) {
+    args.error("TEST");
+  });
 }

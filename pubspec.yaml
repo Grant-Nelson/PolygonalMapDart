@@ -1,4 +1,4 @@
-name: PolygonalMap
+name: PolygonalMapDart
 version: 0.0.1
 description: Polygonal mapping tool built on a quadtree.
 environment:
@@ -6,5 +6,5 @@ environment:
 dependencies:
   browser: any
   intl: any
-  plotter:
-    git: https://github.com/Grant-Nelson/plotterDart
+  plotterDart:
+    git: git://github.com/Grant-Nelson/plotterDart.git

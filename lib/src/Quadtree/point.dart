@@ -48,8 +48,7 @@ class Point implements IPoint {
 
   /// Gets the string for this point.
   String toString({IFormatter format: null}) {
-    if (format == null)
-      return "[$_x, $_y]";
-      return format.toPointString(this);
+    if (format == null) return "[$_x, $_y]";
+    return format.toPointString(this);
   }
 }

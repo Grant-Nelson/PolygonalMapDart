@@ -99,8 +99,7 @@ abstract class BaseNode implements INode, IBoundary {
   }
 
   /// Gets creates a boundary for this node.
-  Boundary get boundary =>
-      new Boundary(_xmin, _ymin, xmax, ymax);
+  Boundary get boundary => new Boundary(_xmin, _ymin, xmax, ymax);
 
   /// Sets the location of this node.
   void setLocation(int xmin, int ymin, int size) {
@@ -141,7 +140,8 @@ abstract class BaseNode implements INode, IBoundary {
 
   /// Checks if the given boundary is completely contains by this boundary.
   /// Returns true if the boundary is fully contained, false otherwise.
-  bool containsBoundary(IBoundary boundary) => boundary.containsBoundary(boundary);
+  bool containsBoundary(IBoundary boundary) =>
+      boundary.containsBoundary(boundary);
 
   /// Checks if the given edge overlaps this boundary.
   /// Returns true if the edge is overlaps, false otherwise.
@@ -150,7 +150,8 @@ abstract class BaseNode implements INode, IBoundary {
   /// Checks if the given boundary overlaps this boundary.
   /// Returns true if the given boundary overlaps this boundary,
   /// false otherwise.
-  bool overlapsBoundary(IBoundary boundary) => boundary.overlapsBoundary(boundary);
+  bool overlapsBoundary(IBoundary boundary) =>
+      boundary.overlapsBoundary(boundary);
 
   /// Gets the distance squared from this boundary to the given point.
   /// Returns the distance squared from this boundary to the given point.
@@ -197,8 +198,8 @@ abstract class BaseNode implements INode, IBoundary {
   }
 
   /// This handles all the intersections in the given edge set.
-  bool _findAllIntersections(Set<EdgeNode> edgeSet, IEdge edge, IEdgeHandler hndl,
-      IntersectionSet intersections) {
+  bool _findAllIntersections(Set<EdgeNode> edgeSet, IEdge edge,
+      IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
     for (EdgeNode other in edgeSet) {
       if ((hndl == null) || hndl.handle(other)) {

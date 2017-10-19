@@ -54,8 +54,7 @@ class NearestEdgeArgs {
         int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
         double dist2 =
-            Point.distance2(_queryPoint, new Point(x, y)) -
-                diagDist2;
+            Point.distance2(_queryPoint, new Point(x, y)) - diagDist2;
         if (dist2 <= _cutoffDist2) {
           stack.pushChildren(node);
         }
@@ -66,9 +65,8 @@ class NearestEdgeArgs {
 
   /// Gets the result from this search.
   EdgeNode result() {
-    if (_resultPoint == null)
-      return _resultEdge;
-      return _resultPoint.nearEndEdge(_queryPoint);
+    if (_resultPoint == null) return _resultEdge;
+    return _resultPoint.nearEndEdge(_queryPoint);
   }
 
   /// Checks if the given edge is closer that last found edge.

@@ -55,13 +55,8 @@ class Coordinates implements IFormatter {
   /// [smallestY] is the precision of the second coordinate component, smallest Y change.
   /// [formatX] is the format for the first component (X).
   /// [formatY] is the format for the second component (Y).
-  Coordinates(
-      this.centerX,
-      this.centerY,
-      this.smallestX,
-      this.smallestY,
-      this.formatX,
-      this.formatY);
+  Coordinates(this.centerX, this.centerY, this.smallestX, this.smallestY,
+      this.formatX, this.formatY);
 
   /// Gets the minimum X component in the coordinate system that can be used.
   double get minX => toX(Maximum);
@@ -103,8 +98,8 @@ class Coordinates implements IFormatter {
   Point toPoint(double x, double y) => new Point(fromX(x), fromY(y));
 
   /// Creates an edge for the quad-tree from values in the coordinate system.
-  Edge toEdge(double x1, double y1, double x2, double y2) =>
-      new Edge(new Point(fromX(x1), fromY(y1)), new Point(fromX(x2), fromY(y2)));
+  Edge toEdge(double x1, double y1, double x2, double y2) => new Edge(
+      new Point(fromX(x1), fromY(y1)), new Point(fromX(x2), fromY(y2)));
 
   /// Converts a x value to a string.
   String toXString(int x) => formatX.format(toX(x));
@@ -116,8 +111,7 @@ class Coordinates implements IFormatter {
   String toWidthString(int width) => formatX.format(toWidth(width));
 
   /// Converts a height value to a string.
-  String toHeightString(int height) =>
-      formatY.format(toHeight(height));
+  String toHeightString(int height) => formatY.format(toHeight(height));
 
   /// Converts a point to a string.
   String toPointString(IPoint point) =>

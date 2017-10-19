@@ -103,7 +103,7 @@ class PassNode extends BaseNode {
 
   /// Gets the first edge to the left of the given point.
   void firstLeftEdge(FirstLeftEdgeArgs args) =>
-    _firstLineLeft(_passEdges, args);
+      _firstLineLeft(_passEdges, args);
 
   /// Handles all the edges to the left of the given point.
   bool foreachLeftEdge(IPoint point, IEdgeHandler handle) =>

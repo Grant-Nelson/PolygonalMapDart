@@ -79,12 +79,12 @@ class IntersectionResult implements Comparable<IntersectionResult> {
     if (locA != other.locA) return false;
     if (locB != other.locB) return false;
     if (!Point.equals(point, other.point)) return false;
-    if (!PointOnEdgeResult.equalResults(
-        startBOnEdgeA, other.startBOnEdgeA)) return false;
+    if (!PointOnEdgeResult.equalResults(startBOnEdgeA, other.startBOnEdgeA))
+      return false;
     if (!PointOnEdgeResult.equalResults(endBOnEdgeA, other.endBOnEdgeA))
       return false;
-    if (!PointOnEdgeResult.equalResults(
-        startAOnEdgeB, other.startAOnEdgeB)) return false;
+    if (!PointOnEdgeResult.equalResults(startAOnEdgeB, other.startAOnEdgeB))
+      return false;
     if (!PointOnEdgeResult.equalResults(endAOnEdgeB, other.endAOnEdgeB))
       return false;
     return true;

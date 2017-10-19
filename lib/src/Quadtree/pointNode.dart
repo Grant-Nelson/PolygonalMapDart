@@ -52,8 +52,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   set data(Object data) => _data = data;
 
   /// Determines if this point is an orphan, meaning it's point isn't used by any edge.
-  bool get orphan =>
-      _startEdges.isEmpty && _endEdges.isEmpty;
+  bool get orphan => _startEdges.isEmpty && _endEdges.isEmpty;
 
   /// Finds an edge that starts at this point and ends at the given point.
   EdgeNode findEdgeTo(IPoint end) {
@@ -100,8 +99,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
 
     // Make a copy of this node and set is as a child of the new branch.
     int childQuad = branch.childQuad(this);
-    setLocation(
-        branch.childX(childQuad), branch.childY(childQuad), halfSize);
+    setLocation(branch.childX(childQuad), branch.childY(childQuad), halfSize);
     branch.setChild(childQuad, this);
 
     // Copy lines to new siblings, keep any non-empty sibling.
@@ -151,7 +149,8 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     } else if (edge.endNode == this) {
       _endEdges.remove(edge);
       if (trimTree && orphan) result = replacement;
-    } else _passEdges.remove(edge);
+    } else
+      _passEdges.remove(edge);
     return result;
   }
 
@@ -174,12 +173,12 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
       IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
     if (overlapsEdge(edge)) {
-      if (_findAllIntersections(
-          _startEdges, edge, hndl, intersections)) result = true;
+      if (_findAllIntersections(_startEdges, edge, hndl, intersections))
+        result = true;
       if (_findAllIntersections(_endEdges, edge, hndl, intersections))
         result = true;
-      if (_findAllIntersections(
-          _passEdges, edge, hndl, intersections)) result = true;
+      if (_findAllIntersections(_passEdges, edge, hndl, intersections))
+        result = true;
     }
     return result;
   }
@@ -234,9 +233,8 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   bool get hasPoints => true;
 
   /// Determines if the node has any edge nodes inside it.
-  bool get hasEdges => !(_passEdges.isEmpty ||
-      _endEdges.isEmpty ||
-      _startEdges.isEmpty);
+  bool get hasEdges =>
+      !(_passEdges.isEmpty || _endEdges.isEmpty || _startEdges.isEmpty);
 
   /// Gets the first edge to the left of the given point.
   void firstLeftEdge(FirstLeftEdgeArgs args) {
@@ -255,16 +253,14 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
 
   /// This finds the next point in the tree.
   PointNode nextPoint(IPointHandler handle, [IBoundary boundary = null]) {
-    if (parent == null)
-      return null;
-      return parent.findNextPoint(this, boundary, handle);
+    if (parent == null) return null;
+    return parent.findNextPoint(this, boundary, handle);
   }
 
   /// This finds the previous point in the tree.
   PointNode previousPoint(IPointHandler handle, [IBoundary boundary = null]) {
-    if (parent == null)
-      return null;
-      return parent.findPreviousPoint(this, boundary, handle);
+    if (parent == null) return null;
+    return parent.findPreviousPoint(this, boundary, handle);
   }
 
   /// This finds the nearest edge to the given point.

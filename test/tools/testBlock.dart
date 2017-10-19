@@ -16,28 +16,26 @@ class TestBlock extends TestArgs {
 
   /// Creates a new test block for the given test.
   TestBlock(this._man, this._test, this._testName) {
-      _body = new html.DivElement()
-        ..className = "test_body body_hidden";
-      _title = new html.DivElement()
-        ..className = "running top_header"
-        ..onClick.listen(_titleClicked);
-      _man._elem.children
-        ..add(_title)
-        ..add(_body);
-      _start = null;
-      _end = null;
-      _started = false;
-      _failed = false;
-      _finished = false;
-      _testDivIndex = 0;
-      _update();
+    _body = new html.DivElement()..className = "test_body body_hidden";
+    _title = new html.DivElement()
+      ..className = "running top_header"
+      ..onClick.listen(_titleClicked);
+    _man._elem.children..add(_title)..add(_body);
+    _start = null;
+    _end = null;
+    _started = false;
+    _failed = false;
+    _finished = false;
+    _testDivIndex = 0;
+    _update();
   }
 
   /// Handles the test title clicked to show and hide the test output.
   void _titleClicked(_) {
     if (_body.className != "test_body body_hidden")
       _body.className = "test_body body_hidden";
-    else _body.className = "test_body body_shown";
+    else
+      _body.className = "test_body body_shown";
   }
 
   /// Updates the test header.
@@ -46,8 +44,9 @@ class TestBlock extends TestArgs {
     if (_start != null) {
       DateTime end = _end;
       if (end == null) end = new DateTime.now();
-      time = ((end.difference(_start).inMilliseconds)*0.001).toStringAsFixed(2);
-      time ="(${time}s)";
+      time =
+          ((end.difference(_start).inMilliseconds) * 0.001).toStringAsFixed(2);
+      time = "(${time}s)";
     }
     if (!_started) {
       _title
@@ -74,8 +73,8 @@ class TestBlock extends TestArgs {
     new asy.Future(() {
       _started = true;
       _update();
-      html.window.requestAnimationFrame((_) { });
-    }).then((_){
+      html.window.requestAnimationFrame((_) {});
+    }).then((_) {
       _start = new DateTime.now();
       _test(this);
       _end = new DateTime.now();
@@ -83,11 +82,11 @@ class TestBlock extends TestArgs {
       _end = new DateTime.now();
       error("\nException: $exception");
       warning("\nStack: $stackTrace");
-    }).then((_){
+    }).then((_) {
       _finished = true;
       _man._testDone(this);
       _update();
-      html.window.requestAnimationFrame((_) { });
+      html.window.requestAnimationFrame((_) {});
     });
   }
 
@@ -95,15 +94,17 @@ class TestBlock extends TestArgs {
   String addDiv([int width = 600, int height = 400]) {
     String name = "testDiv$_testDivIndex";
     _testDivIndex++;
-    _body.innerHtml += "<dir class=\"test_div\" id=\"$name\" stype=\"width:${width}px; height:${height}px;\"></dir>";
+    _body.innerHtml +=
+        "<dir class=\"test_div\" id=\"$name\" stype=\"width:${width}px; height:${height}px;\"></dir>";
     return name;
   }
 
   /// Adds a new log event
   void _addLog(String text, String type) {
-    String log = _man._escape.convert(text)
-      .replaceAll(" ", "&nbsp;")
-      .replaceAll("\n", "</dir><br class=\"$type\"><dir class=\"$type\">");
+    String log = _man._escape
+        .convert(text)
+        .replaceAll(" ", "&nbsp;")
+        .replaceAll("\n", "</dir><br class=\"$type\"><dir class=\"$type\">");
     _body.innerHtml += "<dir class=\"$type\">$log</dir>";
   }
 

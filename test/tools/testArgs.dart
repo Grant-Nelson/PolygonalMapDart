@@ -6,7 +6,6 @@ typedef void TestHandler(TestArgs args);
 
 /// The interface for the unit-test to callback with.
 abstract class TestArgs {
-
   /// The title of the unit-test.
   String get title;
   set title(String title);

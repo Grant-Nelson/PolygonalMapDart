@@ -3,8 +3,7 @@ part of PolygonalMapDart.Quadtree;
 /// An edge represents a directed line segment between two integer points.
 class Edge implements IEdge, Comparable<Edge> {
   /// Gets the squared length of this edge.
-  static double length2(IEdge edge) =>
-      Point.distance2(edge.start, edge.end);
+  static double length2(IEdge edge) => Point.distance2(edge.start, edge.end);
 
   /// Determines if the start and end points are the same.
   /// Returns true if the edge has no length, false otherwise.
@@ -66,7 +65,9 @@ class Edge implements IEdge, Comparable<Edge> {
       dx = (edge.x1 - point.x).toDouble();
       dy = (edge.y1 - point.y).toDouble();
     } else {
-      double r = ((point.x - edge.x1) * edge.dx + (point.y - edge.y1) * edge.dy) / leng2;
+      double r =
+          ((point.x - edge.x1) * edge.dx + (point.y - edge.y1) * edge.dy) /
+              leng2;
       if (r <= 0.0) {
         dx = (edge.x1 - point.x).toDouble();
         dy = (edge.y1 - point.y).toDouble();
@@ -101,8 +102,8 @@ class Edge implements IEdge, Comparable<Edge> {
 
   /// Gets the side of the edge the given point is on.
   static int side(IEdge edge, IPoint point) {
-    double value =
-        Point.cross(new Point(edge.dx, edge.dy), new Point(point.x - edge.x1, point.y - edge.y1));
+    double value = Point.cross(new Point(edge.dx, edge.dy),
+        new Point(point.x - edge.x1, point.y - edge.y1));
     double epsilon = 1.0e-12;
     if (value.abs() <= epsilon)
       return Side.Inside;

@@ -148,8 +148,7 @@ class QuadTree {
     PointNode node = findPoint(edge.start);
     if (node == null) return null;
     EdgeNode result = node.findEdgeTo(edge.end);
-    if ((result == null) && undirected)
-      result = node.findEdgeFrom(edge.end);
+    if ((result == null) && undirected) result = node.findEdgeFrom(edge.end);
     return result;
   }
 
@@ -319,7 +318,7 @@ class QuadTree {
   /// Returns true if all edges in the boundary were run, false if stopped.
   bool foreachEdge(IEdgeHandler handle,
           [IBoundary bounds = null, bool exclusive = false]) =>
-    _root.foreachEdge(handle, bounds, exclusive);
+      _root.foreachEdge(handle, bounds, exclusive);
 
   /// Handles each node in the boundary.
   /// [handle] is the handler to run on each node in the boundary.
@@ -348,8 +347,7 @@ class QuadTree {
         int x = node.xmin + width ~/ 2;
         int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
-        double dist2 =
-            Point.distance2(queryPoint, new Point(x, y)) - diagDist2;
+        double dist2 = Point.distance2(queryPoint, new Point(x, y)) - diagDist2;
         if (dist2 <= cutoffDist2) stack.pushChildren(node);
       }
       // else, Pass nodes and empty nodes have no points.
@@ -452,8 +450,7 @@ class QuadTree {
         int x = node.xmin + width ~/ 2;
         int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
-        double dist2 =
-            Point.distance2(queryPoint, new Point(x, y)) - diagDist2;
+        double dist2 = Point.distance2(queryPoint, new Point(x, y)) - diagDist2;
         if (dist2 <= cutoffDist2) stack.pushChildren(node);
       }
       // else, empty nodes have no edges.
@@ -502,8 +499,7 @@ class QuadTree {
         int x = node.xmin + width ~/ 2;
         int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
-        double dist2 =
-            Point.distance2(queryPoint, new Point(x, y)) - diagDist2;
+        double dist2 = Point.distance2(queryPoint, new Point(x, y)) - diagDist2;
         if (dist2 <= _distToCorner) stack.pushChildren(node);
       }
       // else, empty nodes have no edges.
@@ -537,8 +533,7 @@ class QuadTree {
   /// This inserts an edge or finds an existing edge in the quad-tree.
   /// [edge] is the edge to insert into the tree.
   /// Returns the edge in the tree.
-  EdgeNode insertEdge(IEdge edge) =>
-      tryInsertEdge(edge).edge;
+  EdgeNode insertEdge(IEdge edge) => tryInsertEdge(edge).edge;
 
   /// This inserts an edge or finds an existing edge in the quad-tree.
   /// [edge] is the edge to insert into the tree.
@@ -548,7 +543,8 @@ class QuadTree {
     PointNode startNode, endNode;
     bool startNew, endNew;
 
-    if ((edge.start is PointNode) && ((edge.start as PointNode).root == _root)) {
+    if ((edge.start is PointNode) &&
+        ((edge.start as PointNode).root == _root)) {
       startNode = edge.start;
       startNew = false;
     } else {
@@ -596,8 +592,7 @@ class QuadTree {
   /// [point] is the point to insert into the tree.
   /// Returns the point node for the point inserted into the tree, or
   /// the point node which already existed.
-  PointNode insertPoint(IPoint point) =>
-      tryInsertPoint(point).point;
+  PointNode insertPoint(IPoint point) => tryInsertPoint(point).point;
 
   /// This inserts a point or finds an existing point in the quad-tree.
   /// [point] is the point to insert into the tree.
@@ -672,10 +667,8 @@ class QuadTree {
   /// [point] is the point to removed from the tree.
   void removePoint(PointNode point) {
     // Remove any edges on the point.
-    for (EdgeNode edge in point.startEdges)
-      removeEdge(edge, false);
-    for (EdgeNode edge in point.endEdges)
-      removeEdge(edge, false);
+    for (EdgeNode edge in point.startEdges) removeEdge(edge, false);
+    for (EdgeNode edge in point.endEdges) removeEdge(edge, false);
 
     // The point node must not have any edges beginning
     // nor ending on by the time is is removed.
@@ -916,21 +909,18 @@ class QuadTree {
       }
 
       if (_boundary.xmin >= point.x) {
-        _boundary = new Boundary(
-            _determineWestSide(_boundary.xmax),
-            _boundary.ymin,
-            _boundary.xmax,
-            _boundary.ymax);
+        _boundary = new Boundary(_determineWestSide(_boundary.xmax),
+            _boundary.ymin, _boundary.xmax, _boundary.ymax);
       }
 
       if (_boundary.ymax <= point.y) {
-        _boundary = new Boundary(_boundary.xmin, _boundary.ymin,
-            _boundary.xmax, _determineNorthSide(_boundary.ymin));
+        _boundary = new Boundary(_boundary.xmin, _boundary.ymin, _boundary.xmax,
+            _determineNorthSide(_boundary.ymin));
       }
 
       if (_boundary.ymin >= point.y) {
-        _boundary = new Boundary(_boundary.xmax, _boundary.ymax,
-            _boundary.xmin, _determineSouthSide(_boundary.ymax));
+        _boundary = new Boundary(_boundary.xmax, _boundary.ymax, _boundary.xmin,
+            _determineSouthSide(_boundary.ymax));
       }
     }
   }

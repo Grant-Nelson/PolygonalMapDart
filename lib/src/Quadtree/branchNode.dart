@@ -32,8 +32,8 @@ class BranchNode extends BaseNode {
         INode node = child(quad);
         INode newChild;
         if (node is EmptyNode) {
-          newChild = EmptyNode.instance.addEdge(
-              childX(quad), childY(quad), width ~/ 2, edge);
+          newChild = EmptyNode.instance
+              .addEdge(childX(quad), childY(quad), width ~/ 2, edge);
         } else
           newChild = (node as BaseNode).insertEdge(edge);
         if (setChild(quad, newChild)) {
@@ -55,8 +55,8 @@ class BranchNode extends BaseNode {
     int quad = childQuad(point);
     INode node = child(quad);
     if (node is EmptyNode) {
-      INode child = EmptyNode.instance.addPoint(
-          childX(quad), childY(quad), width ~/ 2, point);
+      INode child = EmptyNode.instance
+          .addPoint(childX(quad), childY(quad), width ~/ 2, point);
       if (setChild(quad, child)) return reduce();
     } else {
       INode child = (node as BaseNode).insertPoint(point);
@@ -111,14 +111,10 @@ class BranchNode extends BaseNode {
       IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
     if (overlapsEdge(edge)) {
-      if (_ne.findAllIntersections(edge, hndl, intersections))
-        result = true;
-      if (_nw.findAllIntersections(edge, hndl, intersections))
-        result = true;
-      if (_se.findAllIntersections(edge, hndl, intersections))
-        result = true;
-      if (_sw.findAllIntersections(edge, hndl, intersections))
-        result = true;
+      if (_ne.findAllIntersections(edge, hndl, intersections)) result = true;
+      if (_nw.findAllIntersections(edge, hndl, intersections)) result = true;
+      if (_se.findAllIntersections(edge, hndl, intersections)) result = true;
+      if (_sw.findAllIntersections(edge, hndl, intersections)) result = true;
     }
     return result;
   }
@@ -187,10 +183,7 @@ class BranchNode extends BaseNode {
   /// Determines if the node has any edge nodes inside it.
   /// Returns true if this edge has any edges in it, false otherwise.
   bool get hasEdges =>
-      _ne.hasEdges &&
-      _nw.hasEdges &&
-      _se.hasEdges &&
-      _sw.hasEdges;
+      _ne.hasEdges && _nw.hasEdges && _se.hasEdges && _sw.hasEdges;
 
   /// Gets the first edge to the left of the given point.
   void firstLeftEdge(FirstLeftEdgeArgs args) {
@@ -562,8 +555,8 @@ class BranchNode extends BaseNode {
           // Add all passing lines to black node unless the line starts or ends
           // on the black node, since the line will already be in the start or end line lists.
           for (EdgeNode edge in node.passEdges) {
-            if ((edge.startNode != point) &&(edge.endNode != point))
-                point.passEdges.add(edge);
+            if ((edge.startNode != point) && (edge.endNode != point))
+              point.passEdges.add(edge);
           }
         }
       }
@@ -593,14 +586,14 @@ class BranchNode extends BaseNode {
   //// Validates this node.
   bool validate(StringBuffer sout, IFormatter format, bool recursive) {
     bool result = true;
-    if (!_validateChild(
-        sout, format, recursive, _ne, "NE", true, true)) result = false;
-    if (!_validateChild(
-        sout, format, recursive, _nw, "NW", true, false)) result = false;
-    if (!_validateChild(
-        sout, format, recursive, _sw, "SW", false, false)) result = false;
-    if (!_validateChild(
-        sout, format, recursive, _se, "SE", false, true)) result = false;
+    if (!_validateChild(sout, format, recursive, _ne, "NE", true, true))
+      result = false;
+    if (!_validateChild(sout, format, recursive, _nw, "NW", true, false))
+      result = false;
+    if (!_validateChild(sout, format, recursive, _sw, "SW", false, false))
+      result = false;
+    if (!_validateChild(sout, format, recursive, _se, "SE", false, true))
+      result = false;
     return result;
   }
 

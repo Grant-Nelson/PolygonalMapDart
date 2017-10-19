@@ -50,8 +50,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   /// or end node of this edge.
   /// Returns true if the given node was either the start or end node of this edge,
   /// false if not or the node was null.
-  bool connectsToPoint(PointNode point) =>
-      (_start == point) || (_end == point);
+  bool connectsToPoint(PointNode point) => (_start == point) || (_end == point);
 
   /// Determines if this edge is connected to the given edge. To be connected
   /// either the start node or end node of this edge must be the same node as

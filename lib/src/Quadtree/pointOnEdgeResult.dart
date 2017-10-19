@@ -32,14 +32,8 @@ class PointOnEdgeResult {
   final bool onLine;
 
   /// Creates the result container.
-  PointOnEdgeResult(
-      this.edge,
-      this.point,
-      this.location,
-      this.closestOnEdge,
-      this.onEdge,
-      this.closestOnLine,
-      this.onLine);
+  PointOnEdgeResult(this.edge, this.point, this.location, this.closestOnEdge,
+      this.onEdge, this.closestOnLine, this.onLine);
 
   /// Checks if the other point on edge results are the same as this one.
   bool equals(Object o) {
@@ -49,11 +43,9 @@ class PointOnEdgeResult {
     if (!Edge.equals(edge, other.edge, false)) return false;
     if (!Point.equals(point, other.point)) return false;
     if (location != other.location) return false;
-    if (!Point.equals(closestOnEdge, other.closestOnEdge))
-      return false;
+    if (!Point.equals(closestOnEdge, other.closestOnEdge)) return false;
     if (onEdge != other.onEdge) return false;
-    if (!Point.equals(closestOnLine, other.closestOnLine))
-      return false;
+    if (!Point.equals(closestOnLine, other.closestOnLine)) return false;
     if (onLine != other.onLine) return false;
     return true;
   }

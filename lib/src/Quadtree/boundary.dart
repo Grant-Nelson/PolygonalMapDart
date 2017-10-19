@@ -101,10 +101,8 @@ class Boundary implements IBoundary {
   }
 
   /// Checks if the given point is completely contained within this boundary.
-  bool _contains(int x, int y) => !((_xmin > x) ||
-      (_xmax < x) ||
-      (_ymin > y) ||
-      (_ymax < y));
+  bool _contains(int x, int y) =>
+      !((_xmin > x) || (_xmax < x) || (_ymin > y) || (_ymax < y));
 
   /// Checks if the given point is completely contained within this boundary.
   /// Returns true if the point is fully contained, false otherwise.

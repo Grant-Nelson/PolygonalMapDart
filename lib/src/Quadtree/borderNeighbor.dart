@@ -64,8 +64,10 @@ class BorderNeighbor implements IEdgeHandler {
         if (!_matcher.handle(edge)) return true;
       }
     }
-    if (_ccw) _ccwNeighbor(edge);
-    else _cwNeighbor(edge);
+    if (_ccw)
+      _ccwNeighbor(edge);
+    else
+      _cwNeighbor(edge);
     return true;
   }
 

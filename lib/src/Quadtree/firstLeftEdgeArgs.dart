@@ -44,9 +44,8 @@ class FirstLeftEdgeArgs {
   /// Returns the first left edge in the tree which was found.
   /// If no edges were found null is returned.
   EdgeNode get result {
-    if (_resultPoint == null)
-      return _resultEdge;
-        return _resultPoint.nearEndEdge(_queryPoint);
+    if (_resultPoint == null) return _resultEdge;
+    return _resultPoint.nearEndEdge(_queryPoint);
   }
 
   /// This updates with the given edges.

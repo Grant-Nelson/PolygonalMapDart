@@ -56,72 +56,72 @@ class Coordinates implements IFormatter {
   /// [formatX] is the format for the first component (X).
   /// [formatY] is the format for the second component (Y).
   Coordinates(
-      double this.centerX,
-      double this.centerY,
-      double this.smallestX,
-      double this.smallestY,
-      NumberFormat this.formatX,
-      NumberFormat this.formatY);
+      this.centerX,
+      this.centerY,
+      this.smallestX,
+      this.smallestY,
+      this.formatX,
+      this.formatY);
 
   /// Gets the minimum X component in the coordinate system that can be used.
-  double get minX => this.toX(Maximum);
+  double get minX => toX(Maximum);
 
   /// Gets the minimum Y component in the coordinate system that can be used.
-  double get minY => this.toY(Minimum);
+  double get minY => toY(Minimum);
 
   /// Gets the maximum X component in the coordinate system that can be used.
-  double get maxX => this.toX(Maximum);
+  double get maxX => toX(Maximum);
 
   /// Gets the maximum Y component in the coordinate system that can be used.
-  double get maxY => this.toY(Minimum);
+  double get maxY => toY(Minimum);
 
   /// Gets the quad-tree x component from the first coordinate component.
-  int fromX(double x) => ((x - this.centerX) / this.smallestX).round();
+  int fromX(double x) => ((x - centerX) / smallestX).round();
 
   /// Gets the quad-tree y component from the second coordinate component.
-  int fromY(double y) => ((y - this.centerY) / this.smallestY).round();
+  int fromY(double y) => ((y - centerY) / smallestY).round();
 
   /// Gets the change in the first component (width) from a width in the coordinate system.
-  int fromWidth(double width) => (width / this.smallestX).round();
+  int fromWidth(double width) => (width / smallestX).round();
 
   /// Gets the change in the second component (height) from a height in the coordinate system.
-  int fromHeight(double height) => (height / this.smallestY).round();
+  int fromHeight(double height) => (height / smallestY).round();
 
   /// Gets the first coordinate component from the given quad-tree x value.
-  double toX(int x) => x * this.smallestX + this.centerX;
+  double toX(int x) => x * smallestX + centerX;
 
   /// Gets the second coordinate component from the given quad-tree y value.
-  double toY(int y) => y * this.smallestY + this.centerY;
+  double toY(int y) => y * smallestY + centerY;
 
   /// Gets the width in the coordinate system from a change in the first component (width).
-  double toWidth(int width) => width * this.smallestX;
+  double toWidth(int width) => width * smallestX;
 
   /// Gets the height in the coordinate system from a change in the second component (height).
-  double toHeight(int height) => height * this.smallestY;
+  double toHeight(int height) => height * smallestY;
 
   /// Creates a point for the quad-tree from values in the coordinate system.
-  Point toPoint(double x, double y) => new Point(this.fromX(x), this.fromY(y));
+  Point toPoint(double x, double y) => new Point(fromX(x), fromY(y));
 
   /// Creates an edge for the quad-tree from values in the coordinate system.
   Edge toEdge(double x1, double y1, double x2, double y2) =>
-      new Edge(this.fromX(x1), this.fromY(y1), this.fromX(x2), this.fromY(y2));
+      new Edge(new Point(fromX(x1), fromY(y1)), new Point(fromX(x2), fromY(y2)));
 
   /// Converts a x value to a string.
-  String toXString(int x) => this.formatX.format(this.toX(x));
+  String toXString(int x) => formatX.format(toX(x));
 
   /// Converts a y value to a string.
-  String toYString(int y) => this.formatY.format(this.toY(y));
+  String toYString(int y) => formatY.format(toY(y));
 
   /// Converts a width value to a string.
-  String toWidthString(int width) => this.formatX.format(this.toWidth(width));
+  String toWidthString(int width) => formatX.format(toWidth(width));
 
   /// Converts a height value to a string.
   String toHeightString(int height) =>
-      this.formatY.format(this.toHeight(height));
+      formatY.format(toHeight(height));
 
   /// Converts a point to a string.
   String toPointString(IPoint point) =>
-      "[" + this.toXString(point.x) + ", " + this.toYString(point.y) + "]";
+      "[" + toXString(point.x) + ", " + toYString(point.y) + "]";
 
   /// Converts an edge to a string.
   String toEdgeString(IEdge edge) =>

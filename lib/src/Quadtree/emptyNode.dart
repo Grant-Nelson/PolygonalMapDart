@@ -94,7 +94,7 @@ class EmptyNode implements INode {
   /// Gets the string for this node.
   String toString() {
     StringBuffer sout = new StringBuffer();
-    this.toBuffer(sout);
+    toBuffer(sout);
     return sout.toString();
   }
 }

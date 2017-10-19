@@ -7,15 +7,15 @@ class EdgePointIgnorer implements IPointHandler {
 
   /// Create a new edge point ignorer.
   /// The given [edge] is the edge to ignore the points of.
-  EdgePointIgnorer(IEdge this._edge);
+  EdgePointIgnorer(this._edge);
 
   /// Gets the edge to ignore the points of.
-  IEdge get edge => this._edge;
+  IEdge get edge => _edge;
 
   /// Handles the point to check to ignore.
   /// Returns true to allow, false to ignore.
   bool handle(PointNode point) {
-    return !(Point.equalPoints(point, this._edge.start) ||
-        Point.equalPoints(point, this._edge.end));
+    return !(Point.equals(point, _edge.start) ||
+        Point.equals(point, _edge.end));
   }
 }

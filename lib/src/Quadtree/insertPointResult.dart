@@ -9,5 +9,5 @@ class InsertPointResult {
   final bool existed;
 
   /// Creates a new insert point result.
-  InsertPointResult(PointNode this.point, bool this.existed);
+  InsertPointResult(this.point, this.existed);
 }

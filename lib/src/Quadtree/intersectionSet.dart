@@ -7,16 +7,16 @@ class IntersectionSet {
 
   /// Create a set of edge nodes.
   IntersectionSet() {
-    this._set = new Set<IntersectionResult>();
+    _set = new Set<IntersectionResult>();
   }
 
   /// Gets the internal set of results.
-  Set<IntersectionResult> get results => this._set;
+  Set<IntersectionResult> get results => _set;
 
   /// Contains an edge in the first, "A", intersection edge.
   bool constainsA(IEdge edge) {
-    for (IntersectionResult inter in this._set) {
-      if (inter.edgeA.equals(edge)) {
+    for (IntersectionResult inter in _set) {
+      if (Edge.equals(inter.edgeA, edge, false)) {
         return true;
       }
     }
@@ -25,8 +25,8 @@ class IntersectionSet {
 
   /// Contains an edge in the second, "B", intersection edge.
   bool constainsB(IEdge edge) {
-    for (IntersectionResult inter in this._set) {
-      if (inter.edgeB.equals(edge)) {
+    for (IntersectionResult inter in _set) {
+      if (Edge.equals(inter.edgeB, edge, false)) {
         return true;
       }
     }
@@ -36,7 +36,7 @@ class IntersectionSet {
   /// Formats the intersections into a string.
   void toBuffer(StringBuffer sout, String indent) {
     bool first = true;
-    for (IntersectionResult inter in this._set) {
+    for (IntersectionResult inter in _set) {
       if (first) {
         first = false;
       } else {
@@ -49,7 +49,7 @@ class IntersectionSet {
   /// Formats the set into a string.
   String toString() {
     StringBuffer sout = new StringBuffer();
-    this.toBuffer(sout, "");
+    toBuffer(sout, "");
     return sout.toString();
   }
 }

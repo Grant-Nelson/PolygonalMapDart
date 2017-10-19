@@ -23,119 +23,118 @@ class FirstLeftEdgeArgs {
   /// Creates a new first left edge argument for finding the first edge that is
   /// left of the given query point.
   /// [queryPoint] is the point to find the first edge left of.
-  FirstLeftEdgeArgs(IPoint this._queryPoint, IEdgeHandler this._handle) {
-    this._rightValue = -double.MAX_FINITE;
-    this._resultEdge = null;
-    this._resultPoint = null;
+  FirstLeftEdgeArgs(this._queryPoint, this._handle) {
+    _rightValue = -double.MAX_FINITE;
+    _resultEdge = null;
+    _resultPoint = null;
   }
 
   /// Gets the query point, the point to find the first edge left of.
-  IPoint get queryPoint => this._queryPoint;
+  IPoint get queryPoint => _queryPoint;
 
   /// Gets the x value of the location the left horizontal edge crosses the
   /// current result. This will be the right most value found.
-  double get rightValue => this._rightValue;
+  double get rightValue => _rightValue;
 
   /// Indicates that a result has been found. This doesn't mean the correct
   /// solution has been found. Only that a value has been found.
-  bool get found => (this._resultEdge != null) || (this._resultPoint != null);
+  bool get found => (_resultEdge != null) || (_resultPoint != null);
 
   /// Gets the resulting first edge left of the query point.
   /// Returns the first left edge in the tree which was found.
   /// If no edges were found null is returned.
   EdgeNode get result {
-    if (this._resultPoint == null)
-      return this._resultEdge;
-    else
-      return this._resultPoint.nearEndEdge(this._queryPoint);
+    if (_resultPoint == null)
+      return _resultEdge;
+        return _resultPoint.nearEndEdge(_queryPoint);
   }
 
   /// This updates with the given edges.
   void update(EdgeNode edge) {
     if (edge == null) return;
-    if (edge == this._resultEdge) return;
-    if (this._handle != null) {
-      if (!this._handle.handle(edge)) return;
+    if (edge == _resultEdge) return;
+    if (_handle != null) {
+      if (!_handle.handle(edge)) return;
     }
 
     // Determine how the edge crosses the horizontal edge from the point and left.
-    if (edge.y1 == this._queryPoint.y) {
-      if (edge.y2 == this._queryPoint.y) {
-        if (edge.x1 > this._queryPoint.x) {
-          if (edge.x2 > this._queryPoint.x) {
+    if (edge.y1 == _queryPoint.y) {
+      if (edge.y2 == _queryPoint.y) {
+        if (edge.x1 > _queryPoint.x) {
+          if (edge.x2 > _queryPoint.x) {
             // The edge to the right of the point, do nothing.
           } else {
             // The edge is collinear with and contains the query point.
-            this._updateWithEdge(edge, this._queryPoint.x.toDouble());
+            _updateWithEdge(edge, _queryPoint.x.toDouble());
           }
-        } else if (edge.x2 > this._queryPoint.x) {
+        } else if (edge.x2 > _queryPoint.x) {
           // The edge is collinear with and contains the query point.
-          this._updateWithEdge(edge, this._queryPoint.x.toDouble());
+          _updateWithEdge(edge, _queryPoint.x.toDouble());
         } else if (edge.x1 > edge.x2) {
           // The edge is collinear with the point and the start is more right.
-          this._updateWithPoint(edge.startNode);
+          _updateWithPoint(edge.startNode);
         } else {
           // The edge is collinear with the point and the start is more left.
-          this._updateWithPoint(edge.endNode);
+          _updateWithPoint(edge.endNode);
         }
-      } else if (edge.x1 < this._queryPoint.x) {
+      } else if (edge.x1 < _queryPoint.x) {
         // The start point is on the horizontal and to the left.
-        this._updateWithPoint(edge.startNode);
+        _updateWithPoint(edge.startNode);
       } else {
         // The start point is on the horizontal but on or to the right, do nothing.
       }
-    } else if (edge.y1 > this._queryPoint.y) {
-      if (edge.y2 == this._queryPoint.y) {
-        if (edge.x2 <= this._queryPoint.x) {
+    } else if (edge.y1 > _queryPoint.y) {
+      if (edge.y2 == _queryPoint.y) {
+        if (edge.x2 <= _queryPoint.x) {
           // The end point is on the horizontal and on or to the left.
-          this._updateWithPoint(edge.endNode);
+          _updateWithPoint(edge.endNode);
         } else {
           // The end point is on the horizontal but to the right, do nothing.
         }
-      } else if (edge.y2 > this._queryPoint.y) {
+      } else if (edge.y2 > _queryPoint.y) {
         // The edge is above the horizontal, do nothing.
       } else {
         // (edge.y2 < this._queryPoint.y)
-        if ((edge.x1 > this._queryPoint.x) && (edge.x2 > this._queryPoint.x)) {
+        if ((edge.x1 > _queryPoint.x) && (edge.x2 > _queryPoint.x)) {
           // The edge is to the right of the point, do nothing.
         } else {
           double x = (edge.x1 - edge.x2) *
-                  (this._queryPoint.y - edge.y2) /
+                  (_queryPoint.y - edge.y2) /
                   (edge.y1 - edge.y2) +
               edge.x2;
-          if (x > this._queryPoint.x) {
+          if (x > _queryPoint.x) {
             // The horizontal crossing is to the right of the point, do nothing.
           } else {
             // The edge crosses to the left of the point.
-            this._updateWithEdge(edge, x);
+            _updateWithEdge(edge, x);
           }
         }
       }
     } else {
       // (edge.y1 < this._queryPoint.y)
-      if (edge.y2 == this._queryPoint.y) {
-        if (edge.x2 <= this._queryPoint.x) {
+      if (edge.y2 == _queryPoint.y) {
+        if (edge.x2 <= _queryPoint.x) {
           // The end point is on the horizontal and on or to the left.
-          this._updateWithPoint(edge.endNode);
+          _updateWithPoint(edge.endNode);
         } else {
           // The end point is on the horizontal but to the right, do nothing.
         }
-      } else if (edge.y2 < this._queryPoint.y) {
+      } else if (edge.y2 < _queryPoint.y) {
         // The edge is below the horizontal, do nothing.
       } else {
         // (edge.y2 > this._queryPoint.y)
-        if ((edge.x1 > this._queryPoint.x) && (edge.x2 > this._queryPoint.x)) {
+        if ((edge.x1 > _queryPoint.x) && (edge.x2 > _queryPoint.x)) {
           // The edge is to the right of the point, do nothing.
         } else {
           double x = (edge.x1 - edge.x2) *
-                  (this._queryPoint.y - edge.y2) /
+                  (_queryPoint.y - edge.y2) /
                   (edge.y1 - edge.y2) +
               edge.x2;
-          if (x > this._queryPoint.x) {
+          if (x > _queryPoint.x) {
             // The horizontal crossing is to the right of the point, do nothing.
           } else {
             // The edge crosses to the left of the point.
-            this._updateWithEdge(edge, x);
+            _updateWithEdge(edge, x);
           }
         }
       }
@@ -144,20 +143,20 @@ class FirstLeftEdgeArgs {
 
   /// The edge to update with has the point on the horizontal edge inside it.
   void _updateWithEdge(EdgeNode edge, double loc) {
-    if (loc > this._rightValue) {
-      this._resultEdge = edge;
-      this._resultPoint = null;
-      this._rightValue = loc;
+    if (loc > _rightValue) {
+      _resultEdge = edge;
+      _resultPoint = null;
+      _rightValue = loc;
     }
   }
 
   /// The edge to update with has the point on the horizontal edge at one of the end points.
   /// This is called to update with that point instead of point inside the edge.
   void _updateWithPoint(PointNode point) {
-    if (point.x > this._rightValue) {
+    if (point.x > _rightValue) {
       // Do not set _resultEdge here, leave it as the previous value.
-      this._resultPoint = point;
-      this._rightValue = point.x.toDouble();
+      _resultPoint = point;
+      _rightValue = point.x.toDouble();
     }
   }
 }

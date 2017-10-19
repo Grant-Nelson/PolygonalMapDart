@@ -23,10 +23,9 @@ class NearestEdgeArgs {
   /// [queryPoint] is the query point to find an edge nearest to.
   /// [cutoffDist2] is the maximum allowable distance squared to the nearest edge.
   /// The [handle] is the filter acceptable edges with, or null to not filter.
-  NearestEdgeArgs(IPoint this._queryPoint, double this._cutoffDist2,
-      IEdgeHandler this._handle) {
-    this._resultEdge = null;
-    this._resultPoint = null;
+  NearestEdgeArgs(this._queryPoint, this._cutoffDist2, this._handle) {
+    _resultEdge = null;
+    _resultPoint = null;
   }
 
   /// Runs this node and all children nodes through this search.
@@ -37,17 +36,17 @@ class NearestEdgeArgs {
       INode node = stack.pop;
       if (node is PointNode) {
         for (EdgeNode edge in node.startEdges) {
-          this._checkEdge(edge);
+          _checkEdge(edge);
         }
         for (EdgeNode edge in node.endEdges) {
-          this._checkEdge(edge);
+          _checkEdge(edge);
         }
         for (EdgeNode edge in node.passEdges) {
-          this._checkEdge(edge);
+          _checkEdge(edge);
         }
       } else if (node is PassNode) {
         for (EdgeNode edge in node.passEdges) {
-          this._checkEdge(edge);
+          _checkEdge(edge);
         }
       } else if (node is BranchNode) {
         int width = node.width;
@@ -55,9 +54,9 @@ class NearestEdgeArgs {
         int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
         double dist2 =
-            Point.distance2(this._queryPoint.x, this._queryPoint.y, x, y) -
+            Point.distance2(_queryPoint, new Point(x, y)) -
                 diagDist2;
-        if (dist2 <= this._cutoffDist2) {
+        if (dist2 <= _cutoffDist2) {
           stack.pushChildren(node);
         }
       }
@@ -67,37 +66,36 @@ class NearestEdgeArgs {
 
   /// Gets the result from this search.
   EdgeNode result() {
-    if (this._resultPoint == null)
-      return this._resultEdge;
-    else
-      return this._resultPoint.nearEndEdge(this._queryPoint);
+    if (_resultPoint == null)
+      return _resultEdge;
+      return _resultPoint.nearEndEdge(_queryPoint);
   }
 
   /// Checks if the given edge is closer that last found edge.
   void _checkEdge(EdgeNode edge) {
     if (edge == null) return;
-    if (edge == this._resultEdge) return;
-    if (this._handle != null) {
-      if (!this._handle.handle(edge)) return;
+    if (edge == _resultEdge) return;
+    if (_handle != null) {
+      if (!_handle.handle(edge)) return;
     }
 
     // Determine how the point is relative to the edge.
-    PointOnEdgeResult result = Edge.pointOnEdge(edge, this._queryPoint);
+    PointOnEdgeResult result = Edge.pointOnEdge(edge, _queryPoint);
     switch (result.location) {
       case IntersectionLocation.InMiddle:
-        this._updateWithEdge(edge, result.closestOnEdge);
+        _updateWithEdge(edge, result.closestOnEdge);
         break;
       case IntersectionLocation.BeforeStart:
-        this._updateWithPoint(edge.startNode);
+        _updateWithPoint(edge.startNode);
         break;
       case IntersectionLocation.AtStart:
-        this._updateWithPoint(edge.startNode);
+        _updateWithPoint(edge.startNode);
         break;
       case IntersectionLocation.PastEnd:
-        this._updateWithPoint(edge.endNode);
+        _updateWithPoint(edge.endNode);
         break;
       case IntersectionLocation.AtEnd:
-        this._updateWithPoint(edge.endNode);
+        _updateWithPoint(edge.endNode);
         break;
       case IntersectionLocation.None:
         break;
@@ -106,21 +104,21 @@ class NearestEdgeArgs {
 
   /// Update with the edge with the middle of the edge the closest.
   void _updateWithEdge(EdgeNode edge, IPoint closePoint) {
-    double dist2 = Point.distance2Points(this._queryPoint, closePoint);
-    if (dist2 <= this._cutoffDist2) {
-      this._resultEdge = edge;
-      this._resultPoint = null;
-      this._cutoffDist2 = dist2;
+    double dist2 = Point.distance2(_queryPoint, closePoint);
+    if (dist2 <= _cutoffDist2) {
+      _resultEdge = edge;
+      _resultPoint = null;
+      _cutoffDist2 = dist2;
     }
   }
 
   /// Update with the point at the end of the edge.
   void _updateWithPoint(PointNode point) {
-    double dist2 = Point.distance2Points(_queryPoint, point);
-    if (dist2 <= this._cutoffDist2) {
+    double dist2 = Point.distance2(_queryPoint, point);
+    if (dist2 <= _cutoffDist2) {
       // Do not set _resultEdge here, leave it as the previous value.
-      this._resultPoint = point;
-      this._cutoffDist2 = dist2;
+      _resultPoint = point;
+      _cutoffDist2 = dist2;
     }
   }
 }

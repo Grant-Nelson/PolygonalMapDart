@@ -16,10 +16,10 @@ abstract class BaseNode implements INode, IBoundary {
 
   /// Creates a new base node.
   BaseNode._() {
-    this._xmin = 0;
-    this._ymin = 0;
-    this._size = 1;
-    this._parent = null;
+    _xmin = 0;
+    _ymin = 0;
+    _size = 1;
+    _parent = null;
   }
 
   /// Adds an edge to this node and/or children nodes.
@@ -39,20 +39,16 @@ abstract class BaseNode implements INode, IBoundary {
   /// defined by this node.
   INode removeEdge(EdgeNode edge, bool trimTree);
 
-  /// This gets the parent node to this node.
-  BranchNode get parent => this._parent;
-
-  /// This sets the parent node to this node.
-  void set parent(BranchNode parent) {
-    this._parent = parent;
-  }
+  /// The parent node to this node.
+  BranchNode get parent => _parent;
+  set parent(BranchNode parent) => _parent = parent;
 
   /// Determines the depth of this node in the tree.
   /// Returns the depth of this node in the tree,
   /// if it has no parents then the depth is zero.
   int get depth {
     int depth = 0;
-    BranchNode parent = this._parent;
+    BranchNode parent = _parent;
     while (parent != null) {
       parent = parent.parent;
       ++depth;
@@ -73,9 +69,9 @@ abstract class BaseNode implements INode, IBoundary {
   /// Determines the common ancestor node between this node and the other node.
   /// Returns the common ancestor or null if none exists.
   BranchNode commonAncestor(BaseNode other) {
-    int depth1 = this.depth;
+    int depth1 = depth;
     int depth2 = other.depth;
-    BranchNode parent1 = this._parent;
+    BranchNode parent1 = _parent;
     BranchNode parent2 = other._parent;
 
     // Get the parents to the same depth.
@@ -104,74 +100,61 @@ abstract class BaseNode implements INode, IBoundary {
 
   /// Gets creates a boundary for this node.
   Boundary get boundary =>
-      new Boundary(this._xmin, this._ymin, this.xmax, this.ymax);
+      new Boundary(_xmin, _ymin, xmax, ymax);
 
   /// Sets the location of this node.
   void setLocation(int xmin, int ymin, int size) {
     assert(size > 0);
-    this._xmin = xmin;
-    this._ymin = ymin;
-    this._size = size;
+    _xmin = xmin;
+    _ymin = ymin;
+    _size = size;
   }
 
   /// Gets the minimum X location of this node.
-  int get xmin => this._xmin;
+  int get xmin => _xmin;
 
   /// Gets the minimum Y location of this node.
-  int get ymin => this._ymin;
+  int get ymin => _ymin;
 
   /// Gets the maximum X location of this node.
-  int get xmax => this._xmin + this._size - 1;
+  int get xmax => _xmin + _size - 1;
 
   /// Gets the maximum Y location of this node.
-  int get ymax => this._ymin + this._size - 1;
+  int get ymax => _ymin + _size - 1;
 
   /// Gets the width of boundary.
-  int get width => this._size;
+  int get width => _size;
 
   /// Gets the height of boundary.
-  int get height => this._size;
+  int get height => _size;
 
   /// Gets the boundary region the given point was in.
-  int region(int x, int y) => this.boundary.region(x, y);
-
-  /// Gets the boundary region the given point was in.
-  int regionPoint(IPoint point) => this.boundary.regionPoint(point);
+  int region(IPoint point) => boundary.region(point);
 
   /// Checks if the given point is completely contained within this boundary.
   /// Returns true if the point is fully contained, false otherwise.
-  bool contains(int x, int y) => this.boundary.contains(x, y);
-
-  /// Checks if the given point is completely contained within this boundary.
-  /// Returns true if the point is fully contained, false otherwise.
-  bool containsPoint(IPoint point) => this.boundary.containsPoint(point);
+  bool containsPoint(IPoint point) => boundary.containsPoint(point);
 
   /// Checks if the given edge is completely contained within this boundary.
   /// Returns true if the edge is fully contained, false otherwise.
-  bool containsEdge(IEdge edge) => this.boundary.containsEdge(edge);
+  bool containsEdge(IEdge edge) => boundary.containsEdge(edge);
 
   /// Checks if the given boundary is completely contains by this boundary.
   /// Returns true if the boundary is fully contained, false otherwise.
-  bool containsBoundary(IBoundary boundary) =>
-      this.boundary.containsBoundary(boundary);
+  bool containsBoundary(IBoundary boundary) => boundary.containsBoundary(boundary);
 
   /// Checks if the given edge overlaps this boundary.
   /// Returns true if the edge is overlaps, false otherwise.
-  bool overlapsEdge(IEdge edge) => this.boundary.overlapsEdge(edge);
+  bool overlapsEdge(IEdge edge) => boundary.overlapsEdge(edge);
 
   /// Checks if the given boundary overlaps this boundary.
   /// Returns true if the given boundary overlaps this boundary,
   /// false otherwise.
-  bool overlapsBoundary(IBoundary boundary) =>
-      this.boundary.overlapsBoundary(boundary);
+  bool overlapsBoundary(IBoundary boundary) => boundary.overlapsBoundary(boundary);
 
   /// Gets the distance squared from this boundary to the given point.
   /// Returns the distance squared from this boundary to the given point.
-  double distance2(int x, int y) => this.boundary.distance2(x, y);
-
-  /// Gets the distance squared from this boundary to the given point.
-  /// Returns the distance squared from this boundary to the given point.
-  double distance2Point(IPoint point) => this.boundary.distance2Point(point);
+  double distance2(IPoint point) => boundary.distance2(point);
 
   /// This gets the first edge to the left of the given point.
   /// The [args] are an argument class used to store all the arguments and
@@ -234,7 +217,7 @@ abstract class BaseNode implements INode, IBoundary {
   /// Gets the string for this node.
   String toString() {
     StringBuffer sout = new StringBuffer();
-    this.toBuffer(sout);
+    toBuffer(sout);
     return sout.toString();
   }
 }

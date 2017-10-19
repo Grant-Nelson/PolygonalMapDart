@@ -7,41 +7,26 @@ class AreaAccumulator implements IEdgeHandler {
 
   /// Create a new area accumulator.
   AreaAccumulator() {
-    this._area = 0.0;
+    _area = 0.0;
   }
 
   /// This gets the signed area accumulated.
   /// A positive area generally wraps counter-clockwise,
   /// a negative area generally wraps clockwise.
-  double get signedArea => this._area;
+  double get signedArea => _area;
 
   /// This returns the unsigned area accumulated.
-  double get area => (this._area < 0.0) ? -this._area : this._area;
+  double get area => (_area < 0.0) ? -_area : _area;
 
   /// Indicates if the shape  if accumulated area is counter clockwise,
   /// Returns true if counter clockwise, false if clockwise.
-  bool get ccw => this._area > 0.0;
+  bool get ccw => _area > 0.0;
 
   /// Adds a new edge of the shape to the accumulated area.
   /// Always returns true.
-  bool handle(EdgeNode edge) {
-    this.addEdge(edge);
+  bool handle(IEdge edge) {
+      _area +=
+          (edge.x1.toDouble() * edge.y2.toDouble() - edge.x2.toDouble() * edge.y1.toDouble()) * 0.5;
     return true;
-  }
-
-  /// Adds a new edge of the shape to the accumulated area.
-  void addEdge(IEdge edge) {
-    this.add(edge.x1, edge.y1, edge.x2, edge.y2);
-  }
-
-  /// Adds a new edge of the shape to the accumulated area.
-  void addPoints(IPoint pnt1, IPoint pnt2) {
-    this.add(pnt1.x, pnt1.y, pnt2.x, pnt2.y);
-  }
-
-  /// Adds a new edge of the shape to the accumulated area.
-  void add(int x1, int y1, int x2, int y2) {
-    this._area +=
-        (x1.toDouble() * y2.toDouble() - x2.toDouble() * y1.toDouble()) * 0.5;
   }
 }

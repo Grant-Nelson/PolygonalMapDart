@@ -8,12 +8,7 @@ abstract class IPoint {
   /// Gets the second integer coordinate component.
   int get y;
 
-  /// Gets any additional data that this point should contain.
+  /// Any additional data that this point should contain.
   Object get data;
-
-  /// Sets additional data that this point should contain.
-  void set data(Object data);
-
-  /// Determines if the given [o] point is equal to this point.
-  bool equals(IPoint o);
+  set data(Object data);
 }

@@ -22,74 +22,59 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   Object _data;
 
   /// Creates a new point node.
-  PointNode(int this._x, int this._y) : super._() {
-    this._startEdges = new Set<EdgeNode>();
-    this._endEdges = new Set<EdgeNode>();
-    this._passEdges = new Set<EdgeNode>();
-    this._data = null;
+  PointNode(this._x, this._y) : super._() {
+    _startEdges = new Set<EdgeNode>();
+    _endEdges = new Set<EdgeNode>();
+    _passEdges = new Set<EdgeNode>();
+    _data = null;
   }
 
   /// Gets the first integer coordinate component.
-  int get x => this._x;
+  int get x => _x;
 
   /// Gets the second integer coordinate component.
-  int get y => this._y;
+  int get y => _y;
 
   /// Gets the point for this node.
-  Point get point => new Point(this._x, this._y);
+  Point get point => new Point(_x, _y);
 
   /// Gets the set of edges which start at this point.
-  Set<EdgeNode> get startEdges => this._startEdges;
+  Set<EdgeNode> get startEdges => _startEdges;
 
   /// Gets the set of edges which end at this point.
-  Set<EdgeNode> get endEdges => this._endEdges;
+  Set<EdgeNode> get endEdges => _endEdges;
 
   /// Gets the set of edges which pass through this node.
-  Set<EdgeNode> get passEdges => this._passEdges;
+  Set<EdgeNode> get passEdges => _passEdges;
 
-  /// Gets any additional data that this point should contain.
-  Object get data => this._data;
-
-  /// Sets additional data that this point should contain.
-  void set data(Object data) {
-    this._data = data;
-  }
+  /// Any additional data that this point should contain.
+  Object get data => _data;
+  set data(Object data) => _data = data;
 
   /// Determines if this point is an orphan, meaning it's point isn't used by any edge.
   bool get orphan =>
-      this._startEdges.isEmpty && this._endEdges.isEmpty;
+      _startEdges.isEmpty && _endEdges.isEmpty;
 
   /// Finds an edge that starts at this point and ends at the given point.
-  EdgeNode findEdgeToPoint(IPoint end) => this.findEdgeTo(end.x, end.y);
-
-  /// Finds an edge that starts at this point and ends at the given point.
-  EdgeNode findEdgeTo(int x, int y) {
-    for (EdgeNode edge in this._startEdges) {
-      if (Point.equalsPoint(edge.endNode, x, y)) return edge;
+  EdgeNode findEdgeTo(IPoint end) {
+    for (EdgeNode edge in _startEdges) {
+      if (Point.equals(edge.endNode, end)) return edge;
     }
     return null;
   }
 
   /// Finds an edge that ends at this point and starts at the given point.
-  EdgeNode findEdgeFromPoint(IPoint start) =>
-      this.findEdgeFrom(start.x, start.y);
-
-  /// Finds an edge that ends at this point and starts at the given point.
-  EdgeNode findEdgeFrom(int x, int y) {
-    for (EdgeNode edge in this._endEdges) {
-      if (Point.equalsPoint(edge.startNode, x, y)) return edge;
+  EdgeNode findEdgeFrom(IPoint start) {
+    for (EdgeNode edge in _endEdges) {
+      if (Point.equals(edge.startNode, start)) return edge;
     }
     return null;
   }
 
   /// Finds an edge that starts or ends at this point and connects to the given point.
-  EdgeNode findEdgeBetweenPoint(IPoint other) =>
-      this.findEdgeBetween(other.x, other.y);
-
-  /// Finds an edge that starts or ends at this point and connects to the given point.
-  EdgeNode findEdgeBetween(int x, int y) {
-    EdgeNode edge = this.findEdgeTo(x, y);
-    if (edge == null) edge = this.findEdgeFrom(x, y);
+  EdgeNode findEdgeBetween(IPoint other) {
+    EdgeNode edge = findEdgeTo(other);
+    if (edge == null) edge = findEdgeFrom(other);
     return edge;
   }
 
@@ -98,10 +83,10 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// defined by this node.
   INode insertEdge(EdgeNode edge) {
     if (edge.startNode == this)
-      this._startEdges.add(edge);
+      _startEdges.add(edge);
     else if (edge.endNode == this)
-      this._endEdges.add(edge);
-    else if (this.overlapsEdge(edge)) this._passEdges.add(edge);
+      _endEdges.add(edge);
+    else if (overlapsEdge(edge)) _passEdges.add(edge);
     return this;
   }
 
@@ -110,12 +95,12 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// defined by this node.
   INode insertPoint(PointNode point) {
     BranchNode branch = new BranchNode();
-    branch.setLocation(this.xmin, this.ymin, this.width);
-    int halfSize = this.width ~/ 2;
+    branch.setLocation(xmin, ymin, width);
+    int halfSize = width ~/ 2;
 
     // Make a copy of this node and set is as a child of the new branch.
-    int childQuad = branch.childQuad(this._x, this._y);
-    this.setLocation(
+    int childQuad = branch.childQuad(this);
+    setLocation(
         branch.childX(childQuad), branch.childY(childQuad), halfSize);
     branch.setChild(childQuad, this);
 
@@ -124,21 +109,21 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
       if (quad != childQuad) {
         PassNode sibling = new PassNode();
         sibling.setLocation(branch.childX(quad), branch.childY(quad), halfSize);
-        this._appendPassingEdges(sibling, this._startEdges);
-        this._appendPassingEdges(sibling, this._endEdges);
-        this._appendPassingEdges(sibling, this._passEdges);
+        _appendPassingEdges(sibling, _startEdges);
+        _appendPassingEdges(sibling, _endEdges);
+        _appendPassingEdges(sibling, _passEdges);
         if (!sibling.passEdges.isEmpty) branch.setChild(quad, sibling);
       }
     }
 
     // Remove any edges which no longer pass through this point.
-    Iterator<EdgeNode> it = this._passEdges.iterator;
+    Iterator<EdgeNode> it = _passEdges.iterator;
     Set<EdgeNode> remove = new Set<EdgeNode>();
     while (it.moveNext()) {
       EdgeNode edge = it.current;
-      if (this.overlapsEdge(edge)) remove.add(edge);
+      if (overlapsEdge(edge)) remove.add(edge);
     }
-    this._passEdges.removeAll(remove);
+    _passEdges.removeAll(remove);
 
     // Add the point to the new branch node, return new node.
     // This allows the branch to grow as needed.
@@ -161,25 +146,24 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   INode removeEdge(EdgeNode edge, bool trimTree) {
     INode result = this;
     if (edge.startNode == this) {
-      this._startEdges.remove(edge);
-      if (trimTree && this.orphan) result = this.replacement;
+      _startEdges.remove(edge);
+      if (trimTree && orphan) result = replacement;
     } else if (edge.endNode == this) {
-      this._endEdges.remove(edge);
-      if (trimTree && this.orphan) result = this.replacement;
-    } else
-      this._passEdges.remove(edge);
+      _endEdges.remove(edge);
+      if (trimTree && orphan) result = replacement;
+    } else _passEdges.remove(edge);
     return result;
   }
 
   /// This handles the first found intersecting edge.
   IntersectionResult findFirstIntersection(IEdge edge, IEdgeHandler hndl) {
-    if (this.overlapsEdge(edge)) {
+    if (overlapsEdge(edge)) {
       IntersectionResult result;
-      result = this._findFirstIntersection(this._startEdges, edge, hndl);
+      result = _findFirstIntersection(_startEdges, edge, hndl);
       if (result != null) return result;
-      result = this._findFirstIntersection(this._endEdges, edge, hndl);
+      result = _findFirstIntersection(_endEdges, edge, hndl);
       if (result != null) return result;
-      result = this._findFirstIntersection(this._passEdges, edge, hndl);
+      result = _findFirstIntersection(_passEdges, edge, hndl);
       if (result != null) return result;
     }
     return null;
@@ -189,13 +173,13 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   bool findAllIntersections(
       IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
-    if (this.overlapsEdge(edge)) {
-      if (this._findAllIntersections(
-          this._startEdges, edge, hndl, intersections)) result = true;
-      if (this._findAllIntersections(this._endEdges, edge, hndl, intersections))
+    if (overlapsEdge(edge)) {
+      if (_findAllIntersections(
+          _startEdges, edge, hndl, intersections)) result = true;
+      if (_findAllIntersections(_endEdges, edge, hndl, intersections))
         result = true;
-      if (this._findAllIntersections(
-          this._passEdges, edge, hndl, intersections)) result = true;
+      if (_findAllIntersections(
+          _passEdges, edge, hndl, intersections)) result = true;
     }
     return result;
   }
@@ -214,24 +198,24 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   // exists even partially in the region are collected.
   bool foreachEdge(IEdgeHandler handle,
       [IBoundary bounds = null, bool exclusive = false]) {
-    if ((bounds == null) || this.overlapsBoundary(bounds)) {
+    if ((bounds == null) || overlapsBoundary(bounds)) {
       if (exclusive) {
         // Check all edges which start at this node to see if they end in the bounds.
         // No need to check passEdges nor endEdges because for all exclusive edges
         // all startEdges lists will be checked at some point.
-        for (EdgeNode edge in this._startEdges) {
-          if (bounds.contains(edge.x2, edge.y2)) {
+        for (EdgeNode edge in _startEdges) {
+          if (bounds.containsPoint(edge.end)) {
             if (!handle.handle(edge)) return false;
           }
         }
       } else {
-        for (EdgeNode edge in this._startEdges) {
+        for (EdgeNode edge in _startEdges) {
           if (!handle.handle(edge)) return false;
         }
-        for (EdgeNode edge in this._endEdges) {
+        for (EdgeNode edge in _endEdges) {
           if (!handle.handle(edge)) return false;
         }
-        for (EdgeNode edge in this._passEdges) {
+        for (EdgeNode edge in _passEdges) {
           if (!handle.handle(edge)) return false;
         }
       }
@@ -241,7 +225,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
 
   /// Handles each node reachable from this node in the boundary.
   bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) {
-    return ((bounds == null) || this.overlapsBoundary(bounds)) &&
+    return ((bounds == null) || overlapsBoundary(bounds)) &&
         handle.handle(this);
   }
 
@@ -250,39 +234,37 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   bool get hasPoints => true;
 
   /// Determines if the node has any edge nodes inside it.
-  bool get hasEdges => !(this._passEdges.isEmpty ||
-      this._endEdges.isEmpty ||
-      this._startEdges.isEmpty);
+  bool get hasEdges => !(_passEdges.isEmpty ||
+      _endEdges.isEmpty ||
+      _startEdges.isEmpty);
 
   /// Gets the first edge to the left of the given point.
   void firstLeftEdge(FirstLeftEdgeArgs args) {
-    this._firstLineLeft(this._startEdges, args);
-    this._firstLineLeft(this._endEdges, args);
-    this._firstLineLeft(this._passEdges, args);
+    _firstLineLeft(_startEdges, args);
+    _firstLineLeft(_endEdges, args);
+    _firstLineLeft(_passEdges, args);
   }
 
   /// Handles all the edges to the left of the given point.
   bool foreachLeftEdge(IPoint point, IEdgeHandler handle) {
-    if (!this._foreachLeftEdge(this._startEdges, point, handle)) return false;
-    if (!this._foreachLeftEdge(this._endEdges, point, handle)) return false;
-    if (!this._foreachLeftEdge(this._passEdges, point, handle)) return false;
+    if (!_foreachLeftEdge(_startEdges, point, handle)) return false;
+    if (!_foreachLeftEdge(_endEdges, point, handle)) return false;
+    if (!_foreachLeftEdge(_passEdges, point, handle)) return false;
     return true;
   }
 
   /// This finds the next point in the tree.
   PointNode nextPoint(IPointHandler handle, [IBoundary boundary = null]) {
-    if (this.parent == null)
+    if (parent == null)
       return null;
-    else
-      return this.parent.findNextPoint(this, boundary, handle);
+      return parent.findNextPoint(this, boundary, handle);
   }
 
   /// This finds the previous point in the tree.
   PointNode previousPoint(IPointHandler handle, [IBoundary boundary = null]) {
-    if (this.parent == null)
+    if (parent == null)
       return null;
-    else
-      return this.parent.findPreviousPoint(this, boundary, handle);
+      return parent.findPreviousPoint(this, boundary, handle);
   }
 
   /// This finds the nearest edge to the given point.
@@ -291,14 +273,14 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// check passing edges, only beginning and ending edges because the nearest
   /// edge starts or ends at this node.
   EdgeNode nearEndEdge(IPoint queryPoint) {
-    Edge queryEdge = new Edge(queryPoint.x, queryPoint.y, this.x, this.y);
+    Edge queryEdge = new Edge(queryPoint, this);
 
     EdgeNode rightMost = null;
     EdgeNode leftMost = null;
     EdgeNode center = null;
 
     // Check all edges which start at this node.
-    for (EdgeNode edge in this.startEdges) {
+    for (EdgeNode edge in startEdges) {
       IPoint pnt = edge.endNode;
       int side = Edge.side(queryEdge, pnt);
       if (side == Side.Right) {
@@ -316,7 +298,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     }
 
     // Check all edges which end at this node.
-    for (EdgeNode edge in this.endEdges) {
+    for (EdgeNode edge in endEdges) {
       IPoint pnt = edge.startNode;
       int side = Edge.side(queryEdge, pnt);
       if (side == Side.Right) {
@@ -337,12 +319,11 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     if (rightMost != null) {
       if (leftMost != null) {
         double rightCross = Point.cross(
-            rightMost.x2 - this.x,
-            rightMost.y2 - this.y,
-            queryPoint.x - this.x,
-            queryPoint.y - this.y);
-        double leftCross = Point.cross(queryPoint.x - this.x,
-            queryPoint.y - this.y, leftMost.x2 - this.x, leftMost.y2 - this.y);
+            new Point(rightMost.x2 - x, rightMost.y2 - y),
+            new Point(queryPoint.x - x, queryPoint.y - y));
+        double leftCross = Point.cross(
+            new Point(queryPoint.x - x, queryPoint.y - y),
+            new Point(leftMost.x2 - x, leftMost.y2 - y));
         if (rightCross <= leftCross)
           return rightMost;
         else
@@ -357,39 +338,39 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
 
   /// Determines the replacement node when a point is removed.
   INode get replacement {
-    this.parent = null;
+    parent = null;
 
     // If there are no passing edges return an empty node.
-    if (this._passEdges.isEmpty) return EmptyNode.instance;
+    if (_passEdges.isEmpty) return EmptyNode.instance;
 
     // Otherwise return a passing node with these passing edges.
     PassNode pass = new PassNode();
-    pass.setLocation(this.xmin, this.ymin, this.width);
-    pass.passEdges.addAll(this._passEdges);
-    this._passEdges.clear();
+    pass.setLocation(xmin, ymin, width);
+    pass.passEdges.addAll(_passEdges);
+    _passEdges.clear();
     return pass;
   }
 
   /// Validates this node.
   bool validate(StringBuffer sout, final IFormatter format, bool recursive) {
     bool result = true;
-    if (!this.contains(this._x, this._y)) {
+    if (!containsPoint(this)) {
       sout.write("Error in ");
-      this.toBuffer(sout, format: format);
+      toBuffer(sout, format: format);
       sout.write(": The point is not contained by the node's region.\n");
       result = false;
     }
 
-    for (EdgeNode edge in this._startEdges) {
+    for (EdgeNode edge in _startEdges) {
       if (edge == null) {
         sout.write("Error in ");
-        this.toBuffer(sout, format: format);
+        toBuffer(sout, format: format);
         sout.write(": A null line was in the starting list.\n");
         result = false;
       } else {
         if (edge.startNode != this) {
           sout.write("Error in ");
-          this.toBuffer(sout, format: format);
+          toBuffer(sout, format: format);
           sout.write(": A line in the starting list, ");
           edge.toBuffer(sout, format: format);
           sout.write(", doesn't start with this node.\n");
@@ -397,7 +378,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
         }
         if (edge.endNode == this) {
           sout.write("Error in ");
-          this.toBuffer(sout, format: format);
+          toBuffer(sout, format: format);
           sout.write(": A line in the starting list, ");
           edge.toBuffer(sout, format: format);
           sout.write(", also ends on this node.\n");
@@ -409,16 +390,16 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
       }
     }
 
-    for (EdgeNode edge in this._endEdges) {
+    for (EdgeNode edge in _endEdges) {
       if (edge == null) {
         sout.write("Error in ");
-        this.toBuffer(sout, format: format);
+        toBuffer(sout, format: format);
         sout.write(": A null line was in the ending list.\n");
         result = false;
       } else {
         if (edge.endNode != this) {
           sout.write("Error in ");
-          this.toBuffer(sout, format: format);
+          toBuffer(sout, format: format);
           sout.write(": A line in the ending list, ");
           edge.toBuffer(sout, format: format);
           sout.write(", doesn't end with this node.\n");
@@ -426,7 +407,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
         }
         if (edge.startNode == this) {
           sout.write("Error in ");
-          this.toBuffer(sout, format: format);
+          toBuffer(sout, format: format);
           sout.write(": A line in the ending list, ");
           edge.toBuffer(sout, format: format);
           sout.write(", also starts on this node.\n");
@@ -435,16 +416,16 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
       }
     }
 
-    for (EdgeNode edge in this._passEdges) {
+    for (EdgeNode edge in _passEdges) {
       if (edge == null) {
         sout.write("Error in ");
-        this.toBuffer(sout, format: format);
+        toBuffer(sout, format: format);
         sout.write(": A null line was in the passing list.\n");
         result = false;
       } else {
-        if (!this.overlapsEdge(edge)) {
+        if (!overlapsEdge(edge)) {
           sout.write("Error in ");
-          this.toBuffer(sout, format: format);
+          toBuffer(sout, format: format);
           sout.write(": A line in the passing list, ");
           edge.toBuffer(sout, format: format);
           sout.write(", doesn't pass through this node.\n");
@@ -452,7 +433,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
         }
         if (edge.startNode == this) {
           sout.write("Error in ");
-          this.toBuffer(sout, format: format);
+          toBuffer(sout, format: format);
           sout.write(": A line in the passing list, ");
           edge.toBuffer(sout, format: format);
           sout.write(", should be in the starting list.\n");
@@ -460,7 +441,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
         }
         if (edge.endNode == this) {
           sout.write("Error in ");
-          this.toBuffer(sout, format: format);
+          toBuffer(sout, format: format);
           sout.write(": A line in the passing list, ");
           edge.toBuffer(sout, format: format);
           sout.write(", should be in the ending list.\n");
@@ -477,10 +458,10 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// -1 if this point is less than the other point,
   /// 0 if this point is the same as the other point.
   int compareTo(PointNode other) {
-    if (this._y < other._y) return -1;
-    if (this._y > other._y) return 1;
-    if (this._x < other._x) return -1;
-    if (this._x > other._x) return 1;
+    if (_y < other._y) return -1;
+    if (_y > other._y) return 1;
+    if (_x < other._x) return -1;
+    if (_x > other._x) return 1;
     return 0;
   }
 
@@ -502,12 +483,12 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     }
 
     sout.write("PointNode: ");
-    sout.write(this.point.toString(format: format));
+    sout.write(point.toString(format: format));
     sout.write(", ");
-    sout.write(this.boundary.toString(format: format));
-    if (this._data != null) {
+    sout.write(boundary.toString(format: format));
+    if (_data != null) {
       sout.write(" ");
-      sout.write(this._data.toString());
+      sout.write(_data.toString());
     }
 
     if (children) {
@@ -517,14 +498,14 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
       else
         childIndent = indent + StringParts.Space;
 
-      final bool hasStart = (this._startEdges.length > 0);
-      final bool hasEnd = (this._endEdges.length > 0);
-      final bool hasPass = (this._passEdges.length > 0);
+      final bool hasStart = (_startEdges.length > 0);
+      final bool hasEnd = (_endEdges.length > 0);
+      final bool hasPass = (_passEdges.length > 0);
 
       if (hasStart) {
         sout.write(StringParts.Sep);
         sout.write(indent);
-        _edgeNodesToBuffer(this._startEdges, sout,
+        Edge.edgeNodesToBuffer(_startEdges, sout,
             indent: childIndent,
             contained: true,
             last: !(hasEnd || hasPass),
@@ -533,7 +514,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
       if (hasEnd) {
         sout.write(StringParts.Sep);
         sout.write(indent);
-        _edgeNodesToBuffer(this._endEdges, sout,
+        Edge.edgeNodesToBuffer(_endEdges, sout,
             indent: childIndent,
             contained: true,
             last: !hasPass,
@@ -542,16 +523,9 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
       if (hasPass) {
         sout.write(StringParts.Sep);
         sout.write(indent);
-        _edgeNodesToBuffer(this._passEdges, sout,
+        Edge.edgeNodesToBuffer(_passEdges, sout,
             indent: childIndent, contained: true, last: true, format: format);
       }
     }
-  }
-
-  /// Determines if the given object is equal to this point.
-  bool equals(Object o) {
-    if (o == null) return false;
-    if (o is PointNode) return false;
-    return Point.equalPoints(this, o);
   }
 }

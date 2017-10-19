@@ -21,13 +21,7 @@ abstract class IBoundary {
   int get height;
 
   /// Gets the boundary region the given point was in.
-  int region(int x, int y);
-
-  /// Gets the boundary region the given point was in.
-  int regionPoint(IPoint point);
-
-  /// Checks if the given point is completely contained within this boundary.
-  bool contains(int x, int y);
+  int region(IPoint point);
 
   /// Checks if the given point is completely contained within this boundary.
   bool containsPoint(IPoint point);
@@ -45,8 +39,5 @@ abstract class IBoundary {
   bool overlapsBoundary(IBoundary boundary);
 
   /// Gets the distance squared from this boundary to the given point.
-  double distance2(int x, int y);
-
-  /// Gets the distance squared from this boundary to the given point.
-  double distance2Point(IPoint point);
+  double distance2(IPoint point);
 }

@@ -44,26 +44,26 @@ class IntersectionResult implements Comparable<IntersectionResult> {
 
   /// Creates a new intersection result.
   IntersectionResult(
-      IEdge this.edgeA,
-      IEdge this.edgeB,
-      bool this.intersects,
-      int this.type,
-      IPoint this.point,
-      int this.locA,
-      int this.locB,
-      PointOnEdgeResult this.startBOnEdgeA,
-      PointOnEdgeResult this.endBOnEdgeA,
-      PointOnEdgeResult this.startAOnEdgeB,
-      PointOnEdgeResult this.endAOnEdgeB);
+      this.edgeA,
+      this.edgeB,
+      this.intersects,
+      this.type,
+      this.point,
+      this.locA,
+      this.locB,
+      this.startBOnEdgeA,
+      this.endBOnEdgeA,
+      this.startAOnEdgeB,
+      this.endAOnEdgeB);
 
   /// Compares this intersection with the other intersection.
   /// Returns 1 if this intersection's edges are larger,
   /// -1 if the other intersection is larger,
   /// 0 if they have the same edges.
   int compareTo(IntersectionResult o) {
-    int cmp = Edge.compare(this.edgeA, o.edgeA);
+    int cmp = Edge.compare(edgeA, o.edgeA);
     if (cmp != 0) return cmp;
-    return Edge.compare(this.edgeB, o.edgeB);
+    return Edge.compare(edgeB, o.edgeB);
   }
 
   /// Checks if this intersection is the same as the other intersection.
@@ -72,20 +72,20 @@ class IntersectionResult implements Comparable<IntersectionResult> {
     if (o == null) return false;
     if (o is IntersectionResult) return false;
     IntersectionResult other = o as IntersectionResult;
-    if (!Edge.equalEdges(this.edgeA, other.edgeA, false)) return false;
-    if (!Edge.equalEdges(this.edgeB, other.edgeB, false)) return false;
-    if (this.intersects != other.intersects) return false;
-    if (this.type != other.type) return false;
-    if (this.locA != other.locA) return false;
-    if (this.locB != other.locB) return false;
-    if (!Point.equalPoints(this.point, other.point)) return false;
+    if (!Edge.equals(edgeA, other.edgeA, false)) return false;
+    if (!Edge.equals(edgeB, other.edgeB, false)) return false;
+    if (intersects != other.intersects) return false;
+    if (type != other.type) return false;
+    if (locA != other.locA) return false;
+    if (locB != other.locB) return false;
+    if (!Point.equals(point, other.point)) return false;
     if (!PointOnEdgeResult.equalResults(
-        this.startBOnEdgeA, other.startBOnEdgeA)) return false;
-    if (!PointOnEdgeResult.equalResults(this.endBOnEdgeA, other.endBOnEdgeA))
+        startBOnEdgeA, other.startBOnEdgeA)) return false;
+    if (!PointOnEdgeResult.equalResults(endBOnEdgeA, other.endBOnEdgeA))
       return false;
     if (!PointOnEdgeResult.equalResults(
-        this.startAOnEdgeB, other.startAOnEdgeB)) return false;
-    if (!PointOnEdgeResult.equalResults(this.endAOnEdgeB, other.endAOnEdgeB))
+        startAOnEdgeB, other.startAOnEdgeB)) return false;
+    if (!PointOnEdgeResult.equalResults(endAOnEdgeB, other.endAOnEdgeB))
       return false;
     return true;
   }
@@ -93,7 +93,7 @@ class IntersectionResult implements Comparable<IntersectionResult> {
   /// Gets the string of for this intersection result.
   String toString([String separator = ", "]) {
     return "(edgeA:$edgeA, edgeB$edgeB, " +
-        (this.intersects ? "intersects" : "misses") +
+        (intersects ? "intersects" : "misses") +
         ", $type, point:$point, $locA, $locB" +
         "${separator}startBOnEdgeA:$startBOnEdgeA" +
         "${separator}endBOnEdgeA:$endBOnEdgeA" +

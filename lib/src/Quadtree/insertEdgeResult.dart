@@ -9,5 +9,5 @@ class InsertEdgeResult {
   final bool existed;
 
   /// Creates a new insert edge result.
-  InsertEdgeResult(EdgeNode this.edge, bool this.existed);
+  InsertEdgeResult(this.edge, this.existed);
 }

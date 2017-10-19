@@ -31,7 +31,4 @@ abstract class IEdge {
 
   /// Gets the change in the second component, delta Y.
   int get dy;
-
-  /// Determines if the given [o] edge is equal to this edge.
-  bool equals(IEdge o);
 }

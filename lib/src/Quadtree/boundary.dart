@@ -3,24 +3,19 @@ part of PolygonalMapDart.Quadtree;
 /// The geometric boundary in a quad-tree.
 class Boundary implements IBoundary {
   /// Returns the given boundary expanded with the new point.
-  static Boundary expandWithPoint(IBoundary boundary, IPoint point) {
-    return expand(boundary, point.x, point.y);
-  }
-
-  /// Returns this boundary expanded with the new point.
-  static Boundary expand(IBoundary boundary, int x, int y) {
+  static Boundary expand(IBoundary boundary, IPoint point) {
     if (boundary == null) {
-      return new Boundary(x, y, x, y);
+      return new Boundary(point.x, point.y, point.x, point.y);
     } else {
       int xmin = boundary.xmin, xmax = boundary.xmax;
-      if (x < xmin)
-        xmin = x;
-      else if (x > xmax) xmax = x;
+      if (point.x < xmin)
+        xmin = point.x;
+      else if (point.x > xmax) xmax = point.x;
 
       int ymin = boundary.ymin, ymax = boundary.ymax;
-      if (y < ymin)
-        ymin = y;
-      else if (y > ymax) ymax = y;
+      if (point.y < ymin)
+        ymin = point.y;
+      else if (point.y > ymax) ymax = point.y;
 
       return new Boundary(xmin, ymin, xmax, ymax);
     }
@@ -59,83 +54,80 @@ class Boundary implements IBoundary {
   }
 
   /// Creates a new boundary.
-  Boundary._(int this._xmin, int this._ymin, int this._xmax, int this._ymax);
+  Boundary._(this._xmin, this._ymin, this._xmax, this._ymax);
 
   /// Gets the minimum x component.
-  int get xmin => this._xmin;
+  int get xmin => _xmin;
 
   /// Gets the minimum y component.
-  int get ymin => this._ymin;
+  int get ymin => _ymin;
 
   /// Gets the maximum x component.
-  int get xmax => this._xmax;
+  int get xmax => _xmax;
 
   /// Gets the maximum y component.
-  int get ymax => this._ymax;
+  int get ymax => _ymax;
 
   /// Gets the width of boundary.
-  int get width => this._xmax - this._xmin + 1;
+  int get width => _xmax - _xmin + 1;
 
   /// Gets the height of boundary.
-  int get height => this._ymax - this._ymin + 1;
+  int get height => _ymax - _ymin + 1;
 
   /// Gets the boundary region the given point was in.
-  int region(int x, int y) {
-    if (this._xmin > x) {
-      if (this._ymin > y)
+  int region(IPoint point) {
+    if (_xmin > point.x) {
+      if (_ymin > point.y)
         return BoundaryRegion.SouthWest;
-      else if (this._ymax >= y)
+      else if (_ymax >= point.y)
         return BoundaryRegion.West;
       else
         return BoundaryRegion.NorthWest;
-    } else if (this._xmax >= x) {
-      if (this._ymin > y)
+    } else if (_xmax >= point.x) {
+      if (_ymin > point.y)
         return BoundaryRegion.South;
-      else if (this._ymax >= y)
+      else if (_ymax >= point.y)
         return BoundaryRegion.Inside;
       else
         return BoundaryRegion.North;
     } else {
-      if (this._ymin > y)
+      if (_ymin > point.y)
         return BoundaryRegion.SouthEast;
-      else if (this._ymax >= y)
+      else if (_ymax >= point.y)
         return BoundaryRegion.East;
       else
         return BoundaryRegion.NorthEast;
     }
   }
 
-  /// Gets the boundary region the given point was in.
-  int regionPoint(IPoint point) => this.region(point.x, point.y);
-
   /// Checks if the given point is completely contained within this boundary.
-  bool contains(int x, int y) => !((this._xmin > x) ||
-      (this._xmax < x) ||
-      (this._ymin > y) ||
-      (this._ymax < y));
+  bool _contains(int x, int y) => !((_xmin > x) ||
+      (_xmax < x) ||
+      (_ymin > y) ||
+      (_ymax < y));
 
   /// Checks if the given point is completely contained within this boundary.
   /// Returns true if the point is fully contained, false otherwise.
-  bool containsPoint(IPoint point) => this.contains(point.x, point.y);
+  bool containsPoint(IPoint point) => _contains(point.x, point.y);
 
   /// Checks if the given edge is completely contained within this boundary.
   /// Returns true if the edge is fully contained, false otherwise.
   bool containsEdge(IEdge edge) =>
-      this.contains(edge.x1, edge.y1) && this.contains(edge.x2, edge.y2);
+      _contains(edge.x1, edge.y1) && _contains(edge.x2, edge.y2);
 
   /// Checks if the given boundary is completely contains by this boundary.
   /// @Returns true if the boundary is fully contained, false otherwise.
   bool containsBoundary(IBoundary boundary) =>
-      this.contains(boundary.xmin, boundary.ymin) &&
-      this.contains(boundary.xmax, boundary.ymax);
+      _contains(boundary.xmin, boundary.ymin) &&
+      _contains(boundary.xmax, boundary.ymax);
 
   /// Checks if the given edge overlaps this boundary.
   /// Returns true if the edge is overlaps, false otherwise.
   bool overlapsEdge(IEdge edge) {
-    int region1 = this.region(edge.x1, edge.y1);
+    int region1 = region(edge.start);
     if (region1 == BoundaryRegion.Inside) return true;
 
-    int region2 = this.region(edge.x2, edge.y2);
+    int region2 = region(edge.end);
     if (region2 == BoundaryRegion.Inside) return true;
 
     // If the edge is directly above and below or to the left and right,
@@ -155,66 +147,63 @@ class Boundary implements IBoundary {
 
     // Check for edge intersection point.
     if ((orRegion & BoundaryRegion.West) == BoundaryRegion.West) {
-      int y = ((this._xmin - edge.x1) * (edge.dy / edge.dx) + edge.y1).round();
-      if ((y >= this._ymin) && (y <= this._ymax)) return true;
+      int y = ((_xmin - edge.x1) * (edge.dy / edge.dx) + edge.y1).round();
+      if ((y >= _ymin) && (y <= _ymax)) return true;
     }
     if ((orRegion & BoundaryRegion.East) == BoundaryRegion.East) {
-      int y = ((this._xmax - edge.x1) * (edge.dy / edge.dx) + edge.y1).round();
-      if ((y >= this._ymin) && (y <= this._ymax)) return true;
+      int y = ((_xmax - edge.x1) * (edge.dy / edge.dx) + edge.y1).round();
+      if ((y >= _ymin) && (y <= _ymax)) return true;
     }
     if ((orRegion & BoundaryRegion.North) == BoundaryRegion.North) {
-      int x = ((this._ymin - edge.y1) * (edge.dx / edge.dy) + edge.x1).round();
-      if ((x >= this._xmin) && (x <= this._xmax)) return true;
+      int x = ((_ymin - edge.y1) * (edge.dx / edge.dy) + edge.x1).round();
+      if ((x >= _xmin) && (x <= _xmax)) return true;
     }
     if ((orRegion & BoundaryRegion.South) == BoundaryRegion.South) {
-      int x = ((this._ymax - edge.y1) * (edge.dx / edge.dy) + edge.x1).round();
-      if ((x >= this._xmin) && (x <= this._xmax)) return true;
+      int x = ((_ymax - edge.y1) * (edge.dx / edge.dy) + edge.x1).round();
+      if ((x >= _xmin) && (x <= _xmax)) return true;
     }
     return false;
   }
 
   /// Checks if the given boundary overlaps this boundary.
   /// Returns true if the given boundary overlaps this boundary, false otherwise.
-  bool overlapsBoundary(IBoundary boundary) => !((this._xmax < boundary.xmin) ||
-      (this._ymax < boundary.ymin) ||
-      (this._xmin > boundary.xmax) ||
-      (this._ymin > boundary.ymax));
+  bool overlapsBoundary(IBoundary boundary) => !((_xmax < boundary.xmin) ||
+      (_ymax < boundary.ymin) ||
+      (_xmin > boundary.xmax) ||
+      (_ymin > boundary.ymax));
 
   /// Gets the distance squared from this boundary to the given point.
-  double distance2(int x, int y) {
-    if (this._xmin > x) {
-      if (this._ymin > y) {
-        return Point.distance2(this._xmin, this._ymin, x, y);
-      } else if (this._ymax >= y) {
-        double dx = this._xmin.toDouble() - x.toDouble();
+  double distance2(IPoint point) {
+    if (_xmin > point.x) {
+      if (_ymin > point.y) {
+        return Point.distance2(new Point(_xmin, _ymin), point);
+      } else if (_ymax >= point.y) {
+        double dx = _xmin.toDouble() - point.x.toDouble();
         return dx * dx;
       } else {
-        return Point.distance2(this._xmin, this._ymax, x, y);
+        return Point.distance2(new Point(_xmin, _ymax), point);
       }
-    } else if (this._xmax >= x) {
-      if (this._ymin > y) {
-        double dy = this._ymin.toDouble() - y.toDouble();
+    } else if (_xmax >= point.x) {
+      if (_ymin > point.y) {
+        double dy = _ymin.toDouble() - point.y.toDouble();
         return dy * dy;
-      } else if (this._ymax >= y) {
+      } else if (_ymax >= point.y) {
         return 0.0;
       } else {
-        double dy = y.toDouble() - this._ymax.toDouble();
+        double dy = point.y.toDouble() - _ymax.toDouble();
         return dy * dy;
       }
     } else {
-      if (this._ymin > y) {
-        return Point.distance2(this._xmax, this._ymin, x, y);
-      } else if (this._ymax >= y) {
-        double dx = x.toDouble() - this._xmax.toDouble();
+      if (_ymin > point.y) {
+        return Point.distance2(new Point(_xmax, _ymin), point);
+      } else if (_ymax >= point.y) {
+        double dx = point.x.toDouble() - _xmax.toDouble();
         return dx * dx;
       } else {
-        return Point.distance2(this._xmax, this._ymax, x, y);
+        return Point.distance2(new Point(_xmax, _ymax), point);
       }
     }
   }
-
-  /// Gets the distance squared from this boundary to the given point.
-  double distance2Point(IPoint point) => this.distance2(point.x, point.y);
 
   /// Determines if the given object is equal to this boundary.
   /// Returns true if the object is equal to this edge, false otherwise.
@@ -222,10 +211,10 @@ class Boundary implements IBoundary {
     if (o == null) return false;
     if (o is Boundary) return false;
     Boundary boundary = o as Boundary;
-    return (this._xmin == boundary._xmin) &&
-        (this._ymin == boundary._ymin) &&
-        (this._xmax == boundary._xmax) &&
-        (this._ymax == boundary._ymax);
+    return (_xmin == boundary._xmin) &&
+        (_ymin == boundary._ymin) &&
+        (_xmax == boundary._xmax) &&
+        (_ymax == boundary._ymax);
   }
 
   /// Gets the string for this boundary.

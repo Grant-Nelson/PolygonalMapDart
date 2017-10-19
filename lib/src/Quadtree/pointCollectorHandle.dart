@@ -11,22 +11,22 @@ class PointCollectorHandle implements IPointHandler {
   /// Create a new point collector.
   PointCollectorHandle(
       {Set<PointNode> nodes = null, IPointHandler filter: null}) {
-    this._set = (nodes == null) ? new Set<PointNode>() : nodes;
-    this._filter = filter;
+    _set = (nodes == null) ? new Set<PointNode>() : nodes;
+    _filter = filter;
   }
 
   /// The set to add new points into.
-  Set<PointNode> get collection => this._set;
+  Set<PointNode> get collection => _set;
 
   /// The matcher to filter the collected points with.
-  IPointHandler get filter => this._filter;
+  IPointHandler get filter => _filter;
 
   /// Handles a new point.
   bool handle(PointNode point) {
-    if (this._filter != null) {
-      if (!this._filter.handle(point)) return true;
+    if (_filter != null) {
+      if (!_filter.handle(point)) return true;
     }
-    this._set.add(point);
+    _set.add(point);
     return true;
   }
 }

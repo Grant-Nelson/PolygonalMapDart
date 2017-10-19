@@ -8,25 +8,25 @@ class PassNode extends BaseNode {
 
   /// Creates the pass node.
   PassNode() : super._() {
-    this._passEdges = new Set<EdgeNode>();
+    _passEdges = new Set<EdgeNode>();
   }
 
   /// Gets the set of edges which pass through this node.
-  Set<EdgeNode> get passEdges => this._passEdges;
+  Set<EdgeNode> get passEdges => _passEdges;
 
   /// Adds an edge to this node and/or children nodes.
   /// Returns the node that should be the new root of the subtree
   /// that was defined by this node.
   INode insertEdge(EdgeNode edge) {
-    if (this.overlapsEdge(edge)) this._passEdges.add(edge);
+    if (overlapsEdge(edge)) _passEdges.add(edge);
     return this;
   }
 
   /// Adds a point to this node.
   /// Returns the node that should be the new root of the subtree
   INode insertPoint(PointNode point) {
-    point.setLocation(this.xmin, this.ymin, this.width);
-    point.passEdges.addAll(this._passEdges);
+    point.setLocation(xmin, ymin, width);
+    point.passEdges.addAll(_passEdges);
     return point;
   }
 
@@ -36,10 +36,10 @@ class PassNode extends BaseNode {
   /// Return the node that should be the new root of the subtree that was
   /// defined by this node.
   INode removeEdge(EdgeNode edge, bool trimTree) {
-    if (this._passEdges.remove(edge)) {
+    if (_passEdges.remove(edge)) {
       // If this node no longer has any edges replace this node with an
       // empty node.
-      if (this._passEdges.isEmpty) {
+      if (_passEdges.isEmpty) {
         return EmptyNode.instance;
       }
     }
@@ -48,8 +48,8 @@ class PassNode extends BaseNode {
 
   /// This handles the first found intersecting edge.
   IntersectionResult findFirstIntersection(IEdge edge, IEdgeHandler hndl) {
-    if (this.overlapsEdge(edge)) {
-      return this._findFirstIntersection(this._passEdges, edge, hndl);
+    if (overlapsEdge(edge)) {
+      return _findFirstIntersection(_passEdges, edge, hndl);
     }
     return null;
   }
@@ -57,9 +57,8 @@ class PassNode extends BaseNode {
   /// This handles all the intersections.
   bool findAllIntersections(
       IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
-    if (this.overlapsEdge(edge)) {
-      return this
-          ._findAllIntersections(this._passEdges, edge, hndl, intersections);
+    if (overlapsEdge(edge)) {
+      return _findAllIntersections(_passEdges, edge, hndl, intersections);
     }
     return false;
   }
@@ -74,8 +73,8 @@ class PassNode extends BaseNode {
   bool foreachEdge(IEdgeHandler handle,
       [IBoundary bounds = null, bool exclusive = false]) {
     if (!exclusive) {
-      if (this.overlapsBoundary(bounds)) {
-        for (EdgeNode edge in this._passEdges) {
+      if (overlapsBoundary(bounds)) {
+        for (EdgeNode edge in _passEdges) {
           if (!handle.handle(edge)) {
             return false;
           }
@@ -88,7 +87,7 @@ class PassNode extends BaseNode {
   /// Handles each node reachable from this node in the boundary.
   bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) {
     if (bounds != null) {
-      return this.overlapsBoundary(bounds) && handle.handle(this);
+      return overlapsBoundary(bounds) && handle.handle(this);
     } else {
       return handle.handle(this);
     }
@@ -103,22 +102,21 @@ class PassNode extends BaseNode {
   bool get hasEdges => true;
 
   /// Gets the first edge to the left of the given point.
-  void firstLeftEdge(FirstLeftEdgeArgs args) {
-    this._firstLineLeft(this._passEdges, args);
-  }
+  void firstLeftEdge(FirstLeftEdgeArgs args) =>
+    _firstLineLeft(_passEdges, args);
 
   /// Handles all the edges to the left of the given point.
   bool foreachLeftEdge(IPoint point, IEdgeHandler handle) =>
-      this._foreachLeftEdge(this._passEdges, point, handle);
+      _foreachLeftEdge(_passEdges, point, handle);
 
   /// Validates this node.
   /// Set [recursive] to true to validate all children nodes too, false otherwise.
   bool validate(StringBuffer sout, IFormatter format, bool recursive) {
     bool result = true;
-    for (EdgeNode edge in this._passEdges) {
-      if (!this.overlapsEdge(edge)) {
+    for (EdgeNode edge in _passEdges) {
+      if (!overlapsEdge(edge)) {
         sout.write("Error in ");
-        this.toBuffer(sout, format: format);
+        toBuffer(sout, format: format);
         sout.write(": An edge in the passing list, ");
         edge.toBuffer(sout, format: format);
         sout.write(", doesn't pass through this node.\n");
@@ -146,10 +144,10 @@ class PassNode extends BaseNode {
     }
 
     sout.write("PassNode: ");
-    sout.write(this.boundary.toString(format: format));
+    sout.write(boundary.toString(format: format));
 
     if (children) {
-      if (this._passEdges.length > 0) {
+      if (_passEdges.length > 0) {
         sout.write(StringParts.Sep);
         sout.write(indent);
       }
@@ -158,7 +156,7 @@ class PassNode extends BaseNode {
         childIndent = indent + StringParts.Bar;
       else
         childIndent = indent + StringParts.Space;
-      _edgeNodesToBuffer(this._passEdges, sout,
+      Edge.edgeNodesToBuffer(_passEdges, sout,
           indent: childIndent, contained: true, last: true, format: format);
     }
   }

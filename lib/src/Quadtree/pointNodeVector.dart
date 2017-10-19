@@ -9,36 +9,36 @@ class PointNodeVector {
   /// Creates a new point node vector.
   /// The [count] is the initial capacity of the vector.
   PointNodeVector([int count = 0]) {
-    this._list = new List<PointNode>(count);
+    _list = new List<PointNode>(count);
   }
 
   /// Gets the internal list of nodes.
-  List<PointNode> get nodes => this._list;
+  List<PointNode> get nodes => _list;
 
   /// Gets the edge between the point at the given index and the next index.
   Edge edge(int index) {
-    PointNode startNode = this._list[index];
-    PointNode endNode = this._list[(index + 1) % this._list.length];
-    return new Edge.FromPoints(startNode, endNode);
+    PointNode startNode = _list[index];
+    PointNode endNode = _list[(index + 1) % _list.length];
+    return new Edge(startNode, endNode);
   }
 
   /// Reverses the location of all the points in the vector.
   void reverse() {
-    final int count = this._list.length;
+    final int count = _list.length;
     for (int i = 0, j = count - 1; i < j; ++i, --j) {
-      PointNode temp = this._list[i];
-      this._list[i] = this._list[j];
-      this._list[j] = temp;
+      PointNode temp = _list[i];
+      _list[i] = _list[j];
+      _list[j] = temp;
     }
   }
 
   /// Calculates the area of the polygon in the vector.
   AreaAccumulator get area {
     AreaAccumulator area = new AreaAccumulator();
-    PointNode endNode = this._list[0];
-    for (int i = this._list.length - 1; i >= 0; --i) {
-      PointNode startNode = this._list[i];
-      area.addPoints(startNode, endNode);
+    PointNode endNode = _list[0];
+    for (int i = _list.length - 1; i >= 0; --i) {
+      PointNode startNode = _list[i];
+      area.handle(new Edge(startNode, endNode));
       endNode = startNode;
     }
     return area;
@@ -47,8 +47,8 @@ class PointNodeVector {
   /// Calculates the boundary of all the points in the vertex.
   Boundary get bounds {
     Boundary bounds = null;
-    for (int i = this._list.length - 1; i >= 0; --i) {
-      bounds = Boundary.expandWithPoint(bounds, this._list[i]);
+    for (int i = _list.length - 1; i >= 0; --i) {
+      bounds = Boundary.expand(bounds, _list[i]);
     }
     return bounds;
   }
@@ -56,8 +56,8 @@ class PointNodeVector {
   /// Converts the vertex into a set.
   Set<PointNode> toSet() {
     Set<PointNode> newSet = new Set<PointNode>();
-    for (int i = this._list.length - 1; i >= 0; --i) {
-      newSet.add(this._list[i]);
+    for (int i = _list.length - 1; i >= 0; --i) {
+      newSet.add(_list[i]);
     }
     return newSet;
   }

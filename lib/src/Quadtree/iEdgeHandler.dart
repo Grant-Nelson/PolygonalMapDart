@@ -5,5 +5,5 @@ part of PolygonalMapDart.Quadtree;
 abstract class IEdgeHandler {
   /// Handles the given edge node.
   /// Return true to continue, false to stop.
-  bool handle(EdgeNode edge);
+  bool handle(IEdge edge);
 }

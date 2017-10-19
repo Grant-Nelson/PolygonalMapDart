@@ -54,10 +54,10 @@ class PointNodeVector {
   }
 
   /// Converts the vertex into a set.
-  PointNodeSet toSet() {
-    PointNodeSet newSet = new PointNodeSet();
+  Set<PointNode> toSet() {
+    Set<PointNode> newSet = new Set<PointNode>();
     for (int i = this._list.length - 1; i >= 0; --i) {
-      newSet.nodes.add(this._list[i]);
+      newSet.add(this._list[i]);
     }
     return newSet;
   }

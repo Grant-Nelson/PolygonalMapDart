@@ -36,17 +36,17 @@ class NearestEdgeArgs {
     while (!stack.isEmpty) {
       INode node = stack.pop;
       if (node is PointNode) {
-        for (EdgeNode edge in node.startEdges.nodes) {
+        for (EdgeNode edge in node.startEdges) {
           this._checkEdge(edge);
         }
-        for (EdgeNode edge in node.endEdges.nodes) {
+        for (EdgeNode edge in node.endEdges) {
           this._checkEdge(edge);
         }
-        for (EdgeNode edge in node.passEdges.nodes) {
+        for (EdgeNode edge in node.passEdges) {
           this._checkEdge(edge);
         }
       } else if (node is PassNode) {
-        for (EdgeNode edge in node.passEdges.nodes) {
+        for (EdgeNode edge in node.passEdges) {
           this._checkEdge(edge);
         }
       } else if (node is BranchNode) {

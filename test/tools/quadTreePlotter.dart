@@ -6,7 +6,7 @@ class QuadTreePlotter extends plotter.Plotter {
     /// Shows a quad-tree in a plot panel.
     static plotSvg.PlotSvg Show(qt.QuadTree tree, String targetDivId) {
         QuadTreePlotter plot = new QuadTreePlotter();
-        plotter.Group grp = plot.addGroup([])..label="Tree";
+        plotter.Group grp = plot.addGroup("Tree");
         plot.addTree(grp, tree);
         plot.updateBounds();
         plot.focusOnData();
@@ -24,8 +24,8 @@ class QuadTreePlotter extends plotter.Plotter {
     }
 
     /// Adds a set of points to the given point list.
-    plotter.Points addPointSet(plotter.Points points, qt.PointNodeSet pointSet) {
-    	for (qt.PointNode point in pointSet.nodes) {
+    plotter.Points addPointSet(plotter.Points points, Set<qt.PointNode> pointSet) {
+    	for (qt.PointNode point in pointSet) {
             points.add([point.x.toDouble(), point.y.toDouble()]);
     	}
       return points;
@@ -50,7 +50,7 @@ class QuadTreePlotter extends plotter.Plotter {
 
     /// Adds a quad-tree to this plotter.
     plotter.Group addTreeGroup(String label, qt.QuadTree tree) {
-        plotter.Group group = addGroup([])..label=label;
+        plotter.Group group = addGroup(label);
         addTree(group, tree, true, true, false, false, true, true);
         return group;
     }
@@ -63,32 +63,32 @@ class QuadTreePlotter extends plotter.Plotter {
         plotter.Rectangles passRects = new plotter.Rectangles();
         passRects.addColor(0.0, 1.0, 0.0);
         passRects.addFillColor(0.0, 1.0, 0.0, 0.3);
-        group.addGroup([passRects])..label="Pass Nodes"..enabled=showPassNodes;
+        group.addGroup("Pass Nodes", [passRects])..enabled=showPassNodes;
 
         plotter.Rectangles pointRects = new plotter.Rectangles();
         pointRects.addColor(0.0, 0.6, 0.2);
         pointRects.addFillColor(0.0, 0.6, 0.2, 0.3);
-        group.addGroup([pointRects])..label="Point Nodes"..enabled=showPointNodes;
+        group.addGroup("Point Nodes", [pointRects])..enabled=showPointNodes;
 
         plotter.Rectangles emptyRects = new plotter.Rectangles();
         emptyRects.addColor(0.8, 0.8, 0.0);
         emptyRects.addFillColor(0.8, 0.8, 0.0, 0.3);
-        group.addGroup([emptyRects])..label="Empty Nodes"..enabled=showEmptyNodes;
+        group.addGroup("Empty Nodes", [emptyRects])..enabled=showEmptyNodes;
 
         plotter.Rectangles branchRects = new plotter.Rectangles();
         branchRects.addColor(0.0, 0.8, 0.0);
         branchRects.addFillColor(0.0, 0.4, 0.8, 0.3);
-        group.addGroup([branchRects])..label="Branch Nodes"..enabled=showBranchNodes;
+        group.addGroup("Branch Nodes", [branchRects])..enabled=showBranchNodes;
 
         plotter.Lines edges = new plotter.Lines();
         edges.addColor(0.0, 0.0, 0.0);
         edges.addDirected(true);
-        group.addGroup([edges])..label="Lines"..enabled=showEdges;
+        group.addGroup("Lines", [edges])..enabled=showEdges;
 
         plotter.Points points = new plotter.Points();
         points.addPointSize(3.0);
         points.addColor(0.0, 0.0, 0.0);
-        group.addGroup([points])..label="Points"..enabled=showPoints;
+        group.addGroup("Points", [points])..enabled=showPoints;
 
         this.addTreeItems(tree, passRects, pointRects, emptyRects, branchRects, edges, points);
     }

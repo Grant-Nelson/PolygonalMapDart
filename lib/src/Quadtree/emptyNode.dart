@@ -28,7 +28,7 @@ class EmptyNode implements INode {
     if (boundary.overlapsEdge(edge)) {
       PassNode node = new PassNode();
       node.setLocation(xmin, ymin, size);
-      node.passEdges.nodes.add(edge);
+      node.passEdges.add(edge);
       return node;
     } else
       return this;

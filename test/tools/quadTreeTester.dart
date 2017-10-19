@@ -14,14 +14,14 @@ class QuadTreeTester {
 
 	qt.QuadTree get tree => _tree;
 
-	void _showPlotOnFail() {
+	void showPlotOnFail() {
 		String name = _args.addDiv();
     if (_args.failed) QuadTreePlotter.Show(_tree, name);
 	}
 
-	void _showPlot(plotter.Plotter plot) {
+	plotSvg.PlotSvg _showPlot(plotter.Plotter plot) {
 		String name = _args.addDiv();
-		plotSvg.PlotSvg svg = new plotSvg.PlotSvg(_targetDivId, _plotter)
+		return new plotSvg.PlotSvg(name, plot);
 	}
 
 	qt.PointNode insertPoint(int x, int y) {
@@ -111,7 +111,7 @@ class QuadTreeTester {
 
         if (showPlot) {
             QuadTreePlotter plot = new QuadTreePlotter();
-            plot.addTree(plot.addGroup([])..label ="Tree", _tree);
+            plot.addTree(plot.addGroup("Tree"), _tree);
             if (node != null) {
                 plot.addLines([node.x1, node.y1, node.x2, node.y2]).
                     addColor(0.2, 0.2, 1.0);
@@ -119,13 +119,14 @@ class QuadTreeTester {
             plot.addPoints([x, y])..
                 addColor(1.0, 0.0, 0.0)..
                 addPointSize(3.0);
-            plot.show();
+            _showPlot(plot);
         }
     }
 
     void findAllIntersections(int x1, int y1, int x2, int y2, int count) {
         qt.Edge edge = new qt.Edge(x1, y1, x2, y2);
-        qt.IntersectionSet inters = _tree.findAllIntersections(edge, null);
+        qt.IntersectionSet inters = new qt.IntersectionSet();
+				_tree.findAllIntersections(edge, null, inters);
         bool showPlot = false;
 
         StringBuffer sout = new StringBuffer();
@@ -137,26 +138,26 @@ class QuadTreeTester {
         }
 
         if (inters.results.length != count) {
-        	_args.info("Expected to find $count intersections but found ${inters.size}.\n");
+        	_args.info("Expected to find $count intersections but found ${inters.results.length}.\n");
         	_args.info("${inters.toString()}\n");
         	_args.info("${_tree.toString()}\n");
             _args.fail();
             showPlot = true;
         }
 
-        IntersectionResult firstInt = _tree.findFirstIntersection(edge, null);
+        qt.IntersectionResult firstInt = _tree.findFirstIntersection(edge, null);
         if (firstInt != null) {
             if (count < 1) {
-            	_args.println("Expected to find no intersections but found a first intersection.");
-            	_args.println(firstInt.toString());
-            	_args.println(_tree.toString());
+            	_args.info("Expected to find no intersections but found a first intersection.\n");
+            	_args.info("${firstInt.toString()}\n");
+            	_args.info("${_tree.toString()}\n");
             	_args.fail();
                 showPlot = true;
             }
         } else {
             if (count > 0) {
-            	_args.println("Expected to find "+count+" intersections but found no first intersection.");
-            	_args.println(_tree.toString());
+            	_args.info("Expected to find $count intersections but found no first intersection.\n");
+            	_args.info("${_tree.toString()}\n");
             	_args.fail();
                 showPlot = true;
             }
@@ -164,140 +165,142 @@ class QuadTreeTester {
 
         if (showPlot) {
             QuadTreePlotter plot = new QuadTreePlotter();
-            plot.setTitle("Intersects: "+edge.toString()+" => "+count);
-            plot.addTree("Tree", _tree);
+						plotter.Group group = plot.addGroup("Intersects: $edge => $count");
+            plot.addTree(group, _tree);
 
-            final Lines lines = new Lines();
-            lines.add(edge.x1, edge.y1, edge.x2, edge.y2);
+            plotter.Lines lines = new plotter.Lines();
+            lines.add([edge.x1, edge.y1, edge.x2, edge.y2]);
             lines.addColor(0.0, 0.0, 0.8);
-            plot.add(lines);
+            plot.add([lines]);
 
-            final Points points = new Points();
-            for (IntersectionResult inter in inters) {
+            plotter.Points points = new plotter.Points();
+            for (qt.IntersectionResult inter in inters.results) {
                 if (inter.point != null) {
-                    points.add(inter.point.x, inter.point.y);
+                    points.add([inter.point.x, inter.point.y]);
                 }
             }
             points.addPointSize(4.0);
             points.addColor(1.0, 0.0, 0.0);
-            plot.add(points);
+            plot.add([points]);
 
             plot.updateBounds();
             plot.focusOnData();
-            PlotPanel.show(plot);
+						_showPlot(plot);
         }
     }
 
 	void checkForeach(List<int> inside, List<int> outside, int x1, int y1, int x2, int y2) {
-		qt.PointNodeSet expOutside = new qt.PointNodeSet();
+		Set<qt.PointNode> expOutside = new Set<qt.PointNode>();
 		for (int i = 0; i < outside.length; i += 2)
 			expOutside.add(insertPoint(outside[i], outside[i+1]));
 
-		qt.PointNodeSet expInside = new qt.PointNodeSet();
+		Set<qt.PointNode> expInside = new Set<qt.PointNode>();
 		for (int i = 0; i < inside.length; i += 2)
 			expInside.add(insertPoint(inside[i], inside[i+1]));
 
 		qt.Boundary boundary = new qt.Boundary(x1, y1, x2, y2);
 		qt.PointCollectorHandle collector = new qt.PointCollectorHandle();
-		_tree.foreach(collector, boundary);
-		qt.PointNodeSet foundPoints = collector.collection();
+		_tree.foreachPoint(collector, boundary);
+		Set<qt.PointNode> foundPoints = collector.collection;
 
-		qt.PointNodeSet wrongOutside = new qt.PointNodeSet();
+		Set<qt.PointNode> wrongOutside = new Set<qt.PointNode>();
 		for (qt.PointNode point in expInside) {
 			if (!foundPoints.remove(point)) {
 				wrongOutside.add(point);
 			}
 		}
-		qt.PointNodeSet wrongInside = new qt.PointNodeSet();
+		Set<qt.PointNode> wrongInside = new Set<qt.PointNode>();
 		wrongInside.addAll(foundPoints);
 
 		bool showPlot = false;
-		if ((wrongOutside.size > 0) || (wrongInside.size > 0)) {
-			this._args.error("Foreach point failed to return expected results:",
-					"\n   Expected Outside: ", expOutside.toString(),
-					"\n   Expected Inside:  ", expInside.toString(),
-					"\n   Wrong Outside:    ", wrongOutside.toString(),
-					"\n   Wrong Inside:     ", wrongInside.toString());
+		if ((wrongOutside.length > 0) || (wrongInside.length > 0)) {
+			this._args.error("Foreach point failed to return expected results:"+
+					"\n   Expected Outside: $expOutside"+
+					"\n   Expected Inside:  $expInside"+
+					"\n   Wrong Outside:    $wrongOutside"+
+					"\n   Wrong Inside:     $wrongInside");
 			showPlot = true;
 		}
 
 		if (showPlot) {
 			QuadTreePlotter plot = new QuadTreePlotter();
 
-			plot.addTree("Tree", _tree);
-			qt.Points expOutsidePoint = plot.addGroup("Expected Outside").addPoints();
+			plotter.Group group = plot.addGroup("Tree");
+			plot.addTree(group, _tree);
+			plotter.Points expOutsidePoint = plot.addGroup("Expected Outside").addPoints([]);
 			expOutsidePoint.addColor(0.0, 0.0, 1.0);
 			expOutsidePoint.addPointSize(4.0);
-			plot.addPoints(expOutsidePoint, expOutside);
+			plot.addPoints([expOutsidePoint, expOutside]);
 
-			qt.Points expInsidePoint = plot.addGroup("Expected Inside").addPoints();
+			plotter.Points expInsidePoint = plot.addGroup("Expected Inside").addPoints([]);
 			expInsidePoint.addColor(0.0, 1.0, 0.0);
 			expInsidePoint.addPointSize(4.0);
-			plot.addPoints(expInsidePoint, expInside);
+			plot.addPoints([expInsidePoint, expInside]);
 
-			qt.Points wrongOutsidePoint = plot.addGroup("Wrong Outside").addPoints();
+			plotter.Points wrongOutsidePoint = plot.addGroup("Wrong Outside").addPoints([]);
 			wrongOutsidePoint.addColor(1.0, 0.0, 0.0);
 			wrongOutsidePoint.addPointSize(4.0);
-			plot.addPoints(wrongOutsidePoint, wrongOutside);
+			plot.addPoints([wrongOutsidePoint, wrongOutside]);
 
-			qt.Points wrongInsidePoint = plot.addGroup("Wrong Inside").addPoints();
+			plotter.Points wrongInsidePoint = plot.addGroup("Wrong Inside").addPoints([]);
 			wrongInsidePoint.addColor(1.0, 0.5, 0.0);
 			wrongInsidePoint.addPointSize(4.0);
-			plot.addPoints(wrongInsidePoint, wrongInside);
+			plot.addPoints([wrongInsidePoint, wrongInside]);
 
-			plot.addGroup("Boundary").addRects(x1, y1, x2-x1, y2-y1);
-			plot.show();
+			plot.addGroup("Boundary").addRects([x1, y1, x2-x1, y2-y1]);
+			_showPlot(plot);
 		}
 	}
 
 	void checkFindNearestPoint(int x, int y, int expX, int expY) {
 		qt.Point focus = new qt.Point(x, y);
 		qt.Point exp = new qt.Point(expX, expY);
-		qt.PointNode result = _tree.findNearestPoint(focus);
+		qt.PointNode result = _tree.findNearestPointToPoint(focus);
 
 		bool showPlot = false;
-		if (!qt.Point.equals(exp, result)) {
-			_args.error("Foreach point failed to return expected results:",
-					"\n   Focus:     ", focus.toString(),
-					"\n   Exp:       ", exp.toString(),
-					"\n   Exp Dist2: ", qt.Point.distance2(exp, focus),
-					"\n   Result:    ", result.toString());
+		if (!exp.equals(result)) {
+			_args.error("Foreach point failed to return expected results:"+
+					"\n   Focus:     ${focus.toString()}"+
+					"\n   Exp:       ${exp.toString()}"+
+					"\n   Exp Dist2: ${qt.Point.distance2Points(exp, focus)}"+
+					"\n   Result:    ${result.toString()}");
 			showPlot = true;
 		}
 
 		TestHandle hndl = new TestHandle();
-		_tree.foreach(hndl);
+		_tree.foreachPoint(hndl);
 
 		if (!hndl.found.equals(result)) {
-			_args.error("FindNearestPoint didn't find nearest point:",
-					"\n   Focus:        ", focus.toString(),
-					"\n   Result:       ", result.toString(),
-					"\n   Result Dist2: ", qt.Point.distance2(focus, result),
-					"\n   Found:        ", hndl.found.toString(),
-					"\n   Found Dist2:  ", hndl.minDist2);
+			_args.error("FindNearestPoint didn't find nearest point:"+
+					"\n   Focus:        ${focus.toString()}"+
+					"\n   Result:       ${result.toString()}"+
+					"\n   Result Dist2: ${qt.Point.distance2Points(focus, result)}"+
+					"\n   Found:        ${hndl.found.toString()}"+
+					"\n   Found Dist2:  ${hndl.minDist2}");
 			showPlot = true;
 		}
 
 		if (showPlot) {
 			QuadTreePlotter plot = new QuadTreePlotter();
+			plotter.Group group = plot.addGroup("Tree");
 
-			plot.addTree("Tree", _tree);
-			qt.Points focusPnt = plot.addGroup("Focus").addPoints();
+			plot.addTree(group, _tree);
+			plotter.Points focusPnt = plot.addGroup("Focus").addPoints([]);
 			focusPnt.addColor(0.0, 0.0, 1.0);
 			focusPnt.addPointSize(4.0);
 			plot.addPoint(focusPnt, focus);
 
-			qt.Points resultPnt = plot.addGroup("Result").addPoints();
+			plotter.Points resultPnt = plot.addGroup("Result").addPoints([]);
 			resultPnt.addColor(0.0, 1.0, 0.0);
 			resultPnt.addPointSize(4.0);
 			plot.addPoint(resultPnt, result);
 
-			qt.Points foundPnt = plot.addGroup("Found").addPoints();
+			plotter.Points foundPnt = plot.addGroup("Found").addPoints([]);
 			foundPnt.addColor(1.0, 0.0, 0.0);
 			foundPnt.addPointSize(4.0);
 			plot.addPoint(foundPnt, hndl.found);
 
-			plot.show();
+			_showPlot(plot);
 		}
 	}
 }
@@ -306,7 +309,7 @@ class TestHandle implements qt.IPointHandler {
 	double minDist2 = double.MAX_FINITE;
 	qt.PointNode found = null;
 	bool handle(qt.PointNode point) {
-		double dist2 = qt.Point.distance2(focus, point);
+		double dist2 = qt.Point.distance2Points(found, point);
 		if (dist2 < minDist2) {
 			minDist2 = dist2;
 			found = point;

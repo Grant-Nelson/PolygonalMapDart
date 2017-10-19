@@ -75,7 +75,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   // Set [next] to true to return the start edges from the end node,
   /// false to return the end edges from the start node..
   /// Returns the edge set of neighbors to this edge.
-  EdgeNodeSet neighborEdges(bool next) =>
+  Set<EdgeNode> neighborEdges(bool next) =>
       next ? this._end.startEdges : this._start.endEdges;
 
   /// This will attempt to find an edge which ends where this one starts and
@@ -109,7 +109,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   /// Determines the next neighbor edge on a properly wound polygon.
   IEdge nextBorder(IEdgeHandler matcher) {
     BorderNeighbor border = new BorderNeighbor(this, true, matcher);
-    for (EdgeNode neighbor in this._end.startEdges.nodes) {
+    for (EdgeNode neighbor in this._end.startEdges) {
       border.handle(neighbor);
     }
     return border.result;
@@ -119,7 +119,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   IEdge previousBorder(IEdgeHandler matcher) {
     BorderNeighbor border =
         new BorderNeighbor.Points(this._end, this._start, false, matcher);
-    for (EdgeNode neighbor in this._start.endEdges.nodes) {
+    for (EdgeNode neighbor in this._start.endEdges) {
       border.handle(neighbor);
     }
     return border.result;
@@ -136,7 +136,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
       result = false;
     }
 
-    if (!this._start.startEdges.nodes.contains(this)) {
+    if (!this._start.startEdges.contains(this)) {
       sout.write("Error in ");
       this.toBuffer(sout, format: format);
       sout.write(":  The start node, ");
@@ -145,7 +145,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
       result = false;
     }
 
-    if (!this._end.endEdges.nodes.contains(this)) {
+    if (!this._end.endEdges.contains(this)) {
       sout.write("Error in ");
       this.toBuffer(sout, format: format);
       sout.write(":  The end node, ");

@@ -4,21 +4,21 @@ part of PolygonalMapDart.Quadtree;
 /// at least one line passing over the node.
 class PassNode extends BaseNode {
   /// The set of edges which pass through this node.
-  EdgeNodeSet _passEdges;
+  Set<EdgeNode> _passEdges;
 
   /// Creates the pass node.
   PassNode() : super._() {
-    this._passEdges = new EdgeNodeSet();
+    this._passEdges = new Set<EdgeNode>();
   }
 
   /// Gets the set of edges which pass through this node.
-  EdgeNodeSet get passEdges => this._passEdges;
+  Set<EdgeNode> get passEdges => this._passEdges;
 
   /// Adds an edge to this node and/or children nodes.
   /// Returns the node that should be the new root of the subtree
   /// that was defined by this node.
   INode insertEdge(EdgeNode edge) {
-    if (this.overlapsEdge(edge)) this._passEdges.nodes.add(edge);
+    if (this.overlapsEdge(edge)) this._passEdges.add(edge);
     return this;
   }
 
@@ -26,7 +26,7 @@ class PassNode extends BaseNode {
   /// Returns the node that should be the new root of the subtree
   INode insertPoint(PointNode point) {
     point.setLocation(this.xmin, this.ymin, this.width);
-    point.passEdges.nodes.addAll(this._passEdges.nodes);
+    point.passEdges.addAll(this._passEdges);
     return point;
   }
 
@@ -36,10 +36,10 @@ class PassNode extends BaseNode {
   /// Return the node that should be the new root of the subtree that was
   /// defined by this node.
   INode removeEdge(EdgeNode edge, bool trimTree) {
-    if (this._passEdges.nodes.remove(edge)) {
+    if (this._passEdges.remove(edge)) {
       // If this node no longer has any edges replace this node with an
       // empty node.
-      if (this._passEdges.nodes.isEmpty) {
+      if (this._passEdges.isEmpty) {
         return EmptyNode.instance;
       }
     }
@@ -75,7 +75,7 @@ class PassNode extends BaseNode {
       [IBoundary bounds = null, bool exclusive = false]) {
     if (!exclusive) {
       if (this.overlapsBoundary(bounds)) {
-        for (EdgeNode edge in this._passEdges.nodes) {
+        for (EdgeNode edge in this._passEdges) {
           if (!handle.handle(edge)) {
             return false;
           }
@@ -115,7 +115,7 @@ class PassNode extends BaseNode {
   /// Set [recursive] to true to validate all children nodes too, false otherwise.
   bool validate(StringBuffer sout, IFormatter format, bool recursive) {
     bool result = true;
-    for (EdgeNode edge in this._passEdges.nodes) {
+    for (EdgeNode edge in this._passEdges) {
       if (!this.overlapsEdge(edge)) {
         sout.write("Error in ");
         this.toBuffer(sout, format: format);
@@ -149,7 +149,7 @@ class PassNode extends BaseNode {
     sout.write(this.boundary.toString(format: format));
 
     if (children) {
-      if (this._passEdges.nodes.length > 0) {
+      if (this._passEdges.length > 0) {
         sout.write(StringParts.Sep);
         sout.write(indent);
       }
@@ -158,7 +158,7 @@ class PassNode extends BaseNode {
         childIndent = indent + StringParts.Bar;
       else
         childIndent = indent + StringParts.Space;
-      this._passEdges.toBuffer(sout,
+      _edgeNodesToBuffer(this._passEdges, sout,
           indent: childIndent, contained: true, last: true, format: format);
     }
   }

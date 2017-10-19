@@ -529,7 +529,7 @@ class BranchNode extends BaseNode {
             this.setChild(quad, EmptyNode.instance);
           } else {
             // Copy all edges from this pass node into the already found pass node.
-            pass.passEdges.nodes.addAll(node.passEdges.nodes);
+            pass.passEdges.addAll(node.passEdges);
           }
         }
       }
@@ -562,10 +562,9 @@ class BranchNode extends BaseNode {
         if (node is PassNode) {
           // Add all passing lines to black node unless the line starts or ends
           // on the black node, since the line will already be in the start or end line lists.
-          for (EdgeNode edge in node.passEdges.nodes) {
-            if (edge.startNode == point) continue;
-            if (edge.endNode == point) continue;
-            point.passEdges.nodes.add(edge);
+          for (EdgeNode edge in node.passEdges) {
+            if ((edge.startNode != point) &&(edge.endNode != point))
+                point.passEdges.add(edge);
           }
         }
       }

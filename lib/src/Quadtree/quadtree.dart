@@ -13,9 +13,7 @@ part 'Coordinates.dart';
 part 'Edge.dart';
 part 'EdgeCollectorHandle.dart';
 part 'EdgeNode.dart';
-part 'EdgeNodeSet.dart';
 part 'EdgePointIgnorer.dart';
-part 'EdgeSet.dart';
 part 'EmptyNode.dart';
 part 'FirstLeftEdgeArgs.dart';
 part 'IBoundary.dart';
@@ -32,6 +30,7 @@ part 'IntersectionSet.dart';
 part 'IntersectionType.dart';
 part 'IPoint.dart';
 part 'IPointHandler.dart';
+part 'Misc.dart';
 part 'NearestEdgeArgs.dart';
 part 'NeighborEdgeIgnorer.dart';
 part 'NodeStack.dart';
@@ -39,10 +38,8 @@ part 'PassNode.dart';
 part 'Point.dart';
 part 'PointCollectorHandle.dart';
 part 'PointNode.dart';
-part 'PointNodeSet.dart';
 part 'PointNodeVector.dart';
 part 'PointOnEdgeResult.dart';
-part 'PointSet.dart';
 part 'Quadrant.dart';
 part 'Side.dart';
 part 'StringParts.dart';
@@ -56,7 +53,7 @@ class ValidateHandler implements IPointHandler {
   bool handle(PointNode point) {
     this.bounds = Boundary.expandWithPoint(this.bounds, point);
     this.pointCount++;
-    this.edgeCount += point.startEdges.nodes.length;
+    this.edgeCount += point.startEdges.length;
     return true;
   }
 }
@@ -437,23 +434,23 @@ class QuadTree {
     while (!stack.isEmpty) {
       INode node = stack.pop;
       if (node is PointNode) {
-        for (EdgeNode edge in node.startEdges.nodes) {
+        for (EdgeNode edge in node.startEdges) {
           if (Edge.distance2Point(edge, queryPoint) <= cutoffDist2) {
             if (!handler.handle(edge)) return false;
           }
         }
-        for (EdgeNode edge in node.endEdges.nodes) {
+        for (EdgeNode edge in node.endEdges) {
           if (Edge.distance2Point(edge, queryPoint) <= cutoffDist2) {
             if (!handler.handle(edge)) return false;
           }
         }
-        for (EdgeNode edge in node.passEdges.nodes) {
+        for (EdgeNode edge in node.passEdges) {
           if (Edge.distance2Point(edge, queryPoint) <= cutoffDist2) {
             if (!handler.handle(edge)) return false;
           }
         }
       } else if (node is PassNode) {
-        for (EdgeNode edge in node.passEdges.nodes) {
+        for (EdgeNode edge in node.passEdges) {
           if (Edge.distance2Point(edge, queryPoint) <= cutoffDist2) {
             if (!handler.handle(edge)) return false;
           }
@@ -483,26 +480,26 @@ class QuadTree {
     while (!stack.isEmpty) {
       INode node = stack.pop;
       if (node is PointNode) {
-        for (EdgeNode edge in node.startEdges.nodes) {
+        for (EdgeNode edge in node.startEdges) {
           PointOnEdgeResult pnt = Edge.pointOnEdge(edge, queryPoint);
           if (pnt.onEdge) {
             if (!handler.handle(edge)) return false;
           }
         }
-        for (EdgeNode edge in node.endEdges.nodes) {
+        for (EdgeNode edge in node.endEdges) {
           PointOnEdgeResult pnt = Edge.pointOnEdge(edge, queryPoint);
           if (pnt.onEdge) {
             if (!handler.handle(edge)) return false;
           }
         }
-        for (EdgeNode edge in node.passEdges.nodes) {
+        for (EdgeNode edge in node.passEdges) {
           PointOnEdgeResult pnt = Edge.pointOnEdge(edge, queryPoint);
           if (pnt.onEdge) {
             if (!handler.handle(edge)) return false;
           }
         }
       } else if (node is PassNode) {
-        for (EdgeNode edge in node.passEdges.nodes) {
+        for (EdgeNode edge in node.passEdges) {
           PointOnEdgeResult pnt = Edge.pointOnEdge(edge, queryPoint);
           if (pnt.onEdge) {
             if (!handler.handle(edge)) return false;
@@ -721,10 +718,10 @@ class QuadTree {
   /// [point] is the point to removed from the tree.
   void removePoint(PointNode point) {
     // Remove any edges on the point.
-    for (EdgeNode edge in point.startEdges.nodes) {
+    for (EdgeNode edge in point.startEdges) {
       this.removeEdge(edge, false);
     }
-    for (EdgeNode edge in point.endEdges.nodes) {
+    for (EdgeNode edge in point.endEdges) {
       this.removeEdge(edge, false);
     }
 

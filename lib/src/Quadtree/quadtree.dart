@@ -599,6 +599,9 @@ class QuadTree {
   /// Returns a pair containing the point node in the tree, and true if the
   /// point is new or false if the point already existed in the tree.
   InsertPointResult tryInsertPoint(IPoint point) {
+    if (point is Point) {
+      point = new PointNode(point.x, point.y);
+    }
     // Attempt to find the point first.
     BaseNode node = nodeContaining(point);
     if (node != null) {
@@ -626,8 +629,10 @@ class QuadTree {
       int centerY = (point.y ~/ initialTreeWidth) * initialTreeWidth;
       if (point.x < 0) centerX -= (initialTreeWidth - 1);
       if (point.y < 0) centerY -= (initialTreeWidth - 1);
+      print("<<<<\n");
       _setRoot((_root as EmptyNode)
           .addPoint(centerX, centerY, initialTreeWidth, point));
+      print(">>>>\n");
     } else {
       // Point outside of tree, expand the tree.
       BaseNode root = _expandFootprint(_root as BaseNode, point);
@@ -728,7 +733,7 @@ class QuadTree {
       vHndl.bounds = new Boundary(0, 0, 0, 0);
     }
 
-    if (!_boundary.equals(vHndl.bounds)) {
+    if (!Boundary.equals(_boundary, vHndl.bounds)) {
       sout.write("Error: The boundary should have been ");
       sout.write(vHndl.bounds.toString());
       sout.write(" but it was ");

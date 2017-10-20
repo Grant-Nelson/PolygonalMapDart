@@ -12,20 +12,20 @@ class TestManager {
 
   /// Creates new test manager attached to the given element.
   TestManager(this._elem) {
-    this._escape = new convert.HtmlEscape(convert.HtmlEscapeMode.ELEMENT);
-    this._header = new html.DivElement();
-    this._elem.children.add(this._header);
+    _escape = new convert.HtmlEscape(convert.HtmlEscapeMode.ELEMENT);
+    _header = new html.DivElement();
+    _elem.children.add(_header);
     html.DivElement checkBoxes = new html.DivElement()
       ..className = "log_checkboxes";
-    this._createLogSwitch(checkBoxes, "Information", "info_log");
-    this._createLogSwitch(checkBoxes, "Notice", "notice_log");
-    this._createLogSwitch(checkBoxes, "Warning", "warning_log");
-    this._createLogSwitch(checkBoxes, "Error", "error_log");
-    this._elem.children.add(checkBoxes);
-    this._start = new DateTime.now();
-    this._tests = new List<TestBlock>();
-    this._finished = 0;
-    this._failed = 0;
+    _createLogSwitch(checkBoxes, "Information", "info_log");
+    _createLogSwitch(checkBoxes, "Notice", "notice_log");
+    _createLogSwitch(checkBoxes, "Warning", "warning_log");
+    _createLogSwitch(checkBoxes, "Error", "error_log");
+    _elem.children.add(checkBoxes);
+    _start = new DateTime.now();
+    _tests = new List<TestBlock>();
+    _finished = 0;
+    _failed = 0;
   }
 
   /// Creates a check box for changing the visibility of logs with the given [type].
@@ -49,13 +49,13 @@ class TestManager {
   /// Callback from a test to indicate it is done
   /// and to have the manager start a new test.
   void _testDone(TestBlock block) {
-    this._finished++;
-    if (block.failed) this._failed++;
-    this._update();
-    if (this._finished < this._tests.length) {
+    _finished++;
+    if (block.failed) _failed++;
+    _update();
+    if (_finished < _tests.length) {
       new asy.Future(() {
         html.window.requestAnimationFrame((_) {});
-        this._tests[this._finished].run();
+        _tests[_finished].run();
       });
     }
   }
@@ -63,32 +63,31 @@ class TestManager {
   /// Updates the top header of the tests.
   void _update() {
     String time =
-        ((new DateTime.now().difference(this._start).inMilliseconds) * 0.001)
+        ((new DateTime.now().difference(_start).inMilliseconds) * 0.001)
             .toStringAsFixed(2);
-    int testCount = this._tests.length;
-    if (testCount <= this._finished) {
-      if (this._failed > 0) {
-        this._header.className = "top_header failed";
-        if (this._failed == 1)
-          this._header.text = "Failed 1 Test (${time}s)";
+    int testCount = _tests.length;
+    if (testCount <= _finished) {
+      if (_failed > 0) {
+        _header.className = "top_header failed";
+        if (_failed == 1)
+          _header.text = "Failed 1 Test (${time}s)";
         else
-          this._header.text = "Failed ${this._failed} Tests (${time}s)";
+          _header.text = "Failed ${this._failed} Tests (${time}s)";
       } else {
-        this._header
+        _header
           ..text = "Tests Passed (${time}s)"
           ..className = "top_header passed";
       }
     } else {
       String prec =
-          ((this._finished.toDouble() / testCount) * 100.0).toStringAsFixed(2);
-      this._header.text =
-          "Running Tests: ${this._finished}/${testCount} ($prec%)";
-      if (this._failed > 0) {
-        this._header
+          ((_finished.toDouble() / testCount) * 100.0).toStringAsFixed(2);
+      _header.text = "Running Tests: ${this._finished}/${testCount} ($prec%)";
+      if (_failed > 0) {
+        _header
           ..text = "${this._header.text} - ${this._failed} failed)"
           ..className = "topHeader failed";
       } else {
-        this._header.className = "topHeader running";
+        _header.className = "topHeader running";
       }
     }
   }
@@ -96,14 +95,14 @@ class TestManager {
   /// Adds a new test to be run.
   void add(String testName, TestHandler test) {
     if (testName.length <= 0) testName = "$test";
-    this._tests.add(new TestBlock(this, test, testName));
-    this._update();
+    _tests.add(new TestBlock(this, test, testName));
+    _update();
 
     // If currently none are running, start this one.
-    if (this._finished + 1 == this._tests.length) {
+    if (_finished + 1 == _tests.length) {
       new asy.Future(() {
         html.window.requestAnimationFrame((_) {});
-        this._tests[this._finished].run();
+        _tests[_finished].run();
       });
     }
   }

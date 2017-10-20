@@ -2,6 +2,16 @@ part of PolygonalMapDart.Quadtree;
 
 /// The geometric boundary in a quad-tree.
 class Boundary implements IBoundary {
+  /// Determines if the given boundaries are equal.
+  static bool equals(IBoundary a, IBoundary b) {
+    if (a == null) return b == null;
+    if (b == null) return false;
+    return (a.xmin == b.xmin) &&
+        (a.ymin == b.ymin) &&
+        (a.xmax == b.xmax) &&
+        (a.ymax == b.ymax);
+  }
+
   /// Returns the given boundary expanded with the new point.
   static Boundary expand(IBoundary boundary, IPoint point) {
     if (boundary == null) {
@@ -201,18 +211,6 @@ class Boundary implements IBoundary {
         return Point.distance2(new Point(_xmax, _ymax), point);
       }
     }
-  }
-
-  /// Determines if the given object is equal to this boundary.
-  /// Returns true if the object is equal to this edge, false otherwise.
-  bool equals(Object o) {
-    if (o == null) return false;
-    if (o is Boundary) return false;
-    Boundary boundary = o as Boundary;
-    return (_xmin == boundary._xmin) &&
-        (_ymin == boundary._ymin) &&
-        (_xmax == boundary._xmax) &&
-        (_ymax == boundary._ymax);
   }
 
   /// Gets the string for this boundary.

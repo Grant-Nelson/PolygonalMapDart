@@ -25,9 +25,7 @@ class AreaAccumulator implements IEdgeHandler {
   /// Adds a new edge of the shape to the accumulated area.
   /// Always returns true.
   bool handle(IEdge edge) {
-    _area += (edge.x1.toDouble() * edge.y2.toDouble() -
-            edge.x2.toDouble() * edge.y1.toDouble()) *
-        0.5;
+    _area += (edge.x1.toDouble() * edge.y2.toDouble() - edge.x2.toDouble() * edge.y1.toDouble()) * 0.5;
     return true;
   }
 }

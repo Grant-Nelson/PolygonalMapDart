@@ -7,8 +7,7 @@ class Edge implements IEdge, Comparable<Edge> {
 
   /// Determines if the start and end points are the same.
   /// Returns true if the edge has no length, false otherwise.
-  static bool degenerate(IEdge edge) =>
-      (edge.x1 == edge.x2) && (edge.y1 == edge.y2);
+  static bool degenerate(IEdge edge) => (edge.x1 == edge.x2) && (edge.y1 == edge.y2);
 
   /// Compares the two given lines.
   /// Returns 1 if the first line is greater than the the second line,
@@ -40,13 +39,8 @@ class Edge implements IEdge, Comparable<Edge> {
   static bool equals(IEdge a, IEdge b, bool undirected) {
     if (a == null) return b == null;
     if (b == null) return false;
-    if ((a.x1 == b.x1) && (a.y1 == b.y1) && (a.x2 == b.x2) && (a.y2 == b.y2))
-      return true;
-    if (undirected)
-      return (a.x1 == b.x2) &&
-          (a.y1 == b.y2) &&
-          (a.x2 == b.x1) &&
-          (a.y2 == b.y1);
+    if ((a.x1 == b.x1) && (a.y1 == b.y1) && (a.x2 == b.x2) && (a.y2 == b.y2)) return true;
+    if (undirected) return (a.x1 == b.x2) && (a.y1 == b.y2) && (a.x2 == b.x1) && (a.y2 == b.y1);
     return false;
   }
 
@@ -65,9 +59,7 @@ class Edge implements IEdge, Comparable<Edge> {
       dx = (edge.x1 - point.x).toDouble();
       dy = (edge.y1 - point.y).toDouble();
     } else {
-      double r =
-          ((point.x - edge.x1) * edge.dx + (point.y - edge.y1) * edge.dy) /
-              leng2;
+      double r = ((point.x - edge.x1) * edge.dx + (point.y - edge.y1) * edge.dy) / leng2;
       if (r <= 0.0) {
         dx = (edge.x1 - point.x).toDouble();
         dy = (edge.y1 - point.y).toDouble();
@@ -102,8 +94,7 @@ class Edge implements IEdge, Comparable<Edge> {
 
   /// Gets the side of the edge the given point is on.
   static int side(IEdge edge, IPoint point) {
-    double value = Point.cross(new Point(edge.dx, edge.dy),
-        new Point(point.x - edge.x1, point.y - edge.y1));
+    double value = Point.cross(new Point(edge.dx, edge.dy), new Point(point.x - edge.x1, point.y - edge.y1));
     double epsilon = 1.0e-12;
     if (value.abs() <= epsilon)
       return Side.Inside;
@@ -118,11 +109,9 @@ class Edge implements IEdge, Comparable<Edge> {
     if (Edge.degenerate(edge))
       return null;
     else if (Point.equals(point, edge.start))
-      return new PointOnEdgeResult(
-          edge, point, IntersectionLocation.AtStart, point, true, point, true);
+      return new PointOnEdgeResult(edge, point, IntersectionLocation.AtStart, point, true, point, true);
     else if (Point.equals(point, edge.end))
-      return new PointOnEdgeResult(
-          edge, point, IntersectionLocation.AtEnd, point, true, point, true);
+      return new PointOnEdgeResult(edge, point, IntersectionLocation.AtEnd, point, true, point, true);
     else {
       // Calculate closest point on the edge's line.
       // The denominator can't be zero because the edge isn't degenerate.
@@ -159,8 +148,7 @@ class Edge implements IEdge, Comparable<Edge> {
         location = IntersectionLocation.InMiddle;
       }
 
-      return new PointOnEdgeResult(
-          edge, point, location, closestOnEdge, onEdge, closestOnLine, onLine);
+      return new PointOnEdgeResult(edge, point, location, closestOnEdge, onEdge, closestOnLine, onLine);
     }
   }
 
@@ -254,9 +242,7 @@ class Edge implements IEdge, Comparable<Edge> {
             locA = IntersectionLocation.AtStart;
             locB = IntersectionLocation.AtStart;
             intPnt = edgeA.start;
-            intType = (denom == 0)
-                ? IntersectionType.Collinear
-                : IntersectionType.Point;
+            intType = (denom == 0) ? IntersectionType.Collinear : IntersectionType.Point;
             assert(Point.equals(edgeA.start, edgeB.start));
           }
         }
@@ -275,9 +261,7 @@ class Edge implements IEdge, Comparable<Edge> {
           locA = IntersectionLocation.AtEnd;
           locB = IntersectionLocation.AtStart;
           intPnt = edgeB.start;
-          intType = (denom == 0)
-              ? IntersectionType.Collinear
-              : IntersectionType.Point;
+          intType = (denom == 0) ? IntersectionType.Collinear : IntersectionType.Point;
           assert(Point.equals(edgeB.start, edgeA.end));
         }
       } else {
@@ -316,9 +300,7 @@ class Edge implements IEdge, Comparable<Edge> {
             locA = IntersectionLocation.AtStart;
             locB = IntersectionLocation.AtEnd;
             intPnt = edgeA.start;
-            intType = (denom == 0)
-                ? IntersectionType.Collinear
-                : IntersectionType.Point;
+            intType = (denom == 0) ? IntersectionType.Collinear : IntersectionType.Point;
             assert(Point.equals(edgeA.start, edgeB.end));
           }
         }
@@ -337,9 +319,7 @@ class Edge implements IEdge, Comparable<Edge> {
           locA = IntersectionLocation.AtEnd;
           locB = IntersectionLocation.AtEnd;
           intPnt = edgeA.end;
-          intType = (denom == 0)
-              ? IntersectionType.Collinear
-              : IntersectionType.Point;
+          intType = (denom == 0) ? IntersectionType.Collinear : IntersectionType.Point;
           assert(Point.equals(edgeA.end, edgeB.end));
         }
       } else {
@@ -402,8 +382,7 @@ class Edge implements IEdge, Comparable<Edge> {
       double rA = numA / denom;
 
       // Calculate the point of intersection.
-      intPnt = new Point(
-          (edgeA.x1 + rA * dAx).round(), (edgeA.y1 + rA * dAy).round());
+      intPnt = new Point((edgeA.x1 + rA * dAx).round(), (edgeA.y1 + rA * dAy).round());
 
       int numB = (dABy * dAx) - (dABx * dAy);
       double rB = numB / denom;
@@ -448,18 +427,15 @@ class Edge implements IEdge, Comparable<Edge> {
       }
     }
 
-    return new IntersectionResult(edgeA, edgeB, intersects, intType, intPnt,
-        locA, locB, startBOnEdgeA, endBOnEdgeA, startAOnEdgeB, endAOnEdgeB);
+    return new IntersectionResult(
+        edgeA, edgeB, intersects, intType, intPnt, locA, locB, startBOnEdgeA, endBOnEdgeA, startAOnEdgeB, endAOnEdgeB);
   }
 
   /// Formats the edges into a string.
   /// [contained] indicates this output is part of another part.
   /// [last] indicate this is the last set in a list of parents.
   static void edgeNodesToBuffer(Set<EdgeNode> nodes, StringBuffer sout,
-      {String indent: "",
-      bool contained: false,
-      bool last: true,
-      IFormatter format: null}) {
+      {String indent: "", bool contained: false, bool last: true, IFormatter format: null}) {
     int count = nodes.length;
     int index = 0;
     for (EdgeNode edge in nodes) {
@@ -468,11 +444,7 @@ class Edge implements IEdge, Comparable<Edge> {
         sout.write(indent);
       }
       index++;
-      edge.toBuffer(sout,
-          indent: indent,
-          contained: contained,
-          last: last && (index >= count),
-          format: format);
+      edge.toBuffer(sout, indent: indent, contained: contained, last: last && (index >= count), format: format);
     }
   }
 

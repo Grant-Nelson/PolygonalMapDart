@@ -16,8 +16,7 @@ class TestManager {
     _escape = new convert.HtmlEscape(convert.HtmlEscapeMode.ELEMENT);
     _header = new html.DivElement();
     _elem.children.add(_header);
-    html.DivElement checkBoxes = new html.DivElement()
-      ..className = "log_checkboxes";
+    html.DivElement checkBoxes = new html.DivElement()..className = "log_checkboxes";
     _createLogSwitch(checkBoxes, "Information", "info_log");
     _createLogSwitch(checkBoxes, "Notice", "notice_log");
     _createLogSwitch(checkBoxes, "Warning", "warning_log");
@@ -43,8 +42,7 @@ class TestManager {
       ..className = "log_checkbox"
       ..checked = true;
     checkBox.onChange.listen((_) {
-      html.ElementList<html.Element> myElements =
-          html.document.querySelectorAll(".$type");
+      html.ElementList<html.Element> myElements = html.document.querySelectorAll(".$type");
       String display = checkBox.checked ? "block" : "none";
       for (int i = 0; i < myElements.length; i++) {
         myElements[i].style.display = display;
@@ -71,9 +69,7 @@ class TestManager {
 
   /// Updates the top header of the tests.
   void _update() {
-    String time =
-        ((new DateTime.now().difference(_start).inMilliseconds) * 0.001)
-            .toStringAsFixed(2);
+    String time = ((new DateTime.now().difference(_start).inMilliseconds) * 0.001).toStringAsFixed(2);
     int testCount = _tests.length;
     if (testCount <= _finished) {
       if (_failed > 0) {
@@ -88,8 +84,7 @@ class TestManager {
           ..className = "top_header passed";
       }
     } else {
-      String prec =
-          ((_finished.toDouble() / testCount) * 100.0).toStringAsFixed(2);
+      String prec = ((_finished.toDouble() / testCount) * 100.0).toStringAsFixed(2);
       _header.text = "Running Tests: ${this._finished}/${testCount} ($prec%)";
       if (_failed > 0) {
         _header

@@ -140,8 +140,7 @@ abstract class BaseNode implements INode, IBoundary {
 
   /// Checks if the given boundary is completely contains by this boundary.
   /// Returns true if the boundary is fully contained, false otherwise.
-  bool containsBoundary(IBoundary boundary) =>
-      boundary.containsBoundary(boundary);
+  bool containsBoundary(IBoundary boundary) => boundary.containsBoundary(boundary);
 
   /// Checks if the given edge overlaps this boundary.
   /// Returns true if the edge is overlaps, false otherwise.
@@ -150,8 +149,7 @@ abstract class BaseNode implements INode, IBoundary {
   /// Checks if the given boundary overlaps this boundary.
   /// Returns true if the given boundary overlaps this boundary,
   /// false otherwise.
-  bool overlapsBoundary(IBoundary boundary) =>
-      boundary.overlapsBoundary(boundary);
+  bool overlapsBoundary(IBoundary boundary) => boundary.overlapsBoundary(boundary);
 
   /// Gets the distance squared from this boundary to the given point.
   /// Returns the distance squared from this boundary to the given point.
@@ -165,8 +163,7 @@ abstract class BaseNode implements INode, IBoundary {
   }
 
   /// This handles all the edges in the given set to the left of the given point.
-  bool _foreachLeftEdge(
-      Set<EdgeNode> edgeSet, IPoint point, IEdgeHandler handle) {
+  bool _foreachLeftEdge(Set<EdgeNode> edgeSet, IPoint point, IEdgeHandler handle) {
     for (EdgeNode edge in edgeSet) {
       if (edge.y1 > point.y) {
         if (edge.y2 > point.y) continue;
@@ -184,8 +181,7 @@ abstract class BaseNode implements INode, IBoundary {
   }
 
   /// This handles the first found intersecting edge in the given edge set.
-  IntersectionResult _findFirstIntersection(
-      Set<EdgeNode> edgeSet, IEdge edge, IEdgeHandler hndl) {
+  IntersectionResult _findFirstIntersection(Set<EdgeNode> edgeSet, IEdge edge, IEdgeHandler hndl) {
     for (EdgeNode other in edgeSet) {
       if ((hndl == null) || hndl.handle(other)) {
         IntersectionResult inter = Edge.intersect(edge, other);
@@ -198,8 +194,7 @@ abstract class BaseNode implements INode, IBoundary {
   }
 
   /// This handles all the intersections in the given edge set.
-  bool _findAllIntersections(Set<EdgeNode> edgeSet, IEdge edge,
-      IEdgeHandler hndl, IntersectionSet intersections) {
+  bool _findAllIntersections(Set<EdgeNode> edgeSet, IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
     for (EdgeNode other in edgeSet) {
       if ((hndl == null) || hndl.handle(other)) {

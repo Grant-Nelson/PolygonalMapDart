@@ -169,16 +169,12 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   }
 
   /// This handles all the intersections.
-  bool findAllIntersections(
-      IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
+  bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
     if (overlapsEdge(edge)) {
-      if (_findAllIntersections(_startEdges, edge, hndl, intersections))
-        result = true;
-      if (_findAllIntersections(_endEdges, edge, hndl, intersections))
-        result = true;
-      if (_findAllIntersections(_passEdges, edge, hndl, intersections))
-        result = true;
+      if (_findAllIntersections(_startEdges, edge, hndl, intersections)) result = true;
+      if (_findAllIntersections(_endEdges, edge, hndl, intersections)) result = true;
+      if (_findAllIntersections(_passEdges, edge, hndl, intersections)) result = true;
     }
     return result;
   }
@@ -195,8 +191,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// [exclusive] indicates that only edge which have both end points
   /// inside the region are collected, otherwise any edge which
   // exists even partially in the region are collected.
-  bool foreachEdge(IEdgeHandler handle,
-      [IBoundary bounds = null, bool exclusive = false]) {
+  bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) {
     if ((bounds == null) || overlapsBoundary(bounds)) {
       if (exclusive) {
         // Check all edges which start at this node to see if they end in the bounds.
@@ -224,8 +219,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
 
   /// Handles each node reachable from this node in the boundary.
   bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) {
-    return ((bounds == null) || overlapsBoundary(bounds)) &&
-        handle.handle(this);
+    return ((bounds == null) || overlapsBoundary(bounds)) && handle.handle(this);
   }
 
   /// Determines if the node has any point nodes inside it.
@@ -233,8 +227,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   bool get hasPoints => true;
 
   /// Determines if the node has any edge nodes inside it.
-  bool get hasEdges =>
-      !(_passEdges.isEmpty || _endEdges.isEmpty || _startEdges.isEmpty);
+  bool get hasEdges => !(_passEdges.isEmpty || _endEdges.isEmpty || _startEdges.isEmpty);
 
   /// Gets the first edge to the left of the given point.
   void firstLeftEdge(FirstLeftEdgeArgs args) {
@@ -314,12 +307,10 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     // Determine the closest side of the found sides.
     if (rightMost != null) {
       if (leftMost != null) {
-        double rightCross = Point.cross(
-            new Point(rightMost.x2 - x, rightMost.y2 - y),
-            new Point(queryPoint.x - x, queryPoint.y - y));
-        double leftCross = Point.cross(
-            new Point(queryPoint.x - x, queryPoint.y - y),
-            new Point(leftMost.x2 - x, leftMost.y2 - y));
+        double rightCross =
+            Point.cross(new Point(rightMost.x2 - x, rightMost.y2 - y), new Point(queryPoint.x - x, queryPoint.y - y));
+        double leftCross =
+            Point.cross(new Point(queryPoint.x - x, queryPoint.y - y), new Point(leftMost.x2 - x, leftMost.y2 - y));
         if (rightCross <= leftCross)
           return rightMost;
         else
@@ -466,11 +457,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
   void toBuffer(StringBuffer sout,
-      {String indent: "",
-      bool children: false,
-      bool contained: false,
-      bool last: true,
-      IFormatter format: null}) {
+      {String indent: "", bool children: false, bool contained: false, bool last: true, IFormatter format: null}) {
     if (contained) {
       if (last)
         sout.write(StringParts.Last);
@@ -502,25 +489,17 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
         sout.write(StringParts.Sep);
         sout.write(indent);
         Edge.edgeNodesToBuffer(_startEdges, sout,
-            indent: childIndent,
-            contained: true,
-            last: !(hasEnd || hasPass),
-            format: format);
+            indent: childIndent, contained: true, last: !(hasEnd || hasPass), format: format);
       }
       if (hasEnd) {
         sout.write(StringParts.Sep);
         sout.write(indent);
-        Edge.edgeNodesToBuffer(_endEdges, sout,
-            indent: childIndent,
-            contained: true,
-            last: !hasPass,
-            format: format);
+        Edge.edgeNodesToBuffer(_endEdges, sout, indent: childIndent, contained: true, last: !hasPass, format: format);
       }
       if (hasPass) {
         sout.write(StringParts.Sep);
         sout.write(indent);
-        Edge.edgeNodesToBuffer(_passEdges, sout,
-            indent: childIndent, contained: true, last: true, format: format);
+        Edge.edgeNodesToBuffer(_passEdges, sout, indent: childIndent, contained: true, last: true, format: format);
       }
     }
   }

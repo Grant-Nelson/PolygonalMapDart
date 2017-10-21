@@ -15,7 +15,6 @@ class EdgePointIgnorer implements IPointHandler {
   /// Handles the point to check to ignore.
   /// Returns true to allow, false to ignore.
   bool handle(PointNode point) {
-    return !(Point.equals(point, _edge.start) ||
-        Point.equals(point, _edge.end));
+    return !(Point.equals(point, _edge.start) || Point.equals(point, _edge.end));
   }
 }

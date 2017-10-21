@@ -45,7 +45,7 @@ class BoundaryRegion {
   static const int Horizontal = 0x0C;
 
   /// Gets the string for the given boundary region.
-  static String boundaryRegionToString(int region) {
+  static String getString(int region) {
     switch (region) {
       case BoundaryRegion.Inside:
         return "Inside";

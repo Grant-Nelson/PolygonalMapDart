@@ -3,13 +3,13 @@ part of tests;
 /// A plotter customized to work with quad-trees.
 class QuadTreePlotter extends plotter.Plotter {
   /// Shows a quad-tree in a plot panel.
-  static plotSvg.PlotSvg Show(qt.QuadTree tree, String targetDivId) {
+  static plotSvg.PlotSvg Show(qt.QuadTree tree, html.DivElement div) {
     QuadTreePlotter plot = new QuadTreePlotter();
     plotter.Group grp = plot.addGroup("Tree");
     plot.addTree(grp, tree);
     plot.updateBounds();
     plot.focusOnData();
-    return new plotSvg.PlotSvg(targetDivId, plot);
+    return new plotSvg.PlotSvg.fromElem(div, plot);
   }
 
   /// Creates a new quad-tree plotter.
@@ -22,8 +22,7 @@ class QuadTreePlotter extends plotter.Plotter {
   }
 
   /// Adds a set of points to the given point list.
-  plotter.Points addPointSet(
-      plotter.Points points, Set<qt.PointNode> pointSet) {
+  plotter.Points addPointSet(plotter.Points points, Set<qt.PointNode> pointSet) {
     for (qt.PointNode point in pointSet) {
       points.add([point.x.toDouble(), point.y.toDouble()]);
     }
@@ -33,19 +32,13 @@ class QuadTreePlotter extends plotter.Plotter {
   /// Adds an edge to the given line list.
   plotter.Lines addLine(plotter.Lines lines, qt.IEdge edge) {
     if (lines != null) {
-      lines.add([
-        edge.x1.toDouble(),
-        edge.y1.toDouble(),
-        edge.x2.toDouble(),
-        edge.y2.toDouble()
-      ]);
+      lines.add([edge.x1.toDouble(), edge.y1.toDouble(), edge.x2.toDouble(), edge.y2.toDouble()]);
     }
     return lines;
   }
 
   /// Adds a boundary to the given rectangle list.
-  plotter.Rectangles addBound(
-      plotter.Rectangles rects, qt.Boundary bound, double inset) {
+  plotter.Rectangles addBound(plotter.Rectangles rects, qt.Boundary bound, double inset) {
     if (rects != null) {
       double inset2 = 1.0 - inset * 2.0;
       rects.add([
@@ -103,22 +96,14 @@ class QuadTreePlotter extends plotter.Plotter {
     points.addColor(0.0, 0.0, 0.0);
     group.addGroup("Points", [points])..enabled = showPoints;
 
-    addTreeItems(
-        tree, passRects, pointRects, emptyRects, branchRects, edges, points);
+    addTreeItems(tree, passRects, pointRects, emptyRects, branchRects, edges, points);
   }
 
   /// Adds a quad-tree to this plotter.
   /// Plotter parts can be null to not add to the plot.
-  void addTreeItems(
-      qt.QuadTree tree,
-      plotter.Rectangles passRects,
-      plotter.Rectangles pointRects,
-      plotter.Rectangles emptyRects,
-      plotter.Rectangles branchRects,
-      plotter.Lines edges,
-      plotter.Points points) {
-    tree.foreachNode(new QuadTreePlotterNodeHandler(
-        this, passRects, pointRects, emptyRects, branchRects));
+  void addTreeItems(qt.QuadTree tree, plotter.Rectangles passRects, plotter.Rectangles pointRects,
+      plotter.Rectangles emptyRects, plotter.Rectangles branchRects, plotter.Lines edges, plotter.Points points) {
+    tree.foreachNode(new QuadTreePlotterNodeHandler(this, passRects, pointRects, emptyRects, branchRects));
 
     if (edges != null) {
       tree.foreachEdge(new QuadTreePlotterEdgeHandler(this, edges));
@@ -138,8 +123,7 @@ class QuadTreePlotterNodeHandler extends qt.INodeHandler {
   plotter.Rectangles _emptyRects;
   plotter.Rectangles _branchRects;
 
-  QuadTreePlotterNodeHandler(
-      this._plot, this._passRects, this._pointRects, this._emptyRects, this._branchRects);
+  QuadTreePlotterNodeHandler(this._plot, this._passRects, this._pointRects, this._emptyRects, this._branchRects);
 
   bool handle(qt.INode node) {
     if (node is qt.PassNode) {
@@ -152,12 +136,7 @@ class QuadTreePlotterNodeHandler extends qt.INodeHandler {
           qt.INode child = node.child(quad);
           if (child is qt.EmptyNode) {
             double width = node.width / 2 - 1.0 + _pad * 2.0;
-            _emptyRects.add([
-              node.childX(quad) - _pad,
-              node.childY(quad) - _pad,
-              width,
-              width
-            ]);
+            _emptyRects.add([node.childX(quad) - _pad, node.childY(quad) - _pad, width, width]);
           }
         }
       }

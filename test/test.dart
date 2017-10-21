@@ -9,6 +9,7 @@ import 'package:plotterDart/plotSvg.dart' as plotSvg;
 import 'package:plotterDart/plotter.dart' as plotter;
 
 part 'quadtreeTests/insertPoint.dart';
+part 'quadtreeTests/regions.dart';
 
 part 'tools/quadTreePlotter.dart';
 part 'tools/quadTreeTester.dart';
@@ -22,6 +23,7 @@ void main() {
   TestManager tests = new TestManager(elem);
 
   addInsertPointTests(tests);
+  addRegionTests(tests);
 
   shell(elem);
 }

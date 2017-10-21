@@ -60,17 +60,13 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   /// false if not or the edge was null.
   bool connectsToEdge(EdgeNode edge) =>
       (edge != null) &&
-      ((_start == edge._end) ||
-          (_end == edge._start) ||
-          (_start == edge._start) ||
-          (_end == edge._end));
+      ((_start == edge._end) || (_end == edge._start) || (_start == edge._start) || (_end == edge._end));
 
   /// This gets the edge set of neighbor edges to this edge.
   // Set [next] to true to return the start edges from the end node,
   /// false to return the end edges from the start node..
   /// Returns the edge set of neighbors to this edge.
-  Set<EdgeNode> neighborEdges(bool next) =>
-      next ? _end.startEdges : _start.endEdges;
+  Set<EdgeNode> neighborEdges(bool next) => next ? _end.startEdges : _start.endEdges;
 
   /// This will attempt to find an edge which ends where this one starts and
   /// starts where this one ends, coincident and opposite.
@@ -111,8 +107,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
 
   /// Determines the previous neighbor edge on a properly wound polygon.
   IEdge previousBorder(IEdgeHandler matcher) {
-    BorderNeighbor border =
-        new BorderNeighbor.Points(_end, _start, false, matcher);
+    BorderNeighbor border = new BorderNeighbor.Points(_end, _start, false, matcher);
     for (EdgeNode neighbor in _start.endEdges) {
       border.handle(neighbor);
     }
@@ -165,10 +160,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
   void toBuffer(StringBuffer sout,
-      {String indent: "",
-      bool contained: false,
-      bool last: true,
-      IFormatter format: null}) {
+      {String indent: "", bool contained: false, bool last: true, IFormatter format: null}) {
     if (contained) {
       if (last)
         sout.write(StringParts.Last);

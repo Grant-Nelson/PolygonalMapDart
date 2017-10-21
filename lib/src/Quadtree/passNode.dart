@@ -55,8 +55,7 @@ class PassNode extends BaseNode {
   }
 
   /// This handles all the intersections.
-  bool findAllIntersections(
-      IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
+  bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     if (overlapsEdge(edge)) {
       return _findAllIntersections(_passEdges, edge, hndl, intersections);
     }
@@ -70,8 +69,7 @@ class PassNode extends BaseNode {
   /// [exclusive] indicates that only edge which have both end points
   /// inside the region are collected, otherwise any edge which
   /// exists even partially in the region are collected.
-  bool foreachEdge(IEdgeHandler handle,
-      [IBoundary bounds = null, bool exclusive = false]) {
+  bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) {
     if (!exclusive) {
       if (overlapsBoundary(bounds)) {
         for (EdgeNode edge in _passEdges) {
@@ -102,12 +100,10 @@ class PassNode extends BaseNode {
   bool get hasEdges => true;
 
   /// Gets the first edge to the left of the given point.
-  void firstLeftEdge(FirstLeftEdgeArgs args) =>
-      _firstLineLeft(_passEdges, args);
+  void firstLeftEdge(FirstLeftEdgeArgs args) => _firstLineLeft(_passEdges, args);
 
   /// Handles all the edges to the left of the given point.
-  bool foreachLeftEdge(IPoint point, IEdgeHandler handle) =>
-      _foreachLeftEdge(_passEdges, point, handle);
+  bool foreachLeftEdge(IPoint point, IEdgeHandler handle) => _foreachLeftEdge(_passEdges, point, handle);
 
   /// Validates this node.
   /// Set [recursive] to true to validate all children nodes too, false otherwise.
@@ -131,11 +127,7 @@ class PassNode extends BaseNode {
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
   void toBuffer(StringBuffer sout,
-      {String indent = "",
-      bool children = false,
-      bool contained = false,
-      bool last = true,
-      IFormatter format = null}) {
+      {String indent = "", bool children = false, bool contained = false, bool last = true, IFormatter format = null}) {
     if (contained) {
       if (last)
         sout.write(StringParts.Last);
@@ -156,8 +148,7 @@ class PassNode extends BaseNode {
         childIndent = indent + StringParts.Bar;
       else
         childIndent = indent + StringParts.Space;
-      Edge.edgeNodesToBuffer(_passEdges, sout,
-          indent: childIndent, contained: true, last: true, format: format);
+      Edge.edgeNodesToBuffer(_passEdges, sout, indent: childIndent, contained: true, last: true, format: format);
     }
   }
 }

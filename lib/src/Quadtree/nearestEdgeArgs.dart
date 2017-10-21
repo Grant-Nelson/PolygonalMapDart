@@ -53,8 +53,7 @@ class NearestEdgeArgs {
         int x = node.xmin + width ~/ 2;
         int y = node.ymin + width ~/ 2;
         double diagDist2 = 2.0 * width * width;
-        double dist2 =
-            Point.distance2(_queryPoint, new Point(x, y)) - diagDist2;
+        double dist2 = Point.distance2(_queryPoint, new Point(x, y)) - diagDist2;
         if (dist2 <= _cutoffDist2) {
           stack.pushChildren(node);
         }

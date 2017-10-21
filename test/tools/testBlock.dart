@@ -42,8 +42,7 @@ class TestBlock extends TestArgs {
     if (_start != null) {
       DateTime end = _end;
       if (end == null) end = new DateTime.now();
-      time =
-          ((end.difference(_start).inMilliseconds) * 0.001).toStringAsFixed(2);
+      time = ((end.difference(_start).inMilliseconds) * 0.001).toStringAsFixed(2);
       time = "(${time}s)";
     }
     if (!_started) {
@@ -89,20 +88,34 @@ class TestBlock extends TestArgs {
   }
 
   /// Adds a div element to the test output.
-  String addDiv() {
-    String name = "testDiv${_man.takeDivIndex}";
-    _body.innerHtml +=
-        "<dir class=\"test_div\" id=\"$name\"></dir>";
-    return name;
+  html.DivElement addDiv() {
+    html.DivElement div = new html.DivElement()
+      ..className = "test_div"
+      ..id = "testDiv${_man.takeDivIndex}";
+    _body.children.add(div);
+    return div;
   }
 
   /// Adds a new log event
   void _addLog(String text, String type) {
-    String log = _man._escape
-        .convert(text)
-        .replaceAll(" ", "&nbsp;")
-        .replaceAll("\n", "</dir><br class=\"$type\"><dir class=\"$type\">");
-    _body.innerHtml += "<dir class=\"$type\">$log</dir>";
+    List<String> entries = _man._escape.convert(text).replaceAll(" ", "&nbsp;").split("\n");
+
+    if (entries.isNotEmpty) {
+      if (entries[0].isNotEmpty) {
+        _body.children.add(new html.DivElement()
+          ..className = type
+          ..text = entries[0]);
+      }
+      for (int i = 1; i < entries.length; i++) {
+        _body.children.add(new html.BRElement()..className = type);
+
+        if (entries[i].isNotEmpty) {
+          _body.children.add(new html.DivElement()
+            ..className = type
+            ..text = entries[i]);
+        }
+      }
+    }
   }
 
   /// Prints text to the test's output console as an information.

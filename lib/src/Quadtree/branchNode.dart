@@ -32,8 +32,7 @@ class BranchNode extends BaseNode {
         INode node = child(quad);
         INode newChild;
         if (node is EmptyNode) {
-          newChild = EmptyNode.instance
-              .addEdge(childX(quad), childY(quad), width ~/ 2, edge);
+          newChild = EmptyNode.instance.addEdge(childX(quad), childY(quad), width ~/ 2, edge);
         } else
           newChild = (node as BaseNode).insertEdge(edge);
         if (setChild(quad, newChild)) {
@@ -55,8 +54,7 @@ class BranchNode extends BaseNode {
     int quad = childQuad(point);
     INode node = child(quad);
     if (node is EmptyNode) {
-      INode child = EmptyNode.instance
-          .addPoint(childX(quad), childY(quad), width ~/ 2, point);
+      INode child = EmptyNode.instance.addPoint(childX(quad), childY(quad), width ~/ 2, point);
       if (setChild(quad, child)) return reduce();
     } else {
       INode child = (node as BaseNode).insertPoint(point);
@@ -107,8 +105,7 @@ class BranchNode extends BaseNode {
   }
 
   /// This handles all the intersections.
-  bool findAllIntersections(
-      IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
+  bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
     if (overlapsEdge(edge)) {
       if (_ne.findAllIntersections(edge, hndl, intersections)) result = true;
@@ -148,8 +145,7 @@ class BranchNode extends BaseNode {
   /// inside the region are collected, otherwise any edge which
   /// exists even partially in the region are collected.
   /// Returns true if all edges in the boundary were run, false if stopped.
-  bool foreachEdge(IEdgeHandler handle,
-      [IBoundary bounds = null, bool exclusive = false]) {
+  bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) {
     if ((bounds == null) || overlapsBoundary(bounds)) {
       return _ne.foreachEdge(handle, bounds, exclusive) &&
           _nw.foreachEdge(handle, bounds, exclusive) &&
@@ -182,8 +178,7 @@ class BranchNode extends BaseNode {
 
   /// Determines if the node has any edge nodes inside it.
   /// Returns true if this edge has any edges in it, false otherwise.
-  bool get hasEdges =>
-      _ne.hasEdges && _nw.hasEdges && _se.hasEdges && _sw.hasEdges;
+  bool get hasEdges => _ne.hasEdges && _nw.hasEdges && _se.hasEdges && _sw.hasEdges;
 
   /// Gets the first edge to the left of the given point.
   void firstLeftEdge(FirstLeftEdgeArgs args) {
@@ -412,8 +407,7 @@ class BranchNode extends BaseNode {
   /// The [curNode] is the child node to find the next from.
   /// Returns the next point node in the given region,
   /// or null if none was found.
-  PointNode findNextPoint(
-      INode curNode, IBoundary boundary, IPointHandler handle) {
+  PointNode findNextPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
     List<int> others = null;
     switch (childNodeQuad(curNode)) {
       case Quadrant.NorthWest:
@@ -457,8 +451,7 @@ class BranchNode extends BaseNode {
   /// The [curNode] is the child node to find the next from.
   /// Returns the previous point node in the given region,
   /// or null if none was found.
-  PointNode findPreviousPoint(
-      INode curNode, IBoundary boundary, IPointHandler handle) {
+  PointNode findPreviousPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
     List<int> others = null;
     switch (childNodeQuad(curNode)) {
       case Quadrant.NorthWest:
@@ -504,10 +497,7 @@ class BranchNode extends BaseNode {
   INode reduce() {
     // A branch node can be reduced any time the all of the children
     // contain no points or only one point.
-    int pointCount = _pointWeight(_ne) +
-        _pointWeight(_nw) +
-        _pointWeight(_se) +
-        _pointWeight(_sw);
+    int pointCount = _pointWeight(_ne) + _pointWeight(_nw) + _pointWeight(_se) + _pointWeight(_sw);
     if (pointCount == 0) {
       // Find a dark node and populate it with the other dark nodes' lines.
       PassNode pass = null;
@@ -555,8 +545,7 @@ class BranchNode extends BaseNode {
           // Add all passing lines to black node unless the line starts or ends
           // on the black node, since the line will already be in the start or end line lists.
           for (EdgeNode edge in node.passEdges) {
-            if ((edge.startNode != point) && (edge.endNode != point))
-              point.passEdges.add(edge);
+            if ((edge.startNode != point) && (edge.endNode != point)) point.passEdges.add(edge);
           }
         }
       }
@@ -586,20 +575,16 @@ class BranchNode extends BaseNode {
   //// Validates this node.
   bool validate(StringBuffer sout, IFormatter format, bool recursive) {
     bool result = true;
-    if (!_validateChild(sout, format, recursive, _ne, "NE", true, true))
-      result = false;
-    if (!_validateChild(sout, format, recursive, _nw, "NW", true, false))
-      result = false;
-    if (!_validateChild(sout, format, recursive, _sw, "SW", false, false))
-      result = false;
-    if (!_validateChild(sout, format, recursive, _se, "SE", false, true))
-      result = false;
+    if (!_validateChild(sout, format, recursive, _ne, "NE", true, true)) result = false;
+    if (!_validateChild(sout, format, recursive, _nw, "NW", true, false)) result = false;
+    if (!_validateChild(sout, format, recursive, _sw, "SW", false, false)) result = false;
+    if (!_validateChild(sout, format, recursive, _se, "SE", false, true)) result = false;
     return result;
   }
 
   /// Validates the given child node.
-  bool _validateChild(StringBuffer sout, IFormatter format, bool recursive,
-      INode child, String name, bool north, bool east) {
+  bool _validateChild(
+      StringBuffer sout, IFormatter format, bool recursive, INode child, String name, bool north, bool east) {
     if (child == null) {
       sout.write("Error in ");
       toBuffer(sout, format: format);
@@ -673,11 +658,7 @@ class BranchNode extends BaseNode {
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
   void toBuffer(StringBuffer sout,
-      {String indent: "",
-      bool children: false,
-      bool contained: false,
-      bool last: true,
-      IFormatter format: null}) {
+      {String indent: "", bool children: false, bool contained: false, bool last: true, IFormatter format: null}) {
     if (contained) {
       if (last)
         sout.write(StringParts.Last);
@@ -692,38 +673,22 @@ class BranchNode extends BaseNode {
       sout.write(StringParts.Sep);
       sout.write(indent);
       _ne.toBuffer(sout,
-          indent: indent + StringParts.Bar,
-          children: true,
-          contained: true,
-          last: false,
-          format: format);
+          indent: indent + StringParts.Bar, children: true, contained: true, last: false, format: format);
 
       sout.write(StringParts.Sep);
       sout.write(indent);
       _nw.toBuffer(sout,
-          indent: indent + StringParts.Bar,
-          children: true,
-          contained: true,
-          last: false,
-          format: format);
+          indent: indent + StringParts.Bar, children: true, contained: true, last: false, format: format);
 
       sout.write(StringParts.Sep);
       sout.write(indent);
       _se.toBuffer(sout,
-          indent: indent + StringParts.Bar,
-          children: true,
-          contained: true,
-          last: false,
-          format: format);
+          indent: indent + StringParts.Bar, children: true, contained: true, last: false, format: format);
 
       sout.write(StringParts.Sep);
       sout.write(indent);
       _sw.toBuffer(sout,
-          indent: indent + StringParts.Space,
-          children: true,
-          contained: true,
-          last: true,
-          format: format);
+          indent: indent + StringParts.Space, children: true, contained: true, last: true, format: format);
     }
   }
 }

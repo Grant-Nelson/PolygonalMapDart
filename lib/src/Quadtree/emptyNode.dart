@@ -23,8 +23,7 @@ class EmptyNode implements INode {
 
   /// Adds an edge to this location in the tree.
   INode addEdge(int xmin, int ymin, int size, EdgeNode edge) {
-    Boundary boundary =
-        new Boundary(xmin, ymin, xmin + size - 1, ymin + size - 1);
+    Boundary boundary = new Boundary(xmin, ymin, xmin + size - 1, ymin + size - 1);
     if (boundary.overlapsEdge(edge)) {
       PassNode node = new PassNode();
       node.setLocation(xmin, ymin, size);
@@ -41,9 +40,7 @@ class EmptyNode implements INode {
   /// [exclusive] indicates that only edge which have both end points
   /// inside the region are collected, otherwise any edge which
   /// exists even partially in the region are collected.
-  bool foreachEdge(IEdgeHandler handle,
-          [IBoundary bounds = null, bool exclusive = false]) =>
-      true;
+  bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) => true;
 
   /// Handles each node reachable from this node.
   bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) => true;
@@ -61,13 +58,10 @@ class EmptyNode implements INode {
   bool foreachLeftEdge(IPoint pnt, IEdgeHandler hndl) => true;
 
   /// This handles the first found intersecting edge.
-  IntersectionResult findFirstIntersection(IEdge edge, IEdgeHandler hndl) =>
-      null;
+  IntersectionResult findFirstIntersection(IEdge edge, IEdgeHandler hndl) => null;
 
   /// This handles all the intersections.
-  bool findAllIntersections(
-          IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) =>
-      false;
+  bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) => false;
 
   /// Validates this node.
   bool validate(StringBuffer sout, IFormatter format, bool recursive) => true;
@@ -77,11 +71,7 @@ class EmptyNode implements INode {
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
   void toBuffer(StringBuffer sout,
-      {String indent: "",
-      bool children: false,
-      bool contained: false,
-      bool last: true,
-      IFormatter format: null}) {
+      {String indent: "", bool children: false, bool contained: false, bool last: true, IFormatter format: null}) {
     if (contained) {
       if (last)
         sout.write(StringParts.Last);

@@ -245,8 +245,7 @@ class QuadTree {
   /// [cutoffDist2] is the maximum distance squared edges may be
   /// away from the given point to be an eligible result.
   /// [handler] is the matcher to filter eligible edges, if null all edges are accepted.
-  EdgeNode findNearestEdge(IPoint point,
-      {double cutoffDist2: double.MAX_FINITE, IEdgeHandler handler: null}) {
+  EdgeNode findNearestEdge(IPoint point, {double cutoffDist2: double.MAX_FINITE, IEdgeHandler handler: null}) {
     NearestEdgeArgs args = new NearestEdgeArgs(point, cutoffDist2, handler);
     args.run(_root);
     return args.result();
@@ -264,8 +263,7 @@ class QuadTree {
   /// Handle all the edges to the left of the given point.
   /// [point] is the point to find the left edges from.
   /// [handle] is the handle to process all the edges with.
-  bool foreachLeftEdge(IPoint point, IEdgeHandler handle) =>
-      _root.foreachLeftEdge(point, handle);
+  bool foreachLeftEdge(IPoint point, IEdgeHandler handle) => _root.foreachLeftEdge(point, handle);
 
   /// Gets the first point in the tree.
   /// [boundary] is the boundary of the tree to get the point from, or null for whole tree.
@@ -278,8 +276,7 @@ class QuadTree {
       if (node is PointNode) {
         if ((boundary == null) || boundary.containsPoint(node)) return node;
       } else if (node is BranchNode) {
-        if ((boundary == null) || boundary.overlapsBoundary(node))
-          stack.pushChildren(node);
+        if ((boundary == null) || boundary.overlapsBoundary(node)) stack.pushChildren(node);
       }
       // else, Pass nodes and empty nodes have no points.
     }
@@ -297,8 +294,7 @@ class QuadTree {
       if (node is PointNode) {
         if ((boundary == null) || boundary.containsPoint(node)) return node;
       } else if (node is BranchNode) {
-        if ((boundary == null) || boundary.overlapsBoundary(node))
-          stack.pushReverseChildren(node);
+        if ((boundary == null) || boundary.overlapsBoundary(node)) stack.pushReverseChildren(node);
       }
       // else, Pass nodes and empty nodes have no points.
     }
@@ -306,8 +302,7 @@ class QuadTree {
   }
 
   /// Handles each point node in the boundary.
-  bool foreachPoint(IPointHandler handle, [IBoundary bounds = null]) =>
-      _root.foreachPoint(handle, bounds);
+  bool foreachPoint(IPointHandler handle, [IBoundary bounds = null]) => _root.foreachPoint(handle, bounds);
 
   /// Handles each edge node in the boundary.
   /// [handle] is the handler to run on each edge in the boundary.
@@ -316,24 +311,21 @@ class QuadTree {
   /// inside the region are collected, otherwise any edge which
   /// exists even partially in the region are collected.
   /// Returns true if all edges in the boundary were run, false if stopped.
-  bool foreachEdge(IEdgeHandler handle,
-          [IBoundary bounds = null, bool exclusive = false]) =>
+  bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) =>
       _root.foreachEdge(handle, bounds, exclusive);
 
   /// Handles each node in the boundary.
   /// [handle] is the handler to run on each node in the boundary.
   /// [bounds] is the boundary containing the nodes to handle.
   /// Returns true if all nodes in the boundary were run, false if stopped.
-  bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) =>
-      _root.foreachNode(handle, bounds);
+  bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) => _root.foreachNode(handle, bounds);
 
   /// Calls given handle for the all the near points to the given point.
   /// [handle] is the handle to handle all near points with.
   /// [queryPoint] is the query point to find the points near to.
   /// [cutoffDist2] is the maximum allowable distance squared to the near points.
   /// Returns true if all points handled, false if the handled returned false and stopped early.
-  bool forNearPointPoints(
-      IPointHandler handle, IPoint queryPoint, double cutoffDist2) {
+  bool forNearPointPoints(IPointHandler handle, IPoint queryPoint, double cutoffDist2) {
     NodeStack stack = new NodeStack([_root]);
     while (!stack.isEmpty) {
       INode node = stack.pop;
@@ -361,8 +353,7 @@ class QuadTree {
   /// [cutoffDist2] is the maximum allowable distance squared to the near points.
   /// Returns true if all points handled,
   /// false if the handled returned false and stopped early.
-  bool forNearEdgePoints(
-      IPointHandler handle, IEdge queryEdge, double cutoffDist2) {
+  bool forNearEdgePoints(IPointHandler handle, IEdge queryEdge, double cutoffDist2) {
     NodeStack stack = new NodeStack([_root]);
     while (!stack.isEmpty) {
       INode node = stack.pop;
@@ -417,8 +408,7 @@ class QuadTree {
   /// [cutoffDist2] is the maximum distance for near edges.
   /// Returns true if all edges handled,
   /// false if the handled returned false and stopped early.
-  bool forNearEdges(
-      IEdgeHandler handler, IPoint queryPoint, double cutoffDist2) {
+  bool forNearEdges(IEdgeHandler handler, IPoint queryPoint, double cutoffDist2) {
     NodeStack stack = new NodeStack();
     stack.push(_root);
     while (!stack.isEmpty) {
@@ -513,19 +503,16 @@ class QuadTree {
   /// [edge] is the edge to find intersections with.
   /// [hndl] is the edge handle to filter possible intersecting edges.
   /// Returns the first found intersection.
-  IntersectionResult findFirstIntersection(IEdge edge, IEdgeHandler hndl) =>
-      _root.findFirstIntersection(edge, hndl);
+  IntersectionResult findFirstIntersection(IEdge edge, IEdgeHandler hndl) => _root.findFirstIntersection(edge, hndl);
 
   /// This handles all the intersections.
   /// [edge] is the edge to look for intersections with.
   /// [hndl] is the handler to match valid edges with.
   /// [intersections] is the set of intersections to add to.
   /// Returns true if a new intersection was found.
-  bool findAllIntersections(
-      IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
+  bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     if (_edgeCount > 0) {
-      return (_root as BaseNode)
-          .findAllIntersections(edge, hndl, intersections);
+      return (_root as BaseNode).findAllIntersections(edge, hndl, intersections);
     }
     return false;
   }
@@ -543,8 +530,7 @@ class QuadTree {
     PointNode startNode, endNode;
     bool startNew, endNew;
 
-    if ((edge.start is PointNode) &&
-        ((edge.start as PointNode).root == _root)) {
+    if ((edge.start is PointNode) && ((edge.start as PointNode).root == _root)) {
       startNode = edge.start;
       startNew = false;
     } else {
@@ -629,8 +615,7 @@ class QuadTree {
       int centerY = (point.y ~/ initialTreeWidth) * initialTreeWidth;
       if (point.x < 0) centerX -= (initialTreeWidth - 1);
       if (point.y < 0) centerY -= (initialTreeWidth - 1);
-      _setRoot((_root as EmptyNode)
-          .addPoint(centerX, centerY, initialTreeWidth, point));
+      _setRoot((_root as EmptyNode).addPoint(centerX, centerY, initialTreeWidth, point));
     } else {
       // Point outside of tree, expand the tree.
       BaseNode root = _expandFootprint(_root as BaseNode, point);
@@ -764,10 +749,7 @@ class QuadTree {
   /// [last] indicates this is the last output of the parent.
   /// [format] is the format used for printing, null to use default.
   void toBuffer(StringBuffer sout,
-      {String indent: "",
-      bool contained: false,
-      bool last: true,
-      IFormatter format: null}) {
+      {String indent: "", bool contained: false, bool last: true, IFormatter format: null}) {
     if (contained) {
       if (last)
         sout.write(StringParts.Last);
@@ -802,8 +784,7 @@ class QuadTree {
 
     sout.write(StringParts.Sep);
     sout.write(indent);
-    _root.toBuffer(sout,
-        indent: childIndent, children: true, contained: true, format: format);
+    _root.toBuffer(sout, indent: childIndent, children: true, contained: true, format: format);
   }
 
   /// Gets the string for this quad-tree.
@@ -907,23 +888,19 @@ class QuadTree {
       _boundary = new Boundary(0, 0, 0, 0);
     } else {
       if (_boundary.xmax <= point.x) {
-        _boundary = new Boundary(_boundary.xmin, _boundary.ymin,
-            _determineEastSide(_boundary.xmin), _boundary.ymax);
+        _boundary = new Boundary(_boundary.xmin, _boundary.ymin, _determineEastSide(_boundary.xmin), _boundary.ymax);
       }
 
       if (_boundary.xmin >= point.x) {
-        _boundary = new Boundary(_determineWestSide(_boundary.xmax),
-            _boundary.ymin, _boundary.xmax, _boundary.ymax);
+        _boundary = new Boundary(_determineWestSide(_boundary.xmax), _boundary.ymin, _boundary.xmax, _boundary.ymax);
       }
 
       if (_boundary.ymax <= point.y) {
-        _boundary = new Boundary(_boundary.xmin, _boundary.ymin, _boundary.xmax,
-            _determineNorthSide(_boundary.ymin));
+        _boundary = new Boundary(_boundary.xmin, _boundary.ymin, _boundary.xmax, _determineNorthSide(_boundary.ymin));
       }
 
       if (_boundary.ymin >= point.y) {
-        _boundary = new Boundary(_boundary.xmax, _boundary.ymax, _boundary.xmin,
-            _determineSouthSide(_boundary.ymax));
+        _boundary = new Boundary(_boundary.xmax, _boundary.ymax, _boundary.xmin, _determineSouthSide(_boundary.ymax));
       }
     }
   }
@@ -938,8 +915,7 @@ class QuadTree {
         if (value < node.y) value = node.y;
       } else if (node is BranchNode) {
         // The order of the child node calls is important to make this fast.
-        if (value < node.ymax)
-          stack.pushAll([node.sw, node.se, node.nw, node.ne]);
+        if (value < node.ymax) stack.pushAll([node.sw, node.se, node.nw, node.ne]);
       }
     }
     return value;
@@ -955,8 +931,7 @@ class QuadTree {
         if (value < node.x) value = node.x;
       } else if (node is BranchNode) {
         // The order of the child node calls is important to make this fast.
-        if (value < node.xmax)
-          stack.pushAll([node.sw, node.nw, node.se, node.ne]);
+        if (value < node.xmax) stack.pushAll([node.sw, node.nw, node.se, node.ne]);
       }
     }
     return value;
@@ -972,8 +947,7 @@ class QuadTree {
         if (value > node.y) value = node.y;
       } else if (node is BranchNode) {
         // The order of the child node calls is important to make this fast.
-        if (value > node.ymin)
-          stack.pushAll([node.nw, node.ne, node.sw, node.se]);
+        if (value > node.ymin) stack.pushAll([node.nw, node.ne, node.sw, node.se]);
       }
     }
     return value;
@@ -989,8 +963,7 @@ class QuadTree {
         if (value > node.x) value = node.x;
       } else if (node is BranchNode) {
         // The order of the child node calls is important to make this fast.
-        if (value > node.xmin)
-          stack.pushAll([node.se, node.ne, node.sw, node.nw]);
+        if (value > node.xmin) stack.pushAll([node.se, node.ne, node.sw, node.nw]);
       }
     }
     return value;

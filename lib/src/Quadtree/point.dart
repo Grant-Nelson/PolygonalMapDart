@@ -17,12 +17,10 @@ class Point implements IPoint {
   }
 
   /// Finds the origin based cross product for the given points.
-  static double cross(IPoint a, IPoint b) =>
-      (a.x * b.y).toDouble() - (a.y * b.x).toDouble();
+  static double cross(IPoint a, IPoint b) => (a.x * b.y).toDouble() - (a.y * b.x).toDouble();
 
   /// Finds the origin based dot product for the given points.
-  static double dot(IPoint a, IPoint b) =>
-      (a.x * b.x).toDouble() + (a.y * b.y).toDouble();
+  static double dot(IPoint a, IPoint b) => (a.x * b.x).toDouble() + (a.y * b.y).toDouble();
 
   /// The first integer coordinate component.
   final int _x;

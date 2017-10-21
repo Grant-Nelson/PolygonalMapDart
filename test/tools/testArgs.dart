@@ -14,7 +14,7 @@ abstract class TestArgs {
   bool get failed;
 
   // addDiv adds a div element to the test output.
-  String addDiv();
+  html.DivElement addDiv();
 
   /// Marks this test as failed.
   void fail();

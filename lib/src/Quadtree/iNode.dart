@@ -11,8 +11,7 @@ abstract class INode {
   /// [exclusive] indicates that only edge which have both end points
   /// inside the region are collected, otherwise any edge which
   /// exists even partially in the region are collected.
-  bool foreachEdge(IEdgeHandler handle,
-      [IBoundary bounds = null, bool exclusive = false]);
+  bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]);
 
   /// Handles each node reachable from this node.
   /// Returns true if all nodes were run, false if stopped.
@@ -45,8 +44,7 @@ abstract class INode {
   /// The [hndl] is the handler to match valid edges with.
   /// The set of [intersections] to add to.
   /// Returns true if a new intersection was found.
-  bool findAllIntersections(
-      IEdge edge, IEdgeHandler hndl, IntersectionSet intersections);
+  bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections);
 
   /// Validates this node.
   /// The [format] is used for printing, null to use default.
@@ -60,9 +58,5 @@ abstract class INode {
   /// [contained] indicates this node is part of another node.
   /// [last] indicates this is the last node of the parent.
   void toBuffer(StringBuffer sout,
-      {String indent: "",
-      bool children: false,
-      bool contained: false,
-      bool last: true,
-      IFormatter format: null});
+      {String indent: "", bool children: false, bool contained: false, bool last: true, IFormatter format: null});
 }

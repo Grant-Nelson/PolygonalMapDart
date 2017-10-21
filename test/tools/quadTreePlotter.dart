@@ -139,7 +139,7 @@ class QuadTreePlotterNodeHandler extends qt.INodeHandler {
   plotter.Rectangles _branchRects;
 
   QuadTreePlotterNodeHandler(
-      _plot, _passRects, _pointRects, _emptyRects, _branchRects);
+      this._plot, this._passRects, this._pointRects, this._emptyRects, this._branchRects);
 
   bool handle(qt.INode node) {
     if (node is qt.PassNode) {
@@ -171,7 +171,7 @@ class QuadTreePlotterEdgeHandler extends qt.IEdgeHandler {
   QuadTreePlotter _plot;
   plotter.Lines _edges;
 
-  QuadTreePlotterEdgeHandler(_plot, _edges);
+  QuadTreePlotterEdgeHandler(this._plot, this._edges);
 
   bool handle(qt.EdgeNode edge) {
     _plot.addLine(_edges, edge);
@@ -183,7 +183,7 @@ class QuadTreePlotterPointHandler extends qt.IPointHandler {
   QuadTreePlotter _plot;
   plotter.Points _points;
 
-  QuadTreePlotterPointHandler(_plot, _points);
+  QuadTreePlotterPointHandler(this._plot, this._points);
 
   bool handle(qt.PointNode point) {
     _plot.addPoint(_points, point);

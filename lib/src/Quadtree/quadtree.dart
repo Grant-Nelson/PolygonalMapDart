@@ -629,10 +629,8 @@ class QuadTree {
       int centerY = (point.y ~/ initialTreeWidth) * initialTreeWidth;
       if (point.x < 0) centerX -= (initialTreeWidth - 1);
       if (point.y < 0) centerY -= (initialTreeWidth - 1);
-      print("<<<<\n");
       _setRoot((_root as EmptyNode)
           .addPoint(centerX, centerY, initialTreeWidth, point));
-      print(">>>>\n");
     } else {
       // Point outside of tree, expand the tree.
       BaseNode root = _expandFootprint(_root as BaseNode, point);

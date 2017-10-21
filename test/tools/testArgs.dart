@@ -14,7 +14,7 @@ abstract class TestArgs {
   bool get failed;
 
   // addDiv adds a div element to the test output.
-  String addDiv([int width = 600, int height = 400]);
+  String addDiv();
 
   /// Marks this test as failed.
   void fail();

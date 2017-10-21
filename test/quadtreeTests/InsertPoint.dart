@@ -11,7 +11,7 @@ void addInsertPointTests(TestManager tests) {
     test.insertPoint(5, 15);
     test.insertPoint(15, 15);
     test.insertPoint(15, 5);
-    test.showPlotOnFail();
+    test.showPlot();
   });
 
   tests.add("Another Point Insertion", (TestArgs args) {
@@ -20,6 +20,6 @@ void addInsertPointTests(TestManager tests) {
     test.insertPoint(0, 1);
     test.insertPoint(10, -1);
     test.insertPoint(10, 1);
-    test.showPlotOnFail();
+    test.showPlot();
   });
 }

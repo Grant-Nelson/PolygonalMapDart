@@ -8,3 +8,7 @@ dependencies:
   intl: any
   plotterDart:
     git: git://github.com/Grant-Nelson/plotterDart.git
+
+# dependency_overrides:
+#   plotterDart:
+#     path: ../plotterDart/

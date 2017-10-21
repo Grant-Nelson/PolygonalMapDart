@@ -12,7 +12,6 @@ class TestBlock extends TestArgs {
   bool _started;
   bool _failed;
   bool _finished;
-  int _testDivIndex;
 
   /// Creates a new test block for the given test.
   TestBlock(this._man, this._test, this._testName) {
@@ -26,7 +25,6 @@ class TestBlock extends TestArgs {
     _started = false;
     _failed = false;
     _finished = false;
-    _testDivIndex = 0;
     _update();
   }
 
@@ -91,11 +89,10 @@ class TestBlock extends TestArgs {
   }
 
   /// Adds a div element to the test output.
-  String addDiv([int width = 600, int height = 400]) {
-    String name = "testDiv$_testDivIndex";
-    _testDivIndex++;
+  String addDiv() {
+    String name = "testDiv${_man.takeDivIndex}";
     _body.innerHtml +=
-        "<dir class=\"test_div\" id=\"$name\" stype=\"width:${width}px; height:${height}px;\"></dir>";
+        "<dir class=\"test_div\" id=\"$name\"></dir>";
     return name;
   }
 

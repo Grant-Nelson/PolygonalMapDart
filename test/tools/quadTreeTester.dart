@@ -14,8 +14,12 @@ class QuadTreeTester {
   qt.QuadTree get tree => _tree;
 
   void showPlotOnFail() {
+    if (_args.failed) showPlot();
+  }
+
+  void showPlot() {
     String name = _args.addDiv();
-    if (_args.failed) QuadTreePlotter.Show(_tree, name);
+    QuadTreePlotter.Show(_tree, name);
   }
 
   plotSvg.PlotSvg _showPlot(plotter.Plotter plot) {

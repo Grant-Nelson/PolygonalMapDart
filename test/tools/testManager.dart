@@ -9,6 +9,7 @@ class TestManager {
   List<TestBlock> _tests;
   int _finished;
   int _failed;
+  int _testDivIndex;
 
   /// Creates new test manager attached to the given element.
   TestManager(this._elem) {
@@ -26,6 +27,14 @@ class TestManager {
     _tests = new List<TestBlock>();
     _finished = 0;
     _failed = 0;
+    _testDivIndex = 0;
+  }
+
+  /// gets an index for a test div which is unique.
+  int get takeDivIndex {
+    int result = _testDivIndex;
+    _testDivIndex++;
+    return result;
   }
 
   /// Creates a check box for changing the visibility of logs with the given [type].

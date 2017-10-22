@@ -19,16 +19,16 @@ class IntersectionResult implements Comparable<IntersectionResult> {
   final bool intersects;
 
   /// The type of intersection.
-  final int type;
+  final IntersectionType type;
 
   /// The intersection point or null if no intersection.
   final IPoint point;
 
   /// The location on the first edge that the second edge intersects it.
-  final int locA;
+  final IntersectionLocation locA;
 
   /// The location on the second edge that the first edge intersects it.
-  final int locB;
+  final IntersectionLocation locB;
 
   /// The location the second edge's start point is on the first edge.
   final PointOnEdgeResult startBOnEdgeA;

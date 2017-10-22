@@ -271,7 +271,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     // Check all edges which start at this node.
     for (EdgeNode edge in startEdges) {
       IPoint pnt = edge.endNode;
-      int side = Edge.side(queryEdge, pnt);
+      Side side = Edge.side(queryEdge, pnt);
       if (side == Side.Right) {
         if ((rightMost == null) || (Edge.side(rightMost, pnt) == Side.Right)) {
           rightMost = edge;
@@ -289,7 +289,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     // Check all edges which end at this node.
     for (EdgeNode edge in endEdges) {
       IPoint pnt = edge.startNode;
-      int side = Edge.side(queryEdge, pnt);
+      Side side = Edge.side(queryEdge, pnt);
       if (side == Side.Right) {
         if ((rightMost == null) || (Edge.side(rightMost, pnt) == Side.Right)) {
           rightMost = edge;

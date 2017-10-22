@@ -1,25 +1,22 @@
 part of PolygonalMapDart.Quadtree;
 
 /// Indicates where an intersection occurs on an edge.
-class IntersectionLocation {
+enum IntersectionLocation {
   /// Intersection type not set, not determined, or not determinable.
-  static const int None = 0;
+  None,
 
   /// Intersection occurs in edge's line before the edge's start point.
-  static const int BeforeStart = 1;
+  BeforeStart,
 
   /// Intersection occurs within edge.
-  static const int InMiddle = 2;
+  InMiddle,
 
   /// Intersection occurs in edge's line past the edge's end point.
-  static const int PastEnd = 3;
+  PastEnd,
 
   /// Intersection occurs at the edge's start point.
-  static const int AtStart = 4;
+  AtStart,
 
   /// Intersection occurs at the edge's end point.
-  static const int AtEnd = 5;
-
-  // Keep this class from being constructed.
-  IntersectionLocation._();
+  AtEnd
 }

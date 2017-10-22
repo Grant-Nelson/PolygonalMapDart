@@ -8,8 +8,8 @@ class PointNodeVector {
 
   /// Creates a new point node vector.
   /// The [count] is the initial capacity of the vector.
-  PointNodeVector([int count = 0]) {
-    _list = new List<PointNode>(count);
+  PointNodeVector() {
+    _list = new List<PointNode>();
   }
 
   /// Gets the internal list of nodes.

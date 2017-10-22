@@ -93,7 +93,7 @@ class Edge implements IEdge, Comparable<Edge> {
   static bool obtuse(IEdge edge1, IEdge edge2) => dot(edge1, edge2) < 0.0;
 
   /// Gets the side of the edge the given point is on.
-  static int side(IEdge edge, IPoint point) {
+  static Side side(IEdge edge, IPoint point) {
     double value = Point.cross(new Point(edge.dx, edge.dy), new Point(point.x - edge.x1, point.y - edge.y1));
     double epsilon = 1.0e-12;
     if (value.abs() <= epsilon)
@@ -131,7 +131,7 @@ class Edge implements IEdge, Comparable<Edge> {
       IPoint closestOnEdge = closestOnLine;
       bool onEdge = onLine;
 
-      int location;
+      IntersectionLocation location;
       if (Point.equals(closestOnLine, edge.start)) {
         location = IntersectionLocation.AtStart;
       } else if (Point.equals(closestOnLine, edge.end)) {
@@ -163,10 +163,10 @@ class Edge implements IEdge, Comparable<Edge> {
     PointOnEdgeResult endAOnEdgeB = pointOnEdge(edgeB, edgeA.end);
 
     bool intersects;
-    int intType;
+    IntersectionType intType;
     IPoint intPnt;
-    int locA;
-    int locB;
+    IntersectionLocation locA;
+    IntersectionLocation locB;
 
     int dAx = edgeA.dx, dAy = edgeA.dy;
     int dBx = edgeB.dx, dBy = edgeB.dy;

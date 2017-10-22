@@ -98,7 +98,7 @@ class TestBlock extends TestArgs {
 
   /// Adds a new log event
   void _addLog(String text, String type) {
-    List<String> entries = _man._escape.convert(text).replaceAll(" ", "&nbsp;").split("\n");
+    List<String> entries = text.split("\n");
 
     if (entries.isNotEmpty) {
       if (entries[0].isNotEmpty) {
@@ -107,7 +107,7 @@ class TestBlock extends TestArgs {
           ..text = entries[0]);
       }
       for (int i = 1; i < entries.length; i++) {
-        _body.children.add(new html.BRElement()..className = type);
+        _body.children.add(new html.BRElement()..className = "br_log");
 
         if (entries[i].isNotEmpty) {
           _body.children.add(new html.DivElement()
@@ -160,6 +160,7 @@ class TestBlock extends TestArgs {
   void fail() {
     if (!_failed) {
       _failed = true;
+      _body.className = "test_body body_shown";
       _update();
     }
   }

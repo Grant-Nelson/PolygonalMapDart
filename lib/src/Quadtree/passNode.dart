@@ -71,7 +71,7 @@ class PassNode extends BaseNode {
   /// exists even partially in the region are collected.
   bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) {
     if (!exclusive) {
-      if (overlapsBoundary(bounds)) {
+      if ((bounds == null) || overlapsBoundary(bounds)) {
         for (EdgeNode edge in _passEdges) {
           if (!handle.handle(edge)) {
             return false;

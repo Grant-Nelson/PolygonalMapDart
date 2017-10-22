@@ -27,18 +27,24 @@
   height: 300px;
 }
 
+.br_log {
+  clear: left;
+}
+
 .info_log {
   float: left;
   color: #000000;
   padding: 0px;
   margin: 0px;
+  white-space: pre;
 }
 
 .notice_log {
   float: left;
   color: #0000DD;
   padding: 0px;
-  margin: 0px;
+  margin: 0px
+  white-space: pre;
 }
 
 .warning_log {
@@ -46,6 +52,7 @@
   color: #DD8800;
   padding: 0px;
   margin: 0px;
+  white-space: pre;
 }
 
 .error_log {
@@ -53,6 +60,7 @@
   color: #FF0000;
   padding: 0px;
   margin: 0px;
+  white-space: pre;
 }
 
 .top_header {

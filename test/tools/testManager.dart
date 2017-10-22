@@ -4,7 +4,6 @@ part of tests;
 class TestManager {
   html.Element _elem;
   html.DivElement _header;
-  convert.HtmlEscape _escape;
   DateTime _start;
   List<TestBlock> _tests;
   int _finished;
@@ -13,7 +12,6 @@ class TestManager {
 
   /// Creates new test manager attached to the given element.
   TestManager(this._elem) {
-    _escape = new convert.HtmlEscape(convert.HtmlEscapeMode.ELEMENT);
     _header = new html.DivElement();
     _elem.children.add(_header);
     html.DivElement checkBoxes = new html.DivElement()..className = "log_checkboxes";

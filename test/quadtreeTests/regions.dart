@@ -22,11 +22,11 @@ void addRegionTests(TestManager tests) {
 void regionTest(TestArgs args, qt.Boundary rect, int x, int y, int expRegion) {
   int result = rect.region(new qt.Point(x, y));
   if (result != expRegion) {
-    args.error("Unexpected result from region:\n" +
+    args.error("Failed: Unexpected result from region:\n" +
         "   Boundary: $rect\n" +
         "   Point:    $x, $y\n" +
         "   Expected: ${qt.BoundaryRegion.getString(expRegion)}, $expRegion\n" +
-        "   Result:   ${qt.BoundaryRegion.getString(result)}, $result\n");
+        "   Result:   ${qt.BoundaryRegion.getString(result)}, $result\n\n");
 
     plotter.Plotter plot = new plotter.Plotter();
     plot.addRects([rect.xmin, rect.ymin, rect.width, rect.height])
@@ -40,6 +40,6 @@ void regionTest(TestArgs args, qt.Boundary rect, int x, int y, int expRegion) {
 
     new plotSvg.PlotSvg.fromElem(args.addDiv(), plot);
   } else {
-    args.info("Passed BoundaryRegion($rect, [$x, $y]) => ${qt.BoundaryRegion.getString(expRegion)}\n");
+    args.info("Passed: BoundaryRegion($rect, [$x, $y]) => ${qt.BoundaryRegion.getString(expRegion)}\n\n");
   }
 }

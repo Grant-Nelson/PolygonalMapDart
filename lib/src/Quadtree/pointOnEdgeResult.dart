@@ -15,7 +15,7 @@ class PointOnEdgeResult {
   final IPoint point;
 
   /// The point intersection location relative to the edge.
-  final int location;
+  final IntersectionLocation location;
 
   /// The point on the edge that is the closest to the query point.
   final IPoint closestOnEdge;

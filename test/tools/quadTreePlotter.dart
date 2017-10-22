@@ -67,8 +67,8 @@ class QuadTreePlotter extends plotter.Plotter {
       bool showEdges = true,
       bool showPoints = true]) {
     plotter.Rectangles passRects = new plotter.Rectangles();
-    passRects.addColor(0.0, 1.0, 0.0);
-    passRects.addFillColor(0.0, 1.0, 0.0, 0.3);
+    passRects.addColor(0.0, 0.0, 0.6);
+    passRects.addFillColor(0.0, 0.0, 0.6, 0.3);
     group.addGroup("Pass Nodes", [passRects])..enabled = showPassNodes;
 
     plotter.Rectangles pointRects = new plotter.Rectangles();

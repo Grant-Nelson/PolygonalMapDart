@@ -2,75 +2,91 @@ part of PolygonalMapDart.Quadtree;
 
 /// The boundary regions are a set of values that can be used to
 class BoundaryRegion {
-  /// Don't allow the boundary region to be created.
-  BoundaryRegion._();
-
   /// Indicates that the point is inside of the boundary.
-  static const int Inside = 0x00;
+  static final BoundaryRegion Inside = new BoundaryRegion._(0x00);
 
   /// Indicates that the point is south (-Y) of the boundary.
-  static const int South = 0x01;
+  static final BoundaryRegion South = new BoundaryRegion._(0x01);
 
   /// Indicates that the point is south (+Y) of the boundary.
-  static const int North = 0x02;
+  static final BoundaryRegion North = new BoundaryRegion._(0x02);
 
   /// Indicates that the point is either north, south, or inside the boundary.
   /// This is a combination of North and South.
-  static const int Vertical = 0x03;
+  static final BoundaryRegion Vertical = new BoundaryRegion._(0x03);
 
   /// Indicates that the point is west (-X) of the boundary.
-  static const int West = 0x04;
+  static final BoundaryRegion West = new BoundaryRegion._(0x04);
 
   /// Indicates that the point is south west of the boundary.
   /// This is a combination of South and West.
-  static const int SouthWest = 0x05;
+  static final BoundaryRegion SouthWest = new BoundaryRegion._(0x05);
 
   /// Indicates that the point is south west of the boundary.
   /// This is a combination of North and West.
-  static const int NorthWest = 0x06;
+  static final BoundaryRegion NorthWest = new BoundaryRegion._(0x06);
 
   /// Indicates that the point is east (+X) of the boundary.
-  static const int East = 0x08;
+  static final BoundaryRegion East = new BoundaryRegion._(0x08);
 
   /// Indicates that the point is south west of the boundary.
   /// This is a combination of South and East.
-  static const int SouthEast = 0x09;
+  static final BoundaryRegion SouthEast = new BoundaryRegion._(0x09);
 
   /// Indicates that the point is south west of the boundary.
   /// This is a combination of North and East.
-  static const int NorthEast = 0x0A;
+  static final BoundaryRegion NorthEast = new BoundaryRegion._(0x0A);
 
   /// Indicates that the point is either east, west, or inside the boundary.
   /// This is a combination of East and West.
-  static const int Horizontal = 0x0C;
+  static final BoundaryRegion Horizontal = new BoundaryRegion._(0x0C);
+
+  /// The value of the boundary region.
+  int _value;
+
+  /// Creates a new boundary region.
+  BoundaryRegion._(this._value);
+
+  /// Determines if the given [other] BoundaryRegion is partially contained in this BoundaryRegion.
+  /// Typically used with North, South, East, and West. Will always return true for Inside.
+  bool has(BoundaryRegion other) => (_value & other._value) == other._value;
+
+  /// Checks if this BoundaryRegion is equal to the given [other] BoundaryRegion.
+  bool operator ==(BoundaryRegion other) => _value == other._value;
+
+  /// Gets the OR of the two boundary regions. 
+  BoundaryRegion operator |(BoundaryRegion other) => new BoundaryRegion._(_value | other._value);
+
+  /// Gets the AND of the two boundary regions. 
+  BoundaryRegion operator &(BoundaryRegion other) => new BoundaryRegion._(_value & other._value);
 
   /// Gets the string for the given boundary region.
-  static String getString(int region) {
-    switch (region) {
-      case BoundaryRegion.Inside:
+  String toString() {
+    switch (_value) {
+      case 0x00:
         return "Inside";
-      case BoundaryRegion.South:
+      case 0x01:
         return "South";
-      case BoundaryRegion.North:
+      case 0x02:
         return "North";
-      case BoundaryRegion.Vertical:
+      case 0x03:
         return "Vertical";
-      case BoundaryRegion.West:
+      case 0x04:
         return "West";
-      case BoundaryRegion.SouthWest:
+      case 0x05:
         return "SouthWest";
-      case BoundaryRegion.NorthWest:
+      case 0x06:
         return "NorthWest";
-      case BoundaryRegion.East:
+      case 0x08:
         return "East";
-      case BoundaryRegion.SouthEast:
+      case 0x09:
         return "SouthEast";
-      case BoundaryRegion.NorthEast:
+      case 0x0A:
         return "NorthEast";
-      case BoundaryRegion.Horizontal:
+      case 0x0C:
         return "Horizontal";
       default:
-        return "Unknown($region)";
+        return "Unknown($_value)";
     }
   }
 }

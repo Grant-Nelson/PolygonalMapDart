@@ -1,4 +1,4 @@
-part of tests;
+part of PolygonalMapDart.Plotter;
 
 /// A plotter customized to work with quad-trees.
 class QuadTreePlotter extends plotter.Plotter {
@@ -103,19 +103,20 @@ class QuadTreePlotter extends plotter.Plotter {
   /// Plotter parts can be null to not add to the plot.
   void addTreeItems(qt.QuadTree tree, plotter.Rectangles passRects, plotter.Rectangles pointRects,
       plotter.Rectangles emptyRects, plotter.Rectangles branchRects, plotter.Lines edges, plotter.Points points) {
-    tree.foreachNode(new QuadTreePlotterNodeHandler(this, passRects, pointRects, emptyRects, branchRects));
+    tree.foreachNode(new _quadTreePlotterNodeHandler(this, passRects, pointRects, emptyRects, branchRects));
 
     if (edges != null) {
-      tree.foreachEdge(new QuadTreePlotterEdgeHandler(this, edges));
+      tree.foreachEdge(new _quadTreePlotterEdgeHandler(this, edges));
     }
 
     if (points != null) {
-      tree.foreachPoint(new QuadTreePlotterPointHandler(this, points));
+      tree.foreachPoint(new _quadTreePlotterPointHandler(this, points));
     }
   }
 }
 
-class QuadTreePlotterNodeHandler extends qt.INodeHandler {
+/// Handler for collecting all the nodes from the quadtree for plotting.
+class _quadTreePlotterNodeHandler extends qt.INodeHandler {
   static const double _pad = 0.45;
   QuadTreePlotter _plot;
   plotter.Rectangles _passRects;
@@ -123,8 +124,10 @@ class QuadTreePlotterNodeHandler extends qt.INodeHandler {
   plotter.Rectangles _emptyRects;
   plotter.Rectangles _branchRects;
 
-  QuadTreePlotterNodeHandler(this._plot, this._passRects, this._pointRects, this._emptyRects, this._branchRects);
+  /// Creates a new quadtree plotter handler.
+  _quadTreePlotterNodeHandler(this._plot, this._passRects, this._pointRects, this._emptyRects, this._branchRects);
 
+  /// Handles adding a new node into the plot.
   bool handle(qt.INode node) {
     if (node is qt.PassNode) {
       _plot.addBound(_passRects, node.boundary, _pad);
@@ -146,24 +149,30 @@ class QuadTreePlotterNodeHandler extends qt.INodeHandler {
   }
 }
 
-class QuadTreePlotterEdgeHandler extends qt.IEdgeHandler {
+/// Handler for collecting all the edges from the quadtree for plotting.
+class _quadTreePlotterEdgeHandler extends qt.IEdgeHandler {
   QuadTreePlotter _plot;
   plotter.Lines _edges;
 
-  QuadTreePlotterEdgeHandler(this._plot, this._edges);
+  /// Creates a new quadtree plotter handler.
+  _quadTreePlotterEdgeHandler(this._plot, this._edges);
 
+  /// Handles adding a new edge into the plot.
   bool handle(qt.EdgeNode edge) {
     _plot.addLine(_edges, edge);
     return true;
   }
 }
 
-class QuadTreePlotterPointHandler extends qt.IPointHandler {
+/// Handler for collecting all the points from the quadtree for plotting.
+class _quadTreePlotterPointHandler extends qt.IPointHandler {
   QuadTreePlotter _plot;
   plotter.Points _points;
 
-  QuadTreePlotterPointHandler(this._plot, this._points);
+  /// Creates a new quadtree plotter handler.
+  _quadTreePlotterPointHandler(this._plot, this._points);
 
+  /// Handles adding a new point into the plot.
   bool handle(qt.PointNode point) {
     _plot.addPoint(_points, point);
     return true;

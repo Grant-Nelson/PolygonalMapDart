@@ -9,8 +9,8 @@ class EdgeCollectorHandle implements IEdgeHandler {
   IEdgeHandler _filter;
 
   /// Create a new edge collector.
-  EdgeCollectorHandle({Set<EdgeNode> set: null, IEdgeHandler filter: null}) {
-    _set = (set == null) ? new Set<EdgeNode>() : set;
+  EdgeCollectorHandle({Set<EdgeNode> edgeSet: null, IEdgeHandler filter: null}) {
+    _set = (edgeSet == null) ? new Set<EdgeNode>() : edgeSet;
     _filter = filter;
   }
 

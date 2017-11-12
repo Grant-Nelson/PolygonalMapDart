@@ -98,12 +98,12 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     int halfSize = width ~/ 2;
 
     // Make a copy of this node and set is as a child of the new branch.
-    int childQuad = branch.childQuad(this);
+    Quadrant childQuad = branch.childQuad(this);
     setLocation(branch.childX(childQuad), branch.childY(childQuad), halfSize);
     branch.setChild(childQuad, this);
 
     // Copy lines to new siblings, keep any non-empty sibling.
-    for (int quad in Quadrant.All) {
+    for (Quadrant quad in Quadrant.All) {
       if (quad != childQuad) {
         PassNode sibling = new PassNode();
         sibling.setLocation(branch.childX(quad), branch.childY(quad), halfSize);
@@ -190,9 +190,13 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
   /// Handles each edge node reachable from this node in the boundary.
   /// [exclusive] indicates that only edge which have both end points
   /// inside the region are collected, otherwise any edge which
-  // exists even partially in the region are collected.
+  /// exists even partially in the region are collected.
   bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) {
-    if ((bounds == null) || overlapsBoundary(bounds)) {
+    if (bounds == null) {
+      for (EdgeNode edge in _startEdges) {
+        if (!handle.handle(edge)) return false;
+      }
+    } else if (overlapsBoundary(bounds)) {
       if (exclusive) {
         // Check all edges which start at this node to see if they end in the bounds.
         // No need to check passEdges nor endEdges because for all exclusive edges

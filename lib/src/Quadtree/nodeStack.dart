@@ -9,8 +9,10 @@ class NodeStack {
   /// The initial sets of [nodes] is pushed in order.
   NodeStack([List<INode> nodes = null]) {
     _stack = new List<INode>();
-    for (INode node in nodes) {
-      push(node);
+    if (nodes != null) {
+      for (INode node in nodes) {
+        push(node);
+      }
     }
   }
 

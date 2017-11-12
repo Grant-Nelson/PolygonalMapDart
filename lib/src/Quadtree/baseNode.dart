@@ -128,7 +128,7 @@ abstract class BaseNode implements INode, IBoundary {
   int get height => _size;
 
   /// Gets the boundary region the given point was in.
-  int region(IPoint point) => boundary.region(point);
+  BoundaryRegion region(IPoint point) => boundary.region(point);
 
   /// Checks if the given point is completely contained within this boundary.
   /// Returns true if the point is fully contained, false otherwise.

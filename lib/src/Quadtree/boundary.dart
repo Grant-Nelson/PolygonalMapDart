@@ -82,7 +82,7 @@ class Boundary implements IBoundary {
   int get height => _ymax - _ymin + 1;
 
   /// Gets the boundary region the given point was in.
-  int region(IPoint point) {
+  BoundaryRegion region(IPoint point) {
     if (_xmin > point.x) {
       if (_ymin > point.y)
         return BoundaryRegion.SouthWest;
@@ -126,39 +126,39 @@ class Boundary implements IBoundary {
   /// Checks if the given edge overlaps this boundary.
   /// Returns true if the edge is overlaps, false otherwise.
   bool overlapsEdge(IEdge edge) {
-    int region1 = region(edge.start);
+    BoundaryRegion region1 = region(edge.start);
     if (region1 == BoundaryRegion.Inside) return true;
 
-    int region2 = region(edge.end);
+    BoundaryRegion region2 = region(edge.end);
     if (region2 == BoundaryRegion.Inside) return true;
 
     // If the edge is directly above and below or to the left and right,
     // then it will result in a contained segment.
-    int orRegion = region1 | region2;
+    BoundaryRegion orRegion = region1 | region2;
     if ((orRegion == BoundaryRegion.Horizontal) || (orRegion == BoundaryRegion.Vertical)) return true;
 
     // Check if both points are on the same side so the edge cannot be
     // contained.
-    int andRegion = region1 & region2;
-    if (((andRegion & BoundaryRegion.West) == BoundaryRegion.West) ||
-        ((andRegion & BoundaryRegion.East) == BoundaryRegion.East) ||
-        ((andRegion & BoundaryRegion.North) == BoundaryRegion.North) ||
-        ((andRegion & BoundaryRegion.South) == BoundaryRegion.South)) return false;
+    BoundaryRegion andRegion = region1 & region2;
+    if (andRegion.has(BoundaryRegion.West) ||
+        andRegion.has(BoundaryRegion.East) ||
+        andRegion.has(BoundaryRegion.North) ||
+        andRegion.has(BoundaryRegion.South)) return false;
 
     // Check for edge intersection point.
-    if ((orRegion & BoundaryRegion.West) == BoundaryRegion.West) {
+    if (orRegion.has(BoundaryRegion.West)) {
       int y = ((_xmin - edge.x1) * (edge.dy / edge.dx) + edge.y1).round();
       if ((y >= _ymin) && (y <= _ymax)) return true;
     }
-    if ((orRegion & BoundaryRegion.East) == BoundaryRegion.East) {
+    if (orRegion.has(BoundaryRegion.East)) {
       int y = ((_xmax - edge.x1) * (edge.dy / edge.dx) + edge.y1).round();
       if ((y >= _ymin) && (y <= _ymax)) return true;
     }
-    if ((orRegion & BoundaryRegion.North) == BoundaryRegion.North) {
+    if (orRegion.has(BoundaryRegion.North)) {
       int x = ((_ymin - edge.y1) * (edge.dx / edge.dy) + edge.x1).round();
       if ((x >= _xmin) && (x <= _xmax)) return true;
     }
-    if ((orRegion & BoundaryRegion.South) == BoundaryRegion.South) {
+    if (orRegion.has(BoundaryRegion.South)) {
       int x = ((_ymax - edge.y1) * (edge.dx / edge.dy) + edge.x1).round();
       if ((x >= _xmin) && (x <= _xmax)) return true;
     }

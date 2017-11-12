@@ -116,7 +116,7 @@ class QuadTree {
           return null;
       } else if (node is BranchNode) {
         BranchNode branch = node as BranchNode;
-        int quad = branch.childQuad(point);
+        Quadrant quad = branch.childQuad(point);
         node = branch.child(quad);
       } else
         return null; // Pass nodes and empty nodes have no points.
@@ -132,7 +132,7 @@ class QuadTree {
     while (true) {
       if (node is BranchNode) {
         BranchNode branch = node as BranchNode;
-        int quad = branch.childQuad(point);
+        Quadrant quad = branch.childQuad(point);
         node = branch.child(quad);
         if (node is EmptyNode) return branch;
       } else if (node is EmptyNode)
@@ -585,47 +585,45 @@ class QuadTree {
   /// Returns a pair containing the point node in the tree, and true if the
   /// point is new or false if the point already existed in the tree.
   InsertPointResult tryInsertPoint(IPoint point) {
-    if (point is Point) {
-      point = new PointNode(point.x, point.y);
-    }
+    PointNode pntNode = new PointNode(point.x, point.y);
     // Attempt to find the point first.
-    BaseNode node = nodeContaining(point);
+    BaseNode node = nodeContaining(pntNode);
     if (node != null) {
       // A node containing the point has been found.
       if (node is PointNode) {
-        if (Point.equals(node, point)) {
+        if (Point.equals(node, pntNode)) {
           return new InsertPointResult(node, true);
         }
       }
       BranchNode parent = node.parent;
       if (parent != null) {
-        int quad = parent.childNodeQuad(node);
-        INode replacement = node.insertPoint(point);
+        Quadrant quad = parent.childNodeQuad(node);
+        INode replacement = node.insertPoint(pntNode);
         parent.setChild(quad, replacement);
         replacement = parent.reduce();
         _reduceBranch(parent, replacement);
       } else {
-        INode replacement = node.insertPoint(point);
+        INode replacement = node.insertPoint(pntNode);
         _setRoot(replacement);
       }
     } else if (_root is EmptyNode) {
       // Tree is empty so create a new tree.
       int initialTreeWidth = 256;
-      int centerX = (point.x ~/ initialTreeWidth) * initialTreeWidth;
-      int centerY = (point.y ~/ initialTreeWidth) * initialTreeWidth;
-      if (point.x < 0) centerX -= (initialTreeWidth - 1);
-      if (point.y < 0) centerY -= (initialTreeWidth - 1);
-      _setRoot((_root as EmptyNode).addPoint(centerX, centerY, initialTreeWidth, point));
+      int centerX = (pntNode.x ~/ initialTreeWidth) * initialTreeWidth;
+      int centerY = (pntNode.y ~/ initialTreeWidth) * initialTreeWidth;
+      if (pntNode.x < 0) centerX -= (initialTreeWidth - 1);
+      if (pntNode.y < 0) centerY -= (initialTreeWidth - 1);
+      _setRoot((_root as EmptyNode).addPoint(centerX, centerY, initialTreeWidth, pntNode));
     } else {
       // Point outside of tree, expand the tree.
-      BaseNode root = _expandFootprint(_root as BaseNode, point);
-      _setRoot(root.insertPoint(point));
+      BaseNode root = _expandFootprint(_root as BaseNode, pntNode);
+      _setRoot(root.insertPoint(pntNode));
     }
 
     assert(_root is! EmptyNode);
     _pointCount++;
-    _expandBoundingBox(point);
-    return new InsertPointResult(point, false);
+    _expandBoundingBox(pntNode);
+    return new InsertPointResult(pntNode, false);
   }
 
   /// This removes an edge from the tree.
@@ -670,7 +668,7 @@ class QuadTree {
     } else {
       BranchNode parent = point.parent;
       INode replacement = point.replacement;
-      int quad = parent.childNodeQuad(point);
+      Quadrant quad = parent.childNodeQuad(point);
       parent.setChild(quad, replacement);
       replacement = parent.reduce();
       _reduceBranch(parent, replacement);
@@ -736,8 +734,8 @@ class QuadTree {
     }
 
     if (!_root.validate(sout, format, true)) result = false;
-    if (toConsole) {
-      stdout.write(sout.toString());
+    if (toConsole && sout.isNotEmpty) {
+      print(sout.toString());
     }
     return result;
   }
@@ -804,7 +802,7 @@ class QuadTree {
         _setRoot(replacement);
         break;
       }
-      int quad = parent.childNodeQuad(node);
+      Quadrant quad = parent.childNodeQuad(node);
       parent.setChild(quad, replacement);
       node = parent;
       replacement = parent.reduce();
@@ -838,7 +836,7 @@ class QuadTree {
 
       int newXMin = xmin;
       int newYMin = ymin;
-      int quad;
+      Quadrant quad;
       if (point.y > oldCenterY) {
         if (point.x > oldCenterX) {
           // New node is in the 'NorthEast'.

@@ -28,7 +28,7 @@ class BranchNode extends BaseNode {
   INode insertEdge(EdgeNode edge) {
     bool changed = false;
     if (overlapsEdge(edge)) {
-      for (int quad in Quadrant.All) {
+      for (Quadrant quad in Quadrant.All) {
         INode node = child(quad);
         INode newChild;
         if (node is EmptyNode) {
@@ -51,7 +51,7 @@ class BranchNode extends BaseNode {
   /// Returns the node that should be the new root of the subtree that was
   /// defined by this node.
   INode insertPoint(PointNode point) {
-    int quad = childQuad(point);
+    Quadrant quad = childQuad(point);
     INode node = child(quad);
     if (node is EmptyNode) {
       INode child = EmptyNode.instance.addPoint(childX(quad), childY(quad), width ~/ 2, point);
@@ -71,7 +71,7 @@ class BranchNode extends BaseNode {
   INode removeEdge(EdgeNode edge, bool trimTree) {
     bool changed = false;
     if (overlapsEdge(edge)) {
-      for (int quad in Quadrant.All) {
+      for (Quadrant quad in Quadrant.All) {
         INode node = child(quad);
         if (node is! EmptyNode) {
           if (setChild(quad, (node as BaseNode).removeEdge(edge, trimTree))) {
@@ -183,33 +183,22 @@ class BranchNode extends BaseNode {
   /// Gets the first edge to the left of the given point.
   void firstLeftEdge(FirstLeftEdgeArgs args) {
     if ((args.queryPoint.y <= ymax) && (args.queryPoint.y >= ymin)) {
-      int quad = childQuad(args.queryPoint);
-      switch (quad) {
-        case BoundaryRegion.NorthEast:
-          _ne.firstLeftEdge(args);
-          if (args.found) {
-            // If no edges in the NW child could have a larger right value, skip.
-            if (args.rightValue > (xmin + width / 2)) break;
-          }
-          _nw.firstLeftEdge(args);
-          break;
+      Quadrant quad = childQuad(args.queryPoint);
 
-        case BoundaryRegion.NorthWest:
-          _nw.firstLeftEdge(args);
-          break;
-
-        case BoundaryRegion.SouthEast:
-          _se.firstLeftEdge(args);
-          if (args.found) {
-            // If no edges in the SW child could have a larger right value, skip.
-            if (args.rightValue > (xmin + width / 2)) break;
-          }
-          _sw.firstLeftEdge(args);
-          break;
-
-        case BoundaryRegion.SouthWest:
-          _sw.firstLeftEdge(args);
-          break;
+      print(">>> :: $this (${args.queryPoint}) => $quad"); // TODO: REMOVE
+      if (quad == Quadrant.NorthEast) {
+        _ne.firstLeftEdge(args);
+        // If no edges in the NW child could have a larger right value, skip.
+        if ((!args.found) || (args.rightValue <= (xmin + width / 2))) _nw.firstLeftEdge(args);
+      } else if (quad == Quadrant.NorthWest) {
+        _nw.firstLeftEdge(args);
+      } else if (quad == Quadrant.SouthEast) {
+        _se.firstLeftEdge(args);
+        // If no edges in the SW child could have a larger right value, skip.
+        if ((!args.found) || (args.rightValue <= (xmin + width / 2))) _sw.firstLeftEdge(args);
+      } else {
+        // Quadrant.SouthWest
+        _sw.firstLeftEdge(args);
       }
     }
   }
@@ -220,27 +209,18 @@ class BranchNode extends BaseNode {
   bool foreachLeftEdge(IPoint point, IEdgeHandler hndl) {
     bool result = true;
     if ((point.y <= ymax) && (point.y >= ymin)) {
-      int quad = childQuad(point);
-      switch (quad) {
-        case BoundaryRegion.NorthEast:
-          result = _ne.foreachLeftEdge(point, hndl);
-          if (!result) break;
-          result = _nw.foreachLeftEdge(point, hndl);
-          break;
-
-        case BoundaryRegion.NorthWest:
-          result = _nw.foreachLeftEdge(point, hndl);
-          break;
-
-        case BoundaryRegion.SouthEast:
-          result = _se.foreachLeftEdge(point, hndl);
-          if (!result) break;
-          result = _sw.foreachLeftEdge(point, hndl);
-          break;
-
-        case BoundaryRegion.SouthWest:
-          result = _sw.foreachLeftEdge(point, hndl);
-          break;
+      Quadrant quad = childQuad(point);
+      if (quad == Quadrant.NorthEast) {
+        result = _ne.foreachLeftEdge(point, hndl);
+        if (result) result = _nw.foreachLeftEdge(point, hndl);
+      } else if (quad == Quadrant.NorthWest) {
+        result = _nw.foreachLeftEdge(point, hndl);
+      } else if (quad == Quadrant.SouthEast) {
+        result = _se.foreachLeftEdge(point, hndl);
+        if (result) result = _sw.foreachLeftEdge(point, hndl);
+      } else {
+        // Quadrant.SouthWest
+        result = _sw.foreachLeftEdge(point, hndl);
       }
     }
     return result;
@@ -249,7 +229,7 @@ class BranchNode extends BaseNode {
   /// Gets the quadrant of the child in the direction of the given point.
   /// This doesn't check that the point is actually contained by the child indicated,
   /// only the child in the direction of the point.
-  int childQuad(IPoint pnt) {
+  Quadrant childQuad(IPoint pnt) {
     int half = width ~/ 2;
     bool south = (pnt.y < (ymin + half));
     bool west = (pnt.x < (xmin + half));
@@ -267,89 +247,61 @@ class BranchNode extends BaseNode {
   }
 
   /// Gets the quadrant of the given child node.
-  int childNodeQuad(INode node) {
+  Quadrant childNodeQuad(INode node) {
     if (_ne == node)
       return Quadrant.NorthEast;
     else if (_nw == node)
       return Quadrant.NorthWest;
     else if (_se == node)
       return Quadrant.SouthEast;
-    else
-      /*  this._sw == node */
+    else // _sw == node
       return Quadrant.SouthWest;
   }
 
   /// Gets the minimum x location of the child of the given quadrant.
-  int childX(int quad) {
-    switch (quad) {
-      case Quadrant.NorthEast:
-      case Quadrant.SouthEast:
-        return xmin + width ~/ 2;
-      case Quadrant.NorthWest:
-      case Quadrant.SouthWest:
-        return xmin;
-      default:
-        return 0;
-    }
+  int childX(Quadrant quad) {
+    if ((childQuad == Quadrant.NorthEast) || (childQuad == Quadrant.SouthEast)) return xmin + width ~/ 2;
+
+    // childQuad == Quadrant.NorthWest
+    // childQuad == Quadrant.SouthWest
+    return xmin;
   }
 
   /// Gets the minimum y location of the child of the given quadrant.
-  int childY(int quad) {
-    switch (quad) {
-      case Quadrant.NorthEast:
-      case Quadrant.NorthWest:
-        return ymin + width ~/ 2;
-      case Quadrant.SouthEast:
-      case Quadrant.SouthWest:
-        return ymin;
-      default:
-        return 0;
-    }
+  int childY(Quadrant quad) {
+    if ((childQuad == Quadrant.NorthEast) || (childQuad == Quadrant.NorthWest)) return ymin + width ~/ 2;
+
+    // childQuad == Quadrant.SouthEast
+    // childQuad == Quadrant.SouthWest
+    return ymin;
   }
 
   /// Gets the child at a given quadrant.
-  INode child(int childQuad) {
-    switch (childQuad) {
-      case Quadrant.NorthEast:
-        return _ne;
-      case Quadrant.NorthWest:
-        return _nw;
-      case Quadrant.SouthEast:
-        return _se;
-      case Quadrant.SouthWest:
-        return _sw;
-      default:
-        return null;
-    }
+  INode child(Quadrant childQuad) {
+    if (childQuad == Quadrant.NorthEast) return _ne;
+    if (childQuad == Quadrant.NorthWest) return _nw;
+    if (childQuad == Quadrant.SouthEast) return _se;
+    // childQuad ==  Quadrant.SouthWest
+    return _sw;
   }
 
   /// This sets the child at a given quadrant.
   /// Returns true if the child was changed, false if there was not change.
-  bool setChild(int childQuad, INode node) {
+  bool setChild(Quadrant childQuad, INode node) {
     assert(node != this);
-    switch (childQuad) {
-      case Quadrant.NorthEast:
-        if (_ne == node) return false;
-        _ne = node;
-        break;
-
-      case Quadrant.NorthWest:
-        if (_nw == node) return false;
-        _nw = node;
-        break;
-
-      case Quadrant.SouthEast:
-        if (_se == node) return false;
-        _se = node;
-        break;
-
-      case Quadrant.SouthWest:
-        if (_sw == node) return false;
-        _sw = node;
-        break;
-
-      default:
-        return false;
+    if (childQuad == Quadrant.NorthEast) {
+      if (_ne == node) return false;
+      _ne = node;
+    } else if (childQuad == Quadrant.NorthWest) {
+      if (_nw == node) return false;
+      _nw = node;
+    } else if (childQuad == Quadrant.SouthEast) {
+      if (_se == node) return false;
+      _se = node;
+    } else {
+      // childQuad == Quadrant.SouthWest
+      if (_sw == node) return false;
+      _sw = node;
     }
     if (node is! EmptyNode) {
       (node as BaseNode).parent = this;
@@ -364,7 +316,7 @@ class BranchNode extends BaseNode {
   /// or null if none was found.
   PointNode findFirstPoint(IBoundary boundary, IPointHandler handle) {
     if ((boundary == null) || overlapsBoundary(boundary)) {
-      for (int quad in Quadrant.All) {
+      for (Quadrant quad in Quadrant.All) {
         INode node = child(quad);
         if (node is PointNode) {
           if ((boundary == null) || boundary.containsPoint(node)) {
@@ -387,7 +339,7 @@ class BranchNode extends BaseNode {
   /// or null if none was found.
   PointNode findLastPoint(IBoundary boundary, IPointHandler handle) {
     if ((boundary == null) || overlapsBoundary(boundary)) {
-      for (int quad in Quadrant.All) {
+      for (Quadrant quad in Quadrant.All) {
         INode node = child(quad);
         if (node is PointNode) {
           if ((boundary == null) || boundary.containsPoint(node)) {
@@ -409,22 +361,15 @@ class BranchNode extends BaseNode {
   /// or null if none was found.
   PointNode findNextPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
     List<int> others = null;
-    switch (childNodeQuad(curNode)) {
-      case Quadrant.NorthWest:
-        others = [Quadrant.NorthEast, Quadrant.SouthWest, Quadrant.SouthEast];
-        break;
-      case Quadrant.NorthEast:
-        others = [Quadrant.SouthWest, Quadrant.SouthEast];
-        break;
-      case Quadrant.SouthWest:
-        others = [Quadrant.SouthEast];
-        break;
-      case Quadrant.SouthEast:
-        others = [];
-        break;
-      default:
-        return null;
-    }
+    Quadrant quad = childNodeQuad(curNode);
+    if (quad == Quadrant.NorthWest)
+      others = [Quadrant.NorthEast, Quadrant.SouthWest, Quadrant.SouthEast];
+    else if (quad == Quadrant.NorthEast)
+      others = [Quadrant.SouthWest, Quadrant.SouthEast];
+    else if (quad == Quadrant.SouthWest)
+      others = [Quadrant.SouthEast];
+    else // Quadrant.SouthEast
+      others = [];
 
     for (int quad in others) {
       INode node = child(quad);
@@ -453,22 +398,15 @@ class BranchNode extends BaseNode {
   /// or null if none was found.
   PointNode findPreviousPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
     List<int> others = null;
-    switch (childNodeQuad(curNode)) {
-      case Quadrant.NorthWest:
-        others = [];
-        break;
-      case Quadrant.NorthEast:
-        others = [Quadrant.NorthWest];
-        break;
-      case Quadrant.SouthWest:
-        others = [Quadrant.NorthWest, Quadrant.NorthEast];
-        break;
-      case Quadrant.SouthEast:
-        others = [Quadrant.NorthWest, Quadrant.NorthEast, Quadrant.SouthWest];
-        break;
-      default:
-        return null;
-    }
+    Quadrant quad = childNodeQuad(curNode);
+    if (quad == Quadrant.NorthWest)
+      others = [];
+    else if (quad == Quadrant.NorthEast)
+      others = [Quadrant.NorthWest];
+    else if (quad == Quadrant.SouthWest)
+      others = [Quadrant.NorthWest, Quadrant.NorthEast];
+    else // Quadrant.SouthEast
+      others = [Quadrant.NorthWest, Quadrant.NorthEast, Quadrant.SouthWest];
 
     for (int quad in others) {
       INode node = child(quad);

@@ -21,7 +21,7 @@ abstract class IBoundary {
   int get height;
 
   /// Gets the boundary region the given point was in.
-  int region(IPoint point);
+  BoundaryRegion region(IPoint point);
 
   /// Checks if the given point is completely contained within this boundary.
   bool containsPoint(IPoint point);

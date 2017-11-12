@@ -18,7 +18,7 @@ class QuadTreeTester {
   }
 
   void showPlot() {
-    QuadTreePlotter.Show(_tree, _args.addDiv());
+    qtplotter.QuadTreePlotter.Show(_tree, _args.addDiv());
   }
 
   plotSvg.PlotSvg _showPlot(plotter.Plotter plot) {
@@ -105,7 +105,7 @@ class QuadTreeTester {
     }
 
     if (showPlot) {
-      QuadTreePlotter plot = new QuadTreePlotter();
+      qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
       plot.addTree(plot.addGroup("Tree"), _tree);
       if (node != null) {
         plot.addLines([node.x1, node.y1, node.x2, node.y2])..addColor(0.2, 0.2, 1.0);
@@ -159,7 +159,7 @@ class QuadTreeTester {
     }
 
     if (showPlot) {
-      QuadTreePlotter plot = new QuadTreePlotter();
+      qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
       plotter.Group group = plot.addGroup("Intersects: $edge => $count");
       plot.addTree(group, _tree);
 
@@ -215,7 +215,7 @@ class QuadTreeTester {
     }
 
     if (showPlot) {
-      QuadTreePlotter plot = new QuadTreePlotter();
+      qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
 
       plotter.Group group = plot.addGroup("Tree");
       plot.addTree(group, _tree);
@@ -276,7 +276,7 @@ class QuadTreeTester {
     }
 
     if (showPlot) {
-      QuadTreePlotter plot = new QuadTreePlotter();
+      qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
       plotter.Group group = plot.addGroup("Tree");
 
       plot.addTree(group, _tree);

@@ -54,10 +54,10 @@ class BoundaryRegion {
   /// Checks if this BoundaryRegion is equal to the given [other] BoundaryRegion.
   bool operator ==(BoundaryRegion other) => _value == other._value;
 
-  /// Gets the OR of the two boundary regions. 
+  /// Gets the OR of the two boundary regions.
   BoundaryRegion operator |(BoundaryRegion other) => new BoundaryRegion._(_value | other._value);
 
-  /// Gets the AND of the two boundary regions. 
+  /// Gets the AND of the two boundary regions.
   BoundaryRegion operator &(BoundaryRegion other) => new BoundaryRegion._(_value & other._value);
 
   /// Gets the string for the given boundary region.

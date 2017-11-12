@@ -4,7 +4,7 @@ void addRegionMapTests(TestManager tests) {
   tests.add("Region Map 1", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([0, 0, 0, 10, 10, 10, 10, 0]);
-    print("============");
+    print("============"); // TODO: Undo changes
     test.add([15, 5, 15, 15, 5, 15, 5, 5]);
     // test.pointTest(0, 0, 0);
     // test.pointTest(1, 1, 1);

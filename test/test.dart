@@ -35,6 +35,7 @@ void main() {
   html.DivElement elem = new html.DivElement();
   TestManager tests = new TestManager(elem);
 
+  // TODO: Enable tests
   // addConversionsTests(tests);
   // addEdgeIntersectTests(tests);
   // addFindAllIntersectionsTests(tests);
@@ -42,9 +43,9 @@ void main() {
   // addFirstLeftEdgeTests(tests);
   // addForeachPointInBoundaryTests(tests);
   // addInsertEdgesTests(tests);
-  // addInsertPointTests(tests);
+  addInsertPointTests(tests);
   // addOverlapsTests(tests);
-  addRegionMapTests(tests);
+  // addRegionMapTests(tests);
   // addRegionTests(tests);
 
   shell(elem);

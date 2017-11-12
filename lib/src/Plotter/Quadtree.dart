@@ -6,7 +6,7 @@ class QuadTreePlotter extends plotter.Plotter {
   static plotSvg.PlotSvg Show(qt.QuadTree tree, html.DivElement div) {
     QuadTreePlotter plot = new QuadTreePlotter();
     plotter.Group grp = plot.addGroup("Tree");
-    plot.addTree(grp, tree);
+    plot.addTree(grp, tree, true, true, true);
     plot.updateBounds();
     plot.focusOnData();
     return new plotSvg.PlotSvg.fromElem(div, plot);
@@ -135,7 +135,7 @@ class _quadTreePlotterNodeHandler extends qt.INodeHandler {
       _plot.addBound(_pointRects, node.boundary, _pad);
     } else if (node is qt.BranchNode) {
       if (_emptyRects != null) {
-        for (int quad in qt.Quadrant.All) {
+        for (qt.Quadrant quad in qt.Quadrant.All) {
           qt.INode child = node.child(quad);
           if (child is qt.EmptyNode) {
             double width = node.width / 2 - 1.0 + _pad * 2.0;

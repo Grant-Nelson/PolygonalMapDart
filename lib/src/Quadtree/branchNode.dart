@@ -184,8 +184,6 @@ class BranchNode extends BaseNode {
   void firstLeftEdge(FirstLeftEdgeArgs args) {
     if ((args.queryPoint.y <= ymax) && (args.queryPoint.y >= ymin)) {
       Quadrant quad = childQuad(args.queryPoint);
-
-      print(">>> :: $this (${args.queryPoint}) => $quad"); // TODO: REMOVE
       if (quad == Quadrant.NorthEast) {
         _ne.firstLeftEdge(args);
         // If no edges in the NW child could have a larger right value, skip.
@@ -261,18 +259,14 @@ class BranchNode extends BaseNode {
   /// Gets the minimum x location of the child of the given quadrant.
   int childX(Quadrant quad) {
     if ((childQuad == Quadrant.NorthEast) || (childQuad == Quadrant.SouthEast)) return xmin + width ~/ 2;
-
-    // childQuad == Quadrant.NorthWest
-    // childQuad == Quadrant.SouthWest
+    // (childQuad == Quadrant.NorthWest) || (childQuad == Quadrant.SouthWest)
     return xmin;
   }
 
   /// Gets the minimum y location of the child of the given quadrant.
   int childY(Quadrant quad) {
     if ((childQuad == Quadrant.NorthEast) || (childQuad == Quadrant.NorthWest)) return ymin + width ~/ 2;
-
-    // childQuad == Quadrant.SouthEast
-    // childQuad == Quadrant.SouthWest
+    // (childQuad == Quadrant.SouthEast) || (childQuad == Quadrant.SouthWest)
     return ymin;
   }
 
@@ -360,7 +354,7 @@ class BranchNode extends BaseNode {
   /// Returns the next point node in the given region,
   /// or null if none was found.
   PointNode findNextPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
-    List<int> others = null;
+    List<Quadrant> others = null;
     Quadrant quad = childNodeQuad(curNode);
     if (quad == Quadrant.NorthWest)
       others = [Quadrant.NorthEast, Quadrant.SouthWest, Quadrant.SouthEast];
@@ -371,7 +365,7 @@ class BranchNode extends BaseNode {
     else // Quadrant.SouthEast
       others = [];
 
-    for (int quad in others) {
+    for (Quadrant quad in others) {
       INode node = child(quad);
       if (node is PointNode) {
         if ((boundary == null) || boundary.containsPoint(node)) {
@@ -397,7 +391,7 @@ class BranchNode extends BaseNode {
   /// Returns the previous point node in the given region,
   /// or null if none was found.
   PointNode findPreviousPoint(INode curNode, IBoundary boundary, IPointHandler handle) {
-    List<int> others = null;
+    List<Quadrant> others = null;
     Quadrant quad = childNodeQuad(curNode);
     if (quad == Quadrant.NorthWest)
       others = [];
@@ -408,7 +402,7 @@ class BranchNode extends BaseNode {
     else // Quadrant.SouthEast
       others = [Quadrant.NorthWest, Quadrant.NorthEast, Quadrant.SouthWest];
 
-    for (int quad in others) {
+    for (Quadrant quad in others) {
       INode node = child(quad);
       if (node is PointNode) {
         if ((boundary == null) || boundary.containsPoint(node)) {
@@ -439,7 +433,7 @@ class BranchNode extends BaseNode {
     if (pointCount == 0) {
       // Find a dark node and populate it with the other dark nodes' lines.
       PassNode pass = null;
-      for (int quad in Quadrant.All) {
+      for (Quadrant quad in Quadrant.All) {
         INode node = child(quad);
         if (node is PassNode) {
           if (pass == null) {
@@ -462,7 +456,7 @@ class BranchNode extends BaseNode {
     } else if (pointCount == 1) {
       // Find the point node in the children.
       PointNode point = null;
-      for (int quad in Quadrant.All) {
+      for (Quadrant quad in Quadrant.All) {
         INode node = child(quad);
         if (node is PointNode) {
           // Point node found, relocate and remove the node
@@ -477,7 +471,7 @@ class BranchNode extends BaseNode {
       if (point == null) return EmptyNode.instance;
 
       // Find any dark nodes and copy all lines into the black node.
-      for (int quad in Quadrant.All) {
+      for (Quadrant quad in Quadrant.All) {
         INode node = child(quad);
         if (node is PassNode) {
           // Add all passing lines to black node unless the line starts or ends

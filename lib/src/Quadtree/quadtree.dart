@@ -1,7 +1,6 @@
 library PolygonalMapDart.Quadtree;
 
 import 'package:intl/intl.dart';
-import 'dart:io';
 
 part 'AreaAccumulator.dart';
 part 'BaseNode.dart';

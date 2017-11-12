@@ -3,10 +3,22 @@ part of PolygonalMapDart.Plotter;
 /// A plotter customized to work with quad-trees.
 class QuadTreePlotter extends plotter.Plotter {
   /// Shows a quad-tree in a plot panel.
-  static plotSvg.PlotSvg Show(qt.QuadTree tree, html.DivElement div) {
+  static plotSvg.PlotSvg Show(qt.QuadTree tree, html.DivElement div,
+      {bool showPassNodes = true,
+      bool showPointNodes = true,
+      bool showEmptyNodes = false,
+      bool showBranchNodes = false,
+      bool showEdges = true,
+      bool showPoints = true}) {
     QuadTreePlotter plot = new QuadTreePlotter();
     plotter.Group grp = plot.addGroup("Tree");
-    plot.addTree(grp, tree, true, true, true);
+    plot.addTree(grp, tree,
+        showPassNodes: showPassNodes,
+        showPointNodes: showPointNodes,
+        showEmptyNodes: showEmptyNodes,
+        showBranchNodes: showBranchNodes,
+        showEdges: showEdges,
+        showPoints: showPoints);
     plot.updateBounds();
     plot.focusOnData();
     return new plotSvg.PlotSvg.fromElem(div, plot);
@@ -52,20 +64,32 @@ class QuadTreePlotter extends plotter.Plotter {
   }
 
   /// Adds a quad-tree to this plotter.
-  plotter.Group addTreeGroup(String label, qt.QuadTree tree) {
+  plotter.Group addTreeGroup(String label, qt.QuadTree tree,
+      {bool showPassNodes = true,
+      bool showPointNodes = true,
+      bool showEmptyNodes = false,
+      bool showBranchNodes = false,
+      bool showEdges = true,
+      bool showPoints = true}) {
     plotter.Group group = addGroup(label);
-    addTree(group, tree, true, true, false, false, true, true);
+    addTree(group, tree,
+        showPassNodes: showPassNodes,
+        showPointNodes: showPointNodes,
+        showEmptyNodes: showEmptyNodes,
+        showBranchNodes: showBranchNodes,
+        showEdges: showEdges,
+        showPoints: showPoints);
     return group;
   }
 
   /// Adds a quad-tree to this plotter.
   void addTree(plotter.Group group, qt.QuadTree tree,
-      [bool showPassNodes = true,
+      {bool showPassNodes = true,
       bool showPointNodes = true,
       bool showEmptyNodes = false,
       bool showBranchNodes = false,
       bool showEdges = true,
-      bool showPoints = true]) {
+      bool showPoints = true}) {
     plotter.Rectangles passRects = new plotter.Rectangles();
     passRects.addColor(0.0, 0.0, 0.6);
     passRects.addFillColor(0.0, 0.0, 0.6, 0.3);
@@ -138,8 +162,10 @@ class _quadTreePlotterNodeHandler extends qt.INodeHandler {
         for (qt.Quadrant quad in qt.Quadrant.All) {
           qt.INode child = node.child(quad);
           if (child is qt.EmptyNode) {
+            double x = node.childX(quad).toDouble();
+            double y = node.childY(quad).toDouble();
             double width = node.width / 2 - 1.0 + _pad * 2.0;
-            _emptyRects.add([node.childX(quad) - _pad, node.childY(quad) - _pad, width, width]);
+            _emptyRects.add([x - _pad, y - _pad, width, width]);
           }
         }
       }

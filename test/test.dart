@@ -35,18 +35,17 @@ void main() {
   html.DivElement elem = new html.DivElement();
   TestManager tests = new TestManager(elem);
 
-  // TODO: Enable tests
-  // addConversionsTests(tests);
-  // addEdgeIntersectTests(tests);
-  // addFindAllIntersectionsTests(tests);
-  // addFindNearestPointTests(tests);
-  // addFirstLeftEdgeTests(tests);
-  // addForeachPointInBoundaryTests(tests);
-  // addInsertEdgesTests(tests);
+  addConversionsTests(tests);
+  addEdgeIntersectTests(tests);
+  addFindAllIntersectionsTests(tests);
+  addFindNearestPointTests(tests);
+  addFirstLeftEdgeTests(tests);
+  addForeachPointInBoundaryTests(tests);
+  addInsertEdgesTests(tests);
   addInsertPointTests(tests);
-  // addOverlapsTests(tests);
-  // addRegionMapTests(tests);
-  // addRegionTests(tests);
+  addOverlapsTests(tests);
+  addRegionMapTests(tests);
+  addRegionTests(tests);
 
   shell(elem);
 }

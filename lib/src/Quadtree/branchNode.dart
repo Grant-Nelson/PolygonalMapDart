@@ -258,15 +258,15 @@ class BranchNode extends BaseNode {
 
   /// Gets the minimum x location of the child of the given quadrant.
   int childX(Quadrant quad) {
-    if ((childQuad == Quadrant.NorthEast) || (childQuad == Quadrant.SouthEast)) return xmin + width ~/ 2;
-    // (childQuad == Quadrant.NorthWest) || (childQuad == Quadrant.SouthWest)
+    if ((quad == Quadrant.NorthEast) || (quad == Quadrant.SouthEast)) return xmin + width ~/ 2;
+    // (quad == Quadrant.NorthWest) || (quad == Quadrant.SouthWest)
     return xmin;
   }
 
   /// Gets the minimum y location of the child of the given quadrant.
   int childY(Quadrant quad) {
-    if ((childQuad == Quadrant.NorthEast) || (childQuad == Quadrant.NorthWest)) return ymin + width ~/ 2;
-    // (childQuad == Quadrant.SouthEast) || (childQuad == Quadrant.SouthWest)
+    if ((quad == Quadrant.NorthEast) || (quad == Quadrant.NorthWest)) return ymin + width ~/ 2;
+    // (quad == Quadrant.SouthEast) || (quad == Quadrant.SouthWest)
     return ymin;
   }
 

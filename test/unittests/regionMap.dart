@@ -4,35 +4,18 @@ void addRegionMapTests(TestManager tests) {
   tests.add("Region Map 1", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([0, 0, 0, 10, 10, 10, 10, 0]);
-    print("============"); // TODO: Undo changes
     test.add([15, 5, 15, 15, 5, 15, 5, 5]);
-    // test.pointTest(0, 0, 0);
-    // test.pointTest(1, 1, 1);
-    // test.pointTest(4, 4, 1);
-    // test.pointTest(5, 5, 1);
-    // test.pointTest(6, 6, 2);
-    // test.pointTest(9, 9, 2);
-    // test.pointTest(10, 10, 2);
-    // test.pointTest(11, 11, 2);
-    // test.pointTest(14, 14, 2);
-    // test.pointTest(15, 15, 0);
-    // test.pointTest(16, 16, 0);
-    // test.pointTest(4, 11, 0);
-    // test.pointTest(6, 11, 2);
-    // test.pointTest(4, 9, 1);
-    // test.pointTest(6, 9, 2);
-    // test.pointTest(11, 4, 0);
-    // test.pointTest(11, 6, 2);
-    // test.pointTest(9, 4, 1);
-    // test.pointTest(9, 6, 2);
-    test.showPlot();
-  });
-
-/*
-  tests.add("Region Map 2", (TestArgs args) {
-    RegionMapTester test = new RegionMapTester(args);
-    test.add([0, 3, 0, 7, 3, 10, 7, 10, 10, 7, 10, 3, 7, 0, 3, 0]);
-    test.add([5, 8, 5, 12, 8, 15, 12, 15, 15, 12, 15, 8, 12, 5, 8, 5]);
+    test.pointTest(0, 0, 0);
+    test.pointTest(1, 1, 1);
+    test.pointTest(4, 4, 1);
+    test.pointTest(5, 5, 1);
+    test.pointTest(6, 6, 2);
+    test.pointTest(9, 9, 2);
+    test.pointTest(10, 10, 2);
+    test.pointTest(11, 11, 2);
+    test.pointTest(14, 14, 2);
+    test.pointTest(15, 15, 0);
+    test.pointTest(16, 16, 0);
     test.pointTest(4, 11, 0);
     test.pointTest(6, 11, 2);
     test.pointTest(4, 9, 1);
@@ -44,62 +27,76 @@ void addRegionMapTests(TestManager tests) {
     test.showPlot();
   });
 
-  tests.add("Region Map 3", (TestArgs args) {
-    RegionMapTester test = new RegionMapTester(args);
-    test.add([0, 0, 0, 40, 10, 40, 10, 0]);
-    test.add([0, 0, 0, 10, 30, 10, 30, 30, 0, 30, 0, 40, 40, 40, 40, 0]);
-    // TODO: Add test points.
-    test.showPlot();
-  });
+  // tests.add("Region Map 2", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([0, 3, 0, 7, 3, 10, 7, 10, 10, 7, 10, 3, 7, 0, 3, 0]);
+  //   test.add([5, 8, 5, 12, 8, 15, 12, 15, 15, 12, 15, 8, 12, 5, 8, 5]);
+  //   test.pointTest(4, 11, 0);
+  //   test.pointTest(6, 11, 2);
+  //   test.pointTest(4, 9, 1);
+  //   test.pointTest(6, 9, 2);
+  //   test.pointTest(11, 4, 0);
+  //   test.pointTest(11, 6, 2);
+  //   test.pointTest(9, 4, 1);
+  //   test.pointTest(9, 6, 2);
+  //   test.showPlot();
+  // });
 
-  tests.add("Region Map 4", (TestArgs args) {
-    RegionMapTester test = new RegionMapTester(args);
-    test.add([10, 0, 0, 0, 0, 4, 6, 5, 0, 6, 0, 10, 10, 10]);
-    test.add([3, 0, 3, 10, 10, 10, 10, 0]);
-    // TODO: Add test points.
-    test.showPlot();
-  });
+  // tests.add("Region Map 3", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([0, 0, 0, 40, 10, 40, 10, 0]);
+  //   test.add([0, 0, 0, 10, 30, 10, 30, 30, 0, 30, 0, 40, 40, 40, 40, 0]);
+  //   // TODO: Add test points.
+  //   test.showPlot();
+  // });
 
-  tests.add("Region Map 5", (TestArgs args) {
-    RegionMapTester test = new RegionMapTester(args);
-    test.add([0, 1, 0, 2, 2, 2, 2, 3, 0, 3, 0, 4, 5, 4, 5, 1]);
-    test.add([1, 0, 1, 5, 4, 5, 4, 0]);
-    // TODO: Add test points.
-    test.showPlot();
-  });
+  // tests.add("Region Map 4", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([10, 0, 0, 0, 0, 4, 6, 5, 0, 6, 0, 10, 10, 10]);
+  //   test.add([3, 0, 3, 10, 10, 10, 10, 0]);
+  //   // TODO: Add test points.
+  //   test.showPlot();
+  // });
 
-  tests.add("Region Map 6", (TestArgs args) {
-    RegionMapTester test = new RegionMapTester(args);
-    test.add([1, 0, 1, 5, 4, 5, 4, 0]);
-    test.add([0, 0, 1, 1, 1, 5, 4, 5, 4, 0]);
-    // TODO: Add test points.
-    test.showPlot();
-  });
+  // tests.add("Region Map 5", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([0, 1, 0, 2, 2, 2, 2, 3, 0, 3, 0, 4, 5, 4, 5, 1]);
+  //   test.add([1, 0, 1, 5, 4, 5, 4, 0]);
+  //   // TODO: Add test points.
+  //   test.showPlot();
+  // });
 
-  tests.add("Region Map 7", (TestArgs args) {
-    RegionMapTester test = new RegionMapTester(args);
-    test.add([15, 5, 15, 15, 5, 15, 5, 5]);
-    test.add([15, 5, 15, 15, 5, 15, 5, 5]);
-    // TODO: Add test points.
-    test.showPlot();
-  });
+  // tests.add("Region Map 6", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([1, 0, 1, 5, 4, 5, 4, 0]);
+  //   test.add([0, 0, 1, 1, 1, 5, 4, 5, 4, 0]);
+  //   // TODO: Add test points.
+  //   test.showPlot();
+  // });
 
-  tests.add("Region Map 8", (TestArgs args) {
-    RegionMapTester test = new RegionMapTester(args);
-    test.add([10, 5, 10, 10, 5, 10, 5, 5]);
-    test.add([15, 0, 15, 15, 0, 15, 0, 0]);
-    // TODO: Add test points.
-    test.showPlot();
-  });
+  // tests.add("Region Map 7", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([15, 5, 15, 15, 5, 15, 5, 5]);
+  //   test.add([15, 5, 15, 15, 5, 15, 5, 5]);
+  //   // TODO: Add test points.
+  //   test.showPlot();
+  // });
 
-  tests.add("Region Map 9", (TestArgs args) {
-    RegionMapTester test = new RegionMapTester(args);
-    test.add([15, 0, 15, 15, 0, 15, 0, 0]);
-    test.add([10, 5, 10, 10, 5, 10, 5, 5]);
-    // TODO: Add test points.
-    test.showPlot();
-  });
-  */
+  // tests.add("Region Map 8", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([10, 5, 10, 10, 5, 10, 5, 5]);
+  //   test.add([15, 0, 15, 15, 0, 15, 0, 0]);
+  //   // TODO: Add test points.
+  //   test.showPlot();
+  // });
+
+  // tests.add("Region Map 9", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([15, 0, 15, 15, 0, 15, 0, 0]);
+  //   test.add([10, 5, 10, 10, 5, 10, 5, 5]);
+  //   // TODO: Add test points.
+  //   test.showPlot();
+  // });
 }
 
 class RegionMapTester {
@@ -185,7 +182,6 @@ class RegionMapTester {
         ..addColor(clr[0], clr[1], clr[2])
         ..addDirected(true);
     }
-    print(">>> $count");
 
     _map.tree.foreachEdge(new _LineCollector(lines));
 

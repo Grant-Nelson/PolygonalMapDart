@@ -652,8 +652,10 @@ class QuadTree {
   /// [point] is the point to removed from the tree.
   void removePoint(PointNode point) {
     // Remove any edges on the point.
-    for (EdgeNode edge in point.startEdges) removeEdge(edge, false);
-    for (EdgeNode edge in point.endEdges) removeEdge(edge, false);
+    List<EdgeNode> startEdges = point.startEdges.toList();
+    for (EdgeNode edge in startEdges) removeEdge(edge, false);
+    List<EdgeNode> endEdges = point.endEdges.toList();
+    for (EdgeNode edge in endEdges) removeEdge(edge, false);
 
     // The point node must not have any edges beginning
     // nor ending on by the time is is removed.

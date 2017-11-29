@@ -159,7 +159,9 @@ abstract class BaseNode implements INode, IBoundary {
   /// The [args] are an argument class used to store all the arguments and
   /// results for running this methods.
   void _firstLineLeft(Set<EdgeNode> edgeSet, FirstLeftEdgeArgs args) {
-    edgeSet.map(args.update);
+    for (EdgeNode edge in edgeSet) {
+      args.update(edge);
+    }
   }
 
   /// This handles all the edges in the given set to the left of the given point.

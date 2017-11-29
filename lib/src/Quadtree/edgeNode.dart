@@ -97,7 +97,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   int get dy => _end.y - _start.y;
 
   /// Determines the next neighbor edge on a properly wound polygon.
-  IEdge nextBorder(IEdgeHandler matcher) {
+  IEdge nextBorder([IEdgeHandler matcher = null]) {
     BorderNeighbor border = new BorderNeighbor(this, true, matcher);
     for (EdgeNode neighbor in _end.startEdges) {
       border.handle(neighbor);
@@ -106,7 +106,7 @@ class EdgeNode implements IEdge, Comparable<EdgeNode> {
   }
 
   /// Determines the previous neighbor edge on a properly wound polygon.
-  IEdge previousBorder(IEdgeHandler matcher) {
+  IEdge previousBorder([IEdgeHandler matcher = null]) {
     BorderNeighbor border = new BorderNeighbor.Points(_end, _start, false, matcher);
     for (EdgeNode neighbor in _start.endEdges) {
       border.handle(neighbor);

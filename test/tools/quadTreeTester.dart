@@ -17,8 +17,20 @@ class QuadTreeTester {
     if (_args.failed) showPlot();
   }
 
-  void showPlot() {
-    qtplotter.QuadTreePlotter.Show(_tree, _args.addDiv());
+  void showPlot(
+      {bool showPassNodes = true,
+      bool showPointNodes = true,
+      bool showEmptyNodes = false,
+      bool showBranchNodes = false,
+      bool showEdges = true,
+      bool showPoints = true}) {
+    qtplotter.QuadTreePlotter.Show(_tree, _args.addDiv(),
+        showPassNodes: showPassNodes,
+        showPointNodes: showPointNodes,
+        showEmptyNodes: showEmptyNodes,
+        showBranchNodes: showBranchNodes,
+        showEdges: showEdges,
+        showPoints: showPoints);
   }
 
   plotSvg.PlotSvg _showPlot(plotter.Plotter plot) {

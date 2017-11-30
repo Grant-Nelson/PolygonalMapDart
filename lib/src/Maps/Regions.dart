@@ -98,14 +98,12 @@ class Regions {
         EdgeSide sideData = last.data;
         assert(sideData != null);
         sideData.left = regionId;
-
       } else {
         last = end.findEdgeTo(start);
         if (last != null) {
           EdgeSide sideData = last.data;
           assert(sideData != null);
           sideData.right = regionId;
-
         } else {
           int outterRangeId = _getSide(start, end);
           qt.EdgeNode e = _tree.insertEdge(edge);

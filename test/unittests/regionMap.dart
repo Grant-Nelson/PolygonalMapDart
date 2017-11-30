@@ -76,23 +76,47 @@ void addRegionMapTests(TestManager tests) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([10, 0, 0, 0, 0, 4, 6, 5, 0, 6, 0, 10, 10, 10]);
     test.add([3, 0, 3, 10, 10, 10, 10, 0]);
-    // TODO: Add test points.
+    test.pointTest(4, 7, 2);
+    test.pointTest(4, 5, 2);
+    test.pointTest(4, 3, 2);
+    test.pointTest(2, 7, 1);
+    test.pointTest(2, 5, 0);
+    test.pointTest(2, 3, 1);
     test.showPlot();
   });
 
   tests.add("Region Map 5", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
-    test.add([0, 1, 0, 2, 2, 2, 2, 3, 0, 3, 0, 4, 5, 4, 5, 1]);
-    test.add([1, 0, 1, 5, 4, 5, 4, 0]);
-    // TODO: Add test points.
+    test.add([0, 2, 0, 4, 4, 4, 4, 6, 0, 6, 0, 8, 10, 8, 10, 2]);
+    test.add([2, 0, 2, 10, 8, 10, 8, 0]);
+    test.pointTest(1, 1, 0);
+    test.pointTest(1, 3, 1);
+    test.pointTest(1, 5, 0);
+    test.pointTest(1, 7, 1);
+    test.pointTest(1, 9, 0);
+
+    test.pointTest(3, 1, 2);
+    test.pointTest(3, 3, 2);
+    test.pointTest(3, 5, 2);
+    test.pointTest(3, 7, 2);
+    test.pointTest(3, 9, 2);
+
+    test.pointTest(9, 1, 0);
+    test.pointTest(9, 3, 1);
+    test.pointTest(9, 5, 1);
+    test.pointTest(9, 7, 1);
+    test.pointTest(9, 9, 0);
     test.showPlot();
   });
 
   tests.add("Region Map 6", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
-    test.add([1, 0, 1, 5, 4, 5, 4, 0]);
-    test.add([0, 0, 1, 1, 1, 5, 4, 5, 4, 0]);
-    // TODO: Add test points.
+    test.add([3, 0, 3, 15, 12, 15, 12, 0]);
+    test.add([0, 0, 3, 3, 3, 15, 12, 15, 12, 0]);
+    test.pointTest(2, 1, 2);
+    test.pointTest(3, 1, 2);
+    test.pointTest(4, 1, 2);
+    test.pointTest(1, 2, 0);
     test.showPlot();
   });
 
@@ -100,7 +124,7 @@ void addRegionMapTests(TestManager tests) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([15, 5, 15, 15, 5, 15, 5, 5]);
     test.add([15, 5, 15, 15, 5, 15, 5, 5]);
-    // TODO: Add test points.
+    test.pointTest(10, 10, 2);
     test.showPlot();
   });
 
@@ -108,7 +132,11 @@ void addRegionMapTests(TestManager tests) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([10, 5, 10, 10, 5, 10, 5, 5]);
     test.add([15, 0, 15, 15, 0, 15, 0, 0]);
-    // TODO: Add test points.
+    test.pointTest(-2, -2, 0);
+    test.pointTest(2, 2, 2);
+    test.pointTest(7, 7, 2);
+    test.pointTest(12, 12, 2);
+    test.pointTest(17, 17, 0);
     test.showPlot();
   });
 
@@ -222,7 +250,7 @@ class RegionMapTester {
     _map.tree.foreachEdge(new _LineCollector(lines));
 
     plotter.Group errPntGroup = plot.addGroup("Error Points");
-    for (int i = 0; i < _errPnts.length; i++) {
+    for (int i = 0; i <= count; i++) {
       List<int> points = _errPnts[i];
       if (points != null) {
         List<double> clr = _colors[i];
@@ -236,7 +264,7 @@ class RegionMapTester {
     }
 
     plotter.Group testPnts = plot.addGroup("Test Points");
-    for (int i = 0; i < _points.length; i++) {
+    for (int i = 0; i <= count; i++) {
       List<int> points = _points[i];
       if (points != null) {
         List<double> clr = _colors[i];

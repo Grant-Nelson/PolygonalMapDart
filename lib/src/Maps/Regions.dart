@@ -66,7 +66,7 @@ class Regions {
     for (int i = 0; i < count; ++i) {
       qt.Edge edge = nodes.edge(i);
       qt.IntersectionResult result = _tree.findFirstIntersection(edge, new qt.NeighborEdgeIgnorer(edge));
-      if ((result != null) && result.intersects) {
+      if (result != null) {
         qt.PointNode point = _insertPoint(result.point);
         nodes.nodes.insert(i + 1, point);
         ++count;
@@ -88,6 +88,7 @@ class Regions {
     _removeContainedEdges(newRegion);
 
     // Insert the edges of the boundary while checking the outside boundary region value.
+    List<qt.EdgeNode> removeEdge = new List<qt.EdgeNode>();
     for (int i = 0; i < count; ++i) {
       qt.Edge edge = nodes.edge(i);
       qt.PointNode start = edge.start;
@@ -98,18 +99,27 @@ class Regions {
         EdgeSide sideData = last.data;
         assert(sideData != null);
         sideData.left = regionId;
+        if (sideData.right == regionId) removeEdge.last;
       } else {
         last = end.findEdgeTo(start);
         if (last != null) {
           EdgeSide sideData = last.data;
           assert(sideData != null);
           sideData.right = regionId;
+          if (sideData.left == regionId) removeEdge.last;
         } else {
           int outterRangeId = _getSide(start, end);
-          qt.EdgeNode e = _tree.insertEdge(edge);
-          e.data = new EdgeSide(regionId, outterRangeId);
+          if (outterRangeId != regionId) {
+            qt.EdgeNode e = _tree.insertEdge(edge);
+            e.data = new EdgeSide(regionId, outterRangeId);
+          }
         }
       }
+    }
+
+    // Remove any edge which ends up with the same data on both sides.
+    for (qt.EdgeNode edge in removeEdge) {
+      _tree.removeEdge(edge, false);
     }
   }
 
@@ -211,6 +221,7 @@ class Regions {
       node.data = new EdgeSide.copy(edge.data);
     }
 
+    _tree.validate(); // TODO: REMOVE
     return result.point;
   }
 

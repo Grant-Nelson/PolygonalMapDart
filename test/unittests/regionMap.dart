@@ -159,6 +159,56 @@ void addRegionMapTests(TestManager tests) {
     test.pointTest(16, 8, 0);
     test.showPlot();
   });
+
+  tests.add("Region Map 10", (TestArgs args) {
+    RegionMapTester test = new RegionMapTester(args);
+    test.add([0, 10, 100, 10, 50, 60]);
+    test.add([90, 0, 90, 100, 40, 50]);
+    test.add([100, 90, 0, 90, 50, 40]);
+    test.add([10, 100, 10, 0, 60, 50]);
+
+    test.pointTest(50, 50, 4);
+    test.pointTest(50, 30, 1);
+    test.pointTest(70, 50, 2);
+    test.pointTest(50, 70, 3);
+    test.pointTest(30, 50, 4);
+    
+    test.pointTest(20, 20, 4);
+    test.pointTest(80, 20, 2);
+    test.pointTest(80, 80, 3);
+    test.pointTest(20, 80, 4);
+    test.showPlot();
+  });
+
+  tests.add("Region Map 11", (TestArgs args) {
+    RegionMapTester test = new RegionMapTester(args);
+    test.add([0, 0, 0, 40, 10, 40, 10, 0], 1);
+    test.add([0, 0, 0, 10, 30, 10, 30, 30, 0, 30, 0, 40, 40, 40, 40, 0], 1);
+    test.pointTest(-2, 5, 0);
+    test.pointTest(2, 5, 1);
+    test.pointTest(8, 5, 1);
+    test.pointTest(12, 5, 1);
+    test.pointTest(28, 5, 1);
+    test.pointTest(34, 5, 1);
+    test.pointTest(42, 5, 0);
+
+    test.pointTest(-2, 20, 0);
+    test.pointTest(2, 20, 1);
+    test.pointTest(8, 20, 1);
+    test.pointTest(12, 20, 0);
+    test.pointTest(28, 20, 0);
+    test.pointTest(34, 20, 1);
+    test.pointTest(42, 20, 0);
+
+    test.pointTest(-2, 35, 0);
+    test.pointTest(2, 35, 1);
+    test.pointTest(8, 35, 1);
+    test.pointTest(12, 35, 1);
+    test.pointTest(28, 35, 1);
+    test.pointTest(34, 35, 1);
+    test.pointTest(42, 35, 0);
+    test.showPlot();
+  });
 }
 
 class RegionMapTester {
@@ -167,6 +217,8 @@ class RegionMapTester {
   maps.Regions _map;
 
   List<List<int>> _polygons;
+
+  List<int> _regions;
 
   Map<int, List<int>> _points;
 
@@ -177,6 +229,7 @@ class RegionMapTester {
   RegionMapTester(this._args) {
     _map = new maps.Regions();
     _polygons = new List<List<int>>();
+    _regions = new List<int>();
     _points = new Map<int, List<int>>();
     _errPnts = new Map<int, List<int>>();
     _colors = new List<List<double>>();
@@ -193,9 +246,11 @@ class RegionMapTester {
     _colors.add([red, green, blue]);
   }
 
-  void add(List<int> polygon) {
+  void add(List<int> polygon, [int region = -1]) {
+    if (region < 0) region = _polygons.length+1;
     _polygons.add(polygon);
-    _map.addRegionWithCoords(_polygons.length, polygon);
+    _regions.add(region);
+    _map.addRegionWithCoords(region, polygon);
     if (!_map.tree.validate()) _args.fail();
   }
 
@@ -227,8 +282,9 @@ class RegionMapTester {
     plotter.Group initPolys = plot.addGroup("Initial Polygons");
     for (int i = 0; i < count; i++) {
       List<int> poly = _polygons[i];
+      int region = _regions[i];
       if (poly != null) {
-        List<double> clr = _colors[i + 1];
+        List<double> clr = _colors[region];
         plotter.Polygon polyItem = initPolys.addGroup("Polygon #$i").addPolygon([])
           ..addColor(clr[0], clr[1], clr[2])
           ..addDirected(true);

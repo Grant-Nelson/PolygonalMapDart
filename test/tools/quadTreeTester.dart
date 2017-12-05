@@ -196,6 +196,55 @@ class QuadTreeTester {
     }
   }
 
+  void findFirstIntersection(int x1, int y1, int x2, int y2, int expX1, int expY1,
+    int expX2, int expY2, [bool showPlot = true, IEdgeHandler edgeFilter = null]) {
+    qt.Edge edge = new qt.Edge(new qt.Point(x1, y1), new qt.Point(x2, y2));
+    qt.Edge exp = new qt.Edge(new qt.Point(expX1, expY1), new qt.Point(expX2, expY2));
+    qt.IntersectionResult result = _tree.findFirstIntersection(edge, edgeFilter);
+
+    StringBuffer sout = new StringBuffer();
+    if (!_tree.validate(sout, null)) {
+      _args.info(sout.toString());
+      _args.info(_tree.toString());
+      _args.fail();
+      showPlot = true;
+    }
+
+    _args.info("Edge:     $edge\n");
+    _args.info("Result:   $result\n");
+    _args.info("Expected: $exp\n");
+
+    if (!qt.Edge.equals(result.edgeB, exp, false)) {
+        _args.error("Expected to find an intersections but found a first intersection.\n" +
+            "${result.toString()}\n" +
+            "${_tree.toString()}\n\n");
+        showPlot = true;
+    }
+
+    if (showPlot) {
+      qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
+      plotter.Group group = plot.addGroup("Intersects: $edge");
+      plot.addTree(group, _tree);
+
+      plotter.Lines lines = new plotter.Lines();
+      lines.add([edge.x1, edge.y1, edge.x2, edge.y2]);
+      lines.addColor(0.0, 0.0, 0.8);
+      plot.add([lines]);
+
+      plotter.Points points = new plotter.Points();
+      if (result?.point != null) {
+        points.add([result.point.x, result.point.y]);
+      }
+      points.addPointSize(4.0);
+      points.addColor(1.0, 0.0, 0.0);
+      plot.add([points]);
+
+      plot.updateBounds();
+      plot.focusOnData();
+      _showPlot(plot);
+    }
+  }
+
   void checkForeach(List<int> inside, List<int> outside, int x1, int y1, int x2, int y2, [bool showPlot = true]) {
     Set<qt.PointNode> expOutside = new Set<qt.PointNode>();
     for (int i = 0; i < outside.length; i += 2) expOutside.add(insertPoint(outside[i], outside[i + 1]));

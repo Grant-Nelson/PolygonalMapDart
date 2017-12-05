@@ -16,6 +16,15 @@ void addFindAllIntersectionsTests(TestManager tests) {
     test.findAllIntersections(0, 10, 10, 10, 3);
     test.findAllIntersections(3, 10, 6, 10, 1);
     test.findAllIntersections(-3, 10, 12, 10, 3);
-    test.findAllIntersections(5, 5, 15, 5, 1);
+    test.findAllIntersections(5, 5, 15, 5, 1);    
+  });
+
+  tests.add("Find Intersections Incoming Lines Test", (TestArgs args) {
+    QuadTreeTester test = new QuadTreeTester(args);
+    test.insertEdge(50, 60, 100, 10);
+    test.insertEdge(100, 10, 0, 10);
+    test.insertEdge( 0, 10, 50, 60);
+
+    test.findFirstIntersection(90, 20, 90, 0, 100, 10, 0, 10);
   });
 }

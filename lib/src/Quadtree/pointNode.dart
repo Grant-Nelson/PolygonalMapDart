@@ -119,7 +119,7 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     Set<EdgeNode> remove = new Set<EdgeNode>();
     while (it.moveNext()) {
       EdgeNode edge = it.current;
-      if (overlapsEdge(edge)) remove.add(edge);
+      if (!overlapsEdge(edge)) remove.add(edge);
     }
     _passEdges.removeAll(remove);
 

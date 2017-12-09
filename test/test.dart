@@ -14,7 +14,6 @@ import 'package:PolygonalMapDart/Maps.dart' as maps;
 import 'package:PolygonalMapDart/Plotter.dart' as qtplotter;
 
 part 'tools/quadTreeTester.dart';
-part 'tools/shell.dart';
 part 'tools/testArgs.dart';
 part 'tools/testBlock.dart';
 part 'tools/testManager.dart';
@@ -47,5 +46,24 @@ void main() {
   addRegionMapTests(tests);
   addRegionTests(tests);
 
-  shell(elem);
+  html.DivElement scrollPage = new html.DivElement();
+  scrollPage.className = "scroll_page";
+
+  html.DivElement pageCenter = new html.DivElement();
+  pageCenter.className = "page_center";
+  scrollPage.append(pageCenter);
+
+  if (elem != null) {
+    html.DivElement elemContainer = new html.DivElement();
+    pageCenter.append(elemContainer);
+    elemContainer.append(elem);
+
+    html.DivElement endPage = new html.DivElement();
+    endPage.className = "end_page";
+    elemContainer.append(endPage);
+  }
+
+  html.document.title = "Unit-tests";
+  html.BodyElement body = html.document.body;
+  body.append(scrollPage);
 }

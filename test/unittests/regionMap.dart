@@ -172,7 +172,7 @@ void addRegionMapTests(TestManager tests) {
     test.pointTest(70, 50, 2);
     test.pointTest(50, 70, 3);
     test.pointTest(30, 50, 4);
-    
+
     test.pointTest(20, 20, 4);
     test.pointTest(80, 20, 2);
     test.pointTest(80, 80, 3);
@@ -247,7 +247,7 @@ class RegionMapTester {
   }
 
   void add(List<int> polygon, [int region = -1]) {
-    if (region < 0) region = _polygons.length+1;
+    if (region < 0) region = _polygons.length + 1;
     _polygons.add(polygon);
     _regions.add(region);
     _map.addRegionWithCoords(region, polygon);

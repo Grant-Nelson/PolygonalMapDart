@@ -153,7 +153,7 @@ class Edge implements IEdge, Comparable<Edge> {
   }
 
   /// Determines the way the two given edges intersect.
-  static IntersectionResult intersect(IEdge edgeA, IEdge edgeB) {    
+  static IntersectionResult intersect(IEdge edgeA, IEdge edgeB) {
     if ((edgeA == null) || Edge.degenerate(edgeA)) return null;
     if ((edgeA == null) || Edge.degenerate(edgeA)) return null;
 

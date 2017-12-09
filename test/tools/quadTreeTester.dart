@@ -196,8 +196,8 @@ class QuadTreeTester {
     }
   }
 
-  void findFirstIntersection(int x1, int y1, int x2, int y2, int expX1, int expY1,
-    int expX2, int expY2, [bool showPlot = true, IEdgeHandler edgeFilter = null]) {
+  void findFirstIntersection(int x1, int y1, int x2, int y2, int expX1, int expY1, int expX2, int expY2,
+      [bool showPlot = true, IEdgeHandler edgeFilter = null]) {
     qt.Edge edge = new qt.Edge(new qt.Point(x1, y1), new qt.Point(x2, y2));
     qt.Edge exp = new qt.Edge(new qt.Point(expX1, expY1), new qt.Point(expX2, expY2));
     qt.IntersectionResult result = _tree.findFirstIntersection(edge, edgeFilter);
@@ -215,10 +215,10 @@ class QuadTreeTester {
     _args.info("Expected: $exp\n");
 
     if (!qt.Edge.equals(result.edgeB, exp, false)) {
-        _args.error("Expected to find an intersections but found a first intersection.\n" +
-            "${result.toString()}\n" +
-            "${_tree.toString()}\n\n");
-        showPlot = true;
+      _args.error("Expected to find an intersections but found a first intersection.\n" +
+          "${result.toString()}\n" +
+          "${_tree.toString()}\n\n");
+      showPlot = true;
     }
 
     if (showPlot) {

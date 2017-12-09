@@ -1,3 +1,30 @@
+body {
+  background-color: #0a6464;
+  margin: 40px;
+  padding: 0;
+}
+
+.scroll_page {
+  position: relative;
+  text-align: center;
+}
+
+.page_center {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top:40px;
+  margin-bottom: 40px;
+  padding: 40px;
+  background-color: rgba(255,255,255,0.8);
+  box-shadow: 3px 3px 4px 2px rgba(0,0,0,0.5);
+}
+
+.end_page {
+  display: block;
+  clear: both;
+}
+
 .queued {
   color: #336799;
   background-color: #C7DDF5;
@@ -43,7 +70,7 @@
   float: left;
   color: #0000DD;
   padding: 0px;
-  margin: 0px
+  margin: 0px;
   white-space: pre;
 }
 

@@ -30,10 +30,7 @@ part 'unittests/overlaps.dart';
 part 'unittests/regionMap.dart';
 part 'unittests/regions.dart';
 
-void main() {
-  html.DivElement elem = new html.DivElement();
-  TestManager tests = new TestManager(elem);
-
+void addTests(TestManager tests) {
   addConversionsTests(tests);
   addEdgeIntersectTests(tests);
   addFindAllIntersectionsTests(tests);
@@ -45,6 +42,11 @@ void main() {
   addOverlapsTests(tests);
   addRegionMapTests(tests);
   addRegionTests(tests);
+}
+
+void main() {
+  html.DivElement elem = new html.DivElement();
+  addTests(new TestManager(elem));
 
   html.DivElement scrollPage = new html.DivElement();
   scrollPage.className = "scroll_page";
@@ -53,15 +55,13 @@ void main() {
   pageCenter.className = "page_center";
   scrollPage.append(pageCenter);
 
-  if (elem != null) {
-    html.DivElement elemContainer = new html.DivElement();
-    pageCenter.append(elemContainer);
-    elemContainer.append(elem);
+  html.DivElement elemContainer = new html.DivElement();
+  pageCenter.append(elemContainer);
+  elemContainer.append(elem);
 
-    html.DivElement endPage = new html.DivElement();
-    endPage.className = "end_page";
-    elemContainer.append(endPage);
-  }
+  html.DivElement endPage = new html.DivElement();
+  endPage.className = "end_page";
+  elemContainer.append(endPage);
 
   html.document.title = "Unit-tests";
   html.BodyElement body = html.document.body;

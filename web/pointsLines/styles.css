@@ -53,6 +53,18 @@ html, body {
   text-align: left;
 }
 
-.dropdown-content div:hover {
+.dropdown-item-inactive {
+  background-color: white;
+}
+
+.dropdown-item-active {
+  background-color: rgb(76, 142, 230);
+}
+
+.dropdown-item-inactive:hover {
+  background-color: rgb(62, 117, 235);
+}
+
+.dropdown-item-active:hover {
   background-color: rgb(62, 117, 235);
 }

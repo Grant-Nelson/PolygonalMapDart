@@ -6,11 +6,12 @@ import 'package:plotterDart/plotter.dart' as plotter;
 import 'package:PolygonalMapDart/Quadtree.dart' as qt;
 
 part 'driver.dart';
+part 'boolValue.dart';
 
 void main() {
   html.document.title = "Points & Lines";
   html.BodyElement body = html.document.body;
-  
+
   html.DivElement menu = new html.DivElement();
   menu.className = "menu";
   body.append(menu);
@@ -22,53 +23,54 @@ void main() {
   plotter.Plotter plot = new plotter.Plotter();
   new plotSvg.PlotSvg.fromElem(plotElem, plot);
   Driver dvr = new Driver(plot);
-  
+
   addMenuView(menu, dvr);
   addMenuTools(menu, dvr);
 }
 
 void addMenuView(html.DivElement menu, Driver dvr) {
-  html.DivElement dropDown = new html.DivElement()
-    ..className = "dropdown";
+  html.DivElement dropDown = new html.DivElement()..className = "dropdown";
   menu.append(dropDown);
-  
-  html.DivElement text = new html.DivElement()
-    ..text = "View";
+
+  html.DivElement text = new html.DivElement()..text = "View";
   dropDown.append(text);
 
-  html.DivElement items = new html.DivElement()
-    ..className = "dropdown-content";
+  html.DivElement items = new html.DivElement()..className = "dropdown-content";
   dropDown.append(items);
 
-  addMenuItem(items, "Points");
-  addMenuItem(items, "Lines");
-  addMenuItem(items, "Empty Nodes");
-  addMenuItem(items, "Branch Nodes");
-  addMenuItem(items, "Pass Nodes");
-  addMenuItem(items, "Point Nodes");
+  addMenuItem(items, "Points", dvr.points);
+  addMenuItem(items, "Lines", dvr.lines);
+  addMenuItem(items, "Empty Nodes", dvr.emptyNodes);
+  addMenuItem(items, "Branch Nodes", dvr.branchNodes);
+  addMenuItem(items, "Pass Nodes", dvr.passNodes);
+  addMenuItem(items, "Point Nodes", dvr.pointNodes);
 }
 
 void addMenuTools(html.DivElement menu, Driver dvr) {
-  html.DivElement dropDown = new html.DivElement()
-    ..className = "dropdown";
+  html.DivElement dropDown = new html.DivElement()..className = "dropdown";
   menu.append(dropDown);
 
-  html.DivElement text = new html.DivElement()
-    ..text = "Tools";
+  html.DivElement text = new html.DivElement()..text = "Tools";
   dropDown.append(text);
 
-  html.DivElement items = new html.DivElement()
-    ..className = "dropdown-content";
+  html.DivElement items = new html.DivElement()..className = "dropdown-content";
   dropDown.append(items);
 
-  addMenuItem(items, "Add Points");
-  addMenuItem(items, "Remove Points");
-  addMenuItem(items, "Add Lines");
-  addMenuItem(items, "Remove Lines");
+  addMenuItem(items, "Add Points", dvr.addPoints);
+  addMenuItem(items, "Remove Points", dvr.removePoints);
+  addMenuItem(items, "Add Lines", dvr.addLines);
+  addMenuItem(items, "Remove Lines", dvr.removeLines);
 }
 
-void addMenuItem(html.DivElement dropDownItems, String text) {
-  html.DivElement a = new html.DivElement()
-    ..text = text;
-  dropDownItems.append(a);
+void addMenuItem(html.DivElement dropDownItems, String text, BoolValue value) {
+  html.DivElement item = new html.DivElement()
+    ..text = text
+    ..className = value.value ? "dropdown-item-active" : "dropdown-item-inactive"
+    ..onClick.listen((_) {
+      value.onClick();
+    });
+  value.onChange.add((bool value) {
+    item.className = value ? "dropdown-item-active" : "dropdown-item-inactive";
+  });
+  dropDownItems.append(item);
 }

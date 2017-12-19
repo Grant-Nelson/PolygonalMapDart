@@ -118,7 +118,7 @@ class QuadTreeTester {
 
     if (showPlot) {
       qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
-      plot.addTree(plot.addGroup("Tree"), _tree);
+      plot.addTree(_tree);
       if (node != null) {
         plot.addLines([node.x1, node.y1, node.x2, node.y2])..addColor(0.2, 0.2, 1.0);
       }
@@ -172,8 +172,7 @@ class QuadTreeTester {
 
     if (showPlot) {
       qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
-      plotter.Group group = plot.addGroup("Intersects: $edge => $count");
-      plot.addTree(group, _tree);
+      plot.addTree(_tree, "Intersects: $edge => $count");
 
       plotter.Lines lines = new plotter.Lines();
       lines.add([edge.x1, edge.y1, edge.x2, edge.y2]);
@@ -197,7 +196,7 @@ class QuadTreeTester {
   }
 
   void findFirstIntersection(int x1, int y1, int x2, int y2, int expX1, int expY1, int expX2, int expY2,
-      [bool showPlot = true, IEdgeHandler edgeFilter = null]) {
+      [bool showPlot = true, qt.IEdgeHandler edgeFilter = null]) {
     qt.Edge edge = new qt.Edge(new qt.Point(x1, y1), new qt.Point(x2, y2));
     qt.Edge exp = new qt.Edge(new qt.Point(expX1, expY1), new qt.Point(expX2, expY2));
     qt.IntersectionResult result = _tree.findFirstIntersection(edge, edgeFilter);
@@ -223,8 +222,7 @@ class QuadTreeTester {
 
     if (showPlot) {
       qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
-      plotter.Group group = plot.addGroup("Intersects: $edge");
-      plot.addTree(group, _tree);
+      plot.addTree(_tree, "Intersects: $edge");
 
       plotter.Lines lines = new plotter.Lines();
       lines.add([edge.x1, edge.y1, edge.x2, edge.y2]);
@@ -278,8 +276,7 @@ class QuadTreeTester {
     if (showPlot) {
       qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
 
-      plotter.Group group = plot.addGroup("Tree");
-      plot.addTree(group, _tree);
+      plot.addTree(_tree);
       plotter.Points expOutsidePoint = plot.addGroup("Expected Outside").addPoints([])
         ..addColor(0.0, 0.0, 1.0)
         ..addPointSize(4.0);
@@ -338,9 +335,8 @@ class QuadTreeTester {
 
     if (showPlot) {
       qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
-      plotter.Group group = plot.addGroup("Tree");
-
-      plot.addTree(group, _tree);
+      plot.addTree(_tree);
+      
       plotter.Points focusPnt = plot.addGroup("Focus").addPoints([])
         ..addColor(0.0, 0.0, 1.0)
         ..addPointSize(4.0);

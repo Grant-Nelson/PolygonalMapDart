@@ -275,8 +275,7 @@ class RegionMapTester {
 
   plotSvg.PlotSvg showPlot() {
     qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
-    plotter.Group treeGrp = plot.addGroup("Tree");
-    plot.addTree(treeGrp, _map.tree);
+    plot.addTree(_map.tree);
     int count = _polygons.length;
 
     plotter.Group initPolys = plot.addGroup("Initial Polygons");

@@ -103,7 +103,7 @@ class QuadTree extends plotter.Group {
     _emptyRects = new plotter.Rectangles();
     _emptyRects.addColor(0.8, 0.8, 0.0);
     _emptyRects.addFillColor(0.8, 0.8, 0.0, 0.3);
-    _emptyRectsGroup = addGroup("Empty Nodes", [_emptyRects]) .. enabled = false;
+    _emptyRectsGroup = addGroup("Empty Nodes", [_emptyRects])..enabled = false;
 
     _branchRects = new plotter.Rectangles();
     _branchRects.addColor(0.0, 0.8, 0.0);
@@ -182,7 +182,7 @@ class QuadTree extends plotter.Group {
     }
     return lines;
   }
-  
+
   /// Adds a boundary to the given rectangle list.
   plotter.Rectangles addBound(plotter.Rectangles rects, qt.Boundary bound, double inset) {
     double inset2 = 1.0 - inset * 2.0;

@@ -336,7 +336,7 @@ class QuadTreeTester {
     if (showPlot) {
       qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
       plot.addTree(_tree);
-      
+
       plotter.Points focusPnt = plot.addGroup("Focus").addPoints([])
         ..addColor(0.0, 0.0, 1.0)
         ..addPointSize(4.0);

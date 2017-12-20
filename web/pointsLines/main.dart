@@ -2,7 +2,7 @@ library main;
 
 import 'dart:html' as html;
 import 'package:plotterDart/plotSvg.dart' as plotSvg;
-import 'package:plotterDart/plotter.dart' as plotter;
+import 'package:PolygonalMapDart/Plotter.dart' as plotter;
 import 'package:PolygonalMapDart/Quadtree.dart' as qt;
 
 part 'driver.dart';
@@ -20,9 +20,9 @@ void main() {
   plotElem.className = "plot_target";
   body.append(plotElem);
 
-  plotter.Plotter plot = new plotter.Plotter();
-  new plotSvg.PlotSvg.fromElem(plotElem, plot);
-  Driver dvr = new Driver(plot);
+  plotter.QuadTreePlotter plot = new plotter.QuadTreePlotter();
+  plotSvg.PlotSvg svgPlot = new plotSvg.PlotSvg.fromElem(plotElem, plot);
+  Driver dvr = new Driver(svgPlot, plot);
 
   addMenuView(menu, dvr);
   addMenuTools(menu, dvr);
@@ -44,6 +44,7 @@ void addMenuView(html.DivElement menu, Driver dvr) {
   addMenuItem(items, "Branch Nodes", dvr.branchNodes);
   addMenuItem(items, "Pass Nodes", dvr.passNodes);
   addMenuItem(items, "Point Nodes", dvr.pointNodes);
+  addMenuItem(items, "Center View", dvr.centerView);
 }
 
 void addMenuTools(html.DivElement menu, Driver dvr) {
@@ -65,7 +66,7 @@ void addMenuTools(html.DivElement menu, Driver dvr) {
 void addMenuItem(html.DivElement dropDownItems, String text, BoolValue value) {
   html.DivElement item = new html.DivElement()
     ..text = text
-    ..className = value.value ? "dropdown-item-active" : "dropdown-item-inactive"
+    ..className = (value.value ? "dropdown-item-active" : "dropdown-item-inactive")
     ..onClick.listen((_) {
       value.onClick();
     });

@@ -81,6 +81,9 @@ class Boundary implements IBoundary {
   /// Gets the height of boundary.
   int get height => _ymax - _ymin + 1;
 
+  /// Indicates if there is no with nor height.
+  bool get empty => ((width <= 0) || (height <= 0));
+
   /// Gets the boundary region the given point was in.
   BoundaryRegion region(IPoint point) {
     if (_xmin > point.x) {

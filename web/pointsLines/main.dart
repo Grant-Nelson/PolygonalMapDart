@@ -2,11 +2,16 @@ library main;
 
 import 'dart:html' as html;
 import 'package:plotterDart/plotSvg.dart' as plotSvg;
-import 'package:PolygonalMapDart/Plotter.dart' as plotter;
+import 'package:plotterDart/plotter.dart' as plotter;
+import 'package:PolygonalMapDart/Plotter.dart' as qtPlot;
 import 'package:PolygonalMapDart/Quadtree.dart' as qt;
 
-part 'driver.dart';
 part 'boolValue.dart';
+part 'driver.dart';
+part 'pointAdder.dart';
+part 'pointRemover.dart';
+part 'lineAdder.dart';
+part 'lineRemover.dart';
 
 void main() {
   html.document.title = "Points & Lines";
@@ -20,7 +25,7 @@ void main() {
   plotElem.className = "plot_target";
   body.append(plotElem);
 
-  plotter.QuadTreePlotter plot = new plotter.QuadTreePlotter();
+  qtPlot.QuadTreePlotter plot = new qtPlot.QuadTreePlotter();
   plotSvg.PlotSvg svgPlot = new plotSvg.PlotSvg.fromElem(plotElem, plot);
   Driver dvr = new Driver(svgPlot, plot);
 
@@ -38,13 +43,15 @@ void addMenuView(html.DivElement menu, Driver dvr) {
   html.DivElement items = new html.DivElement()..className = "dropdown-content";
   dropDown.append(items);
 
+  addMenuItem(items, "Center View", dvr.centerView);
   addMenuItem(items, "Points", dvr.points);
   addMenuItem(items, "Lines", dvr.lines);
   addMenuItem(items, "Empty Nodes", dvr.emptyNodes);
   addMenuItem(items, "Branch Nodes", dvr.branchNodes);
   addMenuItem(items, "Pass Nodes", dvr.passNodes);
   addMenuItem(items, "Point Nodes", dvr.pointNodes);
-  addMenuItem(items, "Center View", dvr.centerView);
+  addMenuItem(items, "Boundary", dvr.boundary);
+  addMenuItem(items, "Root Boundary", dvr.rootBoundary);
 }
 
 void addMenuTools(html.DivElement menu, Driver dvr) {
@@ -57,10 +64,14 @@ void addMenuTools(html.DivElement menu, Driver dvr) {
   html.DivElement items = new html.DivElement()..className = "dropdown-content";
   dropDown.append(items);
 
+  addMenuItem(items, "Pan View", dvr.panView);
   addMenuItem(items, "Add Points", dvr.addPoints);
   addMenuItem(items, "Remove Points", dvr.removePoints);
   addMenuItem(items, "Add Lines", dvr.addLines);
   addMenuItem(items, "Remove Lines", dvr.removeLines);
+  addMenuItem(items, "Remove Lines And Trim", dvr.removeLinesAndTrim);
+  // TODO: Add Validate
+  addMenuItem(items, "Clear All", dvr.clearAll);
 }
 
 void addMenuItem(html.DivElement dropDownItems, String text, BoolValue value) {

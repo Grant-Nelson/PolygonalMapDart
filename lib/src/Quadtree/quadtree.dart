@@ -103,9 +103,15 @@ class QuadTree {
     _edgeCount = 0;
   }
 
+  /// Gets the boundary containing all nodes.
+  Boundary get rootBoundary {
+    if (_root is BaseNode) return (_root as BaseNode).boundary;
+    return new Boundary(0, 0, 0, 0);
+  }
+
   /// Finds a point node from this node for the given point.
   PointNode findPoint(IPoint point) {
-    if (!_boundary.containsPoint(point)) return null;
+    if (!rootBoundary.containsPoint(point)) return null;
     INode node = _root;
     while (true) {
       if (node is PointNode) {
@@ -126,7 +132,7 @@ class QuadTree {
   /// Returns this is the smallest non-empty node containing the given point.
   /// If no non-empty node could be found from this node then null is returned.
   BaseNode nodeContaining(IPoint point) {
-    if (!_boundary.containsPoint(point)) return null;
+    if (!rootBoundary.containsPoint(point)) return null;
     INode node = _root;
     while (true) {
       if (node is BranchNode) {
@@ -633,12 +639,19 @@ class QuadTree {
     BranchNode ancestor = edge.startNode.commonAncestor(edge.endNode);
     assert(ancestor != null);
 
+    print(">>>>> ${edge}");
+    print("${toString()}");
+
     INode replacement = ancestor.removeEdge(edge, trimTree);
     _reduceBranch(ancestor, replacement);
     --_edgeCount;
 
     // If trimming the tree, see if the black nodes need to be deleted.
     if (trimTree) {
+      print("start: ${edge.startNode}");
+      print("end: ${edge.endNode}");
+      print("${toString()}");
+
       if (edge.startNode.orphan) {
         removePoint(edge.startNode);
       }
@@ -716,7 +729,7 @@ class QuadTree {
     }
 
     if (!Boundary.equals(_boundary, vHndl.bounds)) {
-      sout.write("Error: The boundary should have been ");
+      sout.write("Error: The data boundary should have been ");
       sout.write(vHndl.bounds.toString());
       sout.write(" but it was ");
       sout.write(_boundary.toString());
@@ -766,7 +779,7 @@ class QuadTree {
     sout.write(StringParts.Sep);
     sout.write(indent);
     sout.write(StringParts.Child);
-    sout.write("Region: ");
+    sout.write("Boundary: ");
     sout.write(_boundary.toString(format: format));
 
     sout.write(StringParts.Sep);

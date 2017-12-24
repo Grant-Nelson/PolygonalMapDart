@@ -9,7 +9,9 @@ class QuadTreePlotter extends plotter.Plotter {
       bool showEmptyNodes = false,
       bool showBranchNodes = false,
       bool showEdges = true,
-      bool showPoints = true}) {
+      bool showPoints = true,
+      bool showBoundary = true,
+      bool showRootBoundary = true}) {
     QuadTreePlotter plot = new QuadTreePlotter();
     plot.addTree(tree)
       ..showPassNodes = showPassNodes
@@ -17,7 +19,9 @@ class QuadTreePlotter extends plotter.Plotter {
       ..showEmptyNodes = showEmptyNodes
       ..showBranchNodes = showBranchNodes
       ..showEdges = showEdges
-      ..showPoints = showPoints;
+      ..showPoints = showPoints
+      ..showBoundary = showBoundary
+      ..showRootBoundary = showRootBoundary;
     plot.updateBounds();
     plot.focusOnData();
     return new plotSvg.PlotSvg.fromElem(div, plot);
@@ -88,6 +92,12 @@ class QuadTree extends plotter.Group {
   plotter.Points _points;
   plotter.Group _pointsGroup;
 
+  plotter.Rectangles _boundaryRect;
+  plotter.Group _boundaryGroup;
+
+  plotter.Rectangles _rootBoundaryRect;
+  plotter.Group _rootBoundaryGroup;
+
   /// Creates a new quad-tree plotter.
   QuadTree(this._tree, [String label = "Tree", bool enabled = true]) : super(label, enabled) {
     _passRects = new plotter.Rectangles();
@@ -119,6 +129,16 @@ class QuadTree extends plotter.Group {
     _points.addPointSize(3.0);
     _points.addColor(0.0, 0.0, 0.0);
     _pointsGroup = addGroup("Points", [_points]);
+
+    _boundaryRect = new plotter.Rectangles();
+    _boundaryRect.addNoFillColor();
+    _boundaryRect.addColor(1.0, 0.0, 0.0);
+    _boundaryGroup = addGroup("Boundary", [_boundaryRect]);
+
+    _rootBoundaryRect = new plotter.Rectangles();
+    _rootBoundaryRect.addNoFillColor();
+    _rootBoundaryRect.addColor(0.8, 0.8, 0.0);
+    _rootBoundaryGroup = addGroup("Boundary", [_rootBoundaryRect]);
 
     updateTree();
   }
@@ -158,6 +178,18 @@ class QuadTree extends plotter.Group {
   }
 
   bool get showPoints => _pointsGroup.enabled;
+
+  void set showBoundary(bool value) {
+    _boundaryGroup.enabled = value;
+  }
+
+  bool get showBoundary => _boundaryGroup.enabled;
+
+  void set showRootBoundary(bool value) {
+    _rootBoundaryGroup.enabled = value;
+  }
+
+  bool get showRootBoundary => _rootBoundaryGroup.enabled;
 
   /// Adds a point to the given point list.
   plotter.Points addPoint(plotter.Points points, qt.IPoint point) {
@@ -203,6 +235,8 @@ class QuadTree extends plotter.Group {
     _branchRects.clear();
     _edges.clear();
     _points.clear();
+    _boundaryRect.clear();
+    _rootBoundaryRect.clear();
 
     if (_tree != null) {
       _tree.foreachNode(new _quadTreePlotterNodeHandler(this, _passRects, _pointRects, _emptyRects, _branchRects));
@@ -215,6 +249,9 @@ class QuadTree extends plotter.Group {
         _tree.foreachPoint(new _quadTreePlotterPointHandler(this, _points));
       }
     }
+
+    addBound(_boundaryRect, _tree.boundary, 0.0);
+    addBound(_rootBoundaryRect, _tree.rootBoundary, 0.0);
   }
 }
 

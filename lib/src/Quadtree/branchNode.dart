@@ -500,7 +500,7 @@ class BranchNode extends BaseNode {
     else if (node is PassNode)
       return 0;
     else
-      /* (node is EmptyNode) */
+      // node is EmptyNode
       return 0;
   }
 

@@ -27,7 +27,7 @@ class TestManager {
     _testDivIndex = 0;
   }
 
-  /// gets an index for a test div which is unique.
+  /// Gets an index for a test div which is unique.
   int get takeDivIndex {
     int result = _testDivIndex;
     _testDivIndex++;

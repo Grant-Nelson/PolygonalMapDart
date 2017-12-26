@@ -1,42 +1,53 @@
 part of tests;
 
+/// A testing tool to help unit-test quad-trees.
 class QuadTreeTester {
   TestArgs _args;
-
   qt.QuadTree _tree;
 
+  /// Create a new quad-tree tester.
   QuadTreeTester(this._args) {
     _tree = new qt.QuadTree();
   }
 
+  /// Gets the testing arguments.
   TestArgs get args => _args;
 
+  /// Gets the tree being tested.
   qt.QuadTree get tree => _tree;
 
+  /// This shows the plot if the test has failed.
   void showPlotOnFail() {
     if (_args.failed) showPlot();
   }
 
+  /// Shows the plot of the tree.
   void showPlot(
       {bool showPassNodes = true,
       bool showPointNodes = true,
       bool showEmptyNodes = false,
       bool showBranchNodes = false,
       bool showEdges = true,
-      bool showPoints = true}) {
+      bool showPoints = true,
+      bool showBoundary = true,
+      bool showRootBoundary = true}) {
     qtplotter.QuadTreePlotter.Show(_tree, _args.addDiv(),
         showPassNodes: showPassNodes,
         showPointNodes: showPointNodes,
         showEmptyNodes: showEmptyNodes,
         showBranchNodes: showBranchNodes,
         showEdges: showEdges,
-        showPoints: showPoints);
+        showPoints: showPoints,
+        showBoundary: showBoundary,
+        showRootBoundary: showRootBoundary);
   }
 
+  /// Shows the given plot in this test.
   plotSvg.PlotSvg _showPlot(plotter.Plotter plot) {
     return new plotSvg.PlotSvg.fromElem(_args.addDiv(), plot);
   }
 
+  /// Inserts a point into the test tree.
   qt.PointNode insertPoint(int x, int y) {
     qt.Point pnt = new qt.Point(x, y);
     int oldCount = _tree.pointCount;
@@ -68,29 +79,63 @@ class QuadTreeTester {
           "\n   Found Point:    $newPoint" +
           "\n   Inserted Point: $point");
     }
+
     StringBuffer sout = new StringBuffer();
     if (!_tree.validate(sout, null)) {
       _args.error("Failed validation after insertPoint($x, $y):" + "\n${sout.toString()}");
     }
-
     return point;
   }
 
+  /// Inserts a set of points into the test tree.
   void insertPoints(List<int> pntCoords) {
     int count = pntCoords.length ~/ 2;
     for (int i = 0; i < count; ++i) {
-      _tree.insertPoint(new qt.Point(pntCoords[i * 2], pntCoords[i * 2 + 1]));
+      insertPoint(pntCoords[i * 2], pntCoords[i * 2 + 1]);
     }
   }
 
-  void insertEdge(int x1, int y1, int x2, int y2) {
-    _tree.insertEdge(new qt.Edge(new qt.Point(x1, y1), new qt.Point(x2, y2)));
+  /// Inserts an edge into the test tree.
+  qt.EdgeNode insertEdge(int x1, int y1, int x2, int y2) {
+    qt.Edge e = new qt.Edge(new qt.Point(x1, y1), new qt.Point(x2, y2));
+    int oldCount = _tree.edgeCount;
+    qt.EdgeNode oldEdge = _tree.findEdge(e, false);
+    qt.EdgeNode edge = _tree.insertEdge(e);
+    int newCount = _tree.edgeCount;
+    qt.EdgeNode newEdge = _tree.findEdge(e, false);
+
+    if (oldEdge == null) {
+      if (oldCount + 1 != newCount) {
+        _args.error("The old count should be one less than the new count after insertEdge($x1, $y1, $x2, $y2):" +
+            "\n   Old Count: $oldCount" +
+            "\n   New Count: $newCount");
+      }
+    } else {
+      if (oldCount != newCount) {
+        _args.error("The old count should be the same as the new count after insertEdge($x1, $y1, $x2, $y2):" +
+            "\n   Old Count: $oldCount" +
+            "\n   New Count: $newCount");
+      }
+      if (oldEdge != edge) {
+        _args.error("The pre-insert found edge does not equal the inserted edge after insertEdge($x1, $y1, $x2, $y2):" +
+            "\n   Found Edge:    $oldEdge" +
+            "\n   Inserted Edge: $edge");
+      }
+    }
+    if (edge != newEdge) {
+      _args.error("The post-insert found edge does not equal the inserted edge after insertEdge($x1, $y1, $x2, $y2):" +
+          "\n   Found Edge:    $newEdge" +
+          "\n   Inserted Edge: $edge");
+    }
+
     StringBuffer sout = new StringBuffer();
     if (!_tree.validate(sout, null)) {
       _args.error("Failed validation after insertEdge($x1, $y1, $x2, $y2):\n${sout.toString()}");
     }
+    return edge;
   }
 
+  /// Inserts a polygon into the test tree.
   void insertPolygon(List<int> pntCoords) {
     qt.PointNodeVector nodes = new qt.PointNodeVector();
     int count = pntCoords.length ~/ 2;
@@ -99,10 +144,12 @@ class QuadTreeTester {
       nodes.nodes.add(node);
     }
     for (int i = 0; i < count; ++i) {
-      _tree.insertEdge(nodes.edge(i));
+      qt.IEdge edge = nodes.edge(i);
+      insertEdge(edge.x1, edge.y1, edge.x2, edge.y2);
     }
   }
 
+  /// Checks that the first left result was as expected.
   void checkFirstLeftEdge(int x, int y, int x1, int y1, int x2, int y2) {
     qt.EdgeNode node = _tree.firstLeftEdge(new qt.Point(x, y));
     bool showPlot = false;
@@ -132,6 +179,7 @@ class QuadTreeTester {
     }
   }
 
+  /// Checks the expected result from finding all the intersections.
   void findAllIntersections(int x1, int y1, int x2, int y2, int count, [bool showPlot = true]) {
     qt.Edge edge = new qt.Edge(new qt.Point(x1, y1), new qt.Point(x2, y2));
     qt.IntersectionSet inters = new qt.IntersectionSet();
@@ -195,6 +243,7 @@ class QuadTreeTester {
     }
   }
 
+  /// Checks if the first found intersection returned the expected results.
   void findFirstIntersection(int x1, int y1, int x2, int y2, int expX1, int expY1, int expX2, int expY2,
       [bool showPlot = true, qt.IEdgeHandler edgeFilter = null]) {
     qt.Edge edge = new qt.Edge(new qt.Point(x1, y1), new qt.Point(x2, y2));
@@ -243,6 +292,7 @@ class QuadTreeTester {
     }
   }
 
+  /// Checkst the bounded foreach method works as expected.
   void checkForeach(List<int> inside, List<int> outside, int x1, int y1, int x2, int y2, [bool showPlot = true]) {
     Set<qt.PointNode> expOutside = new Set<qt.PointNode>();
     for (int i = 0; i < outside.length; i += 2) expOutside.add(insertPoint(outside[i], outside[i + 1]));
@@ -304,6 +354,7 @@ class QuadTreeTester {
     }
   }
 
+  /// Checks the find nearest point for point returns the expected results.
   void checkFindNearestPoint(int x, int y, int expX, int expY, [bool showPlot = true]) {
     qt.Point focus = new qt.Point(x, y);
     qt.Point exp = new qt.Point(expX, expY);
@@ -320,7 +371,7 @@ class QuadTreeTester {
       showPlot = true;
     }
 
-    TestHandle hndl = new TestHandle()..focus = focus;
+    _testNearestPointHandle hndl = new _testNearestPointHandle()..focus = focus;
     _tree.foreachPoint(hndl);
 
     if (!qt.Point.equals(hndl.found, result)) {
@@ -359,11 +410,19 @@ class QuadTreeTester {
   }
 }
 
-class TestHandle implements qt.IPointHandler {
+/// A point handler used to find the neasest point while checking all points.
+/// This is not as fast as findNearestPointToPoint but can be used to test it.
+class _testNearestPointHandle implements qt.IPointHandler {
+  /// minimum distance squared to found point.
   double minDist2 = double.MAX_FINITE;
+
+  /// The point to get the point closest to.
   qt.Point focus = null;
+
+  /// The found point closest the the focus or null if none has been found yet.
   qt.PointNode found = null;
 
+  /// handles each point given to it to check if it is closer.
   bool handle(qt.PointNode point) {
     double dist2 = qt.Point.distance2(focus, point);
     if (dist2 < minDist2) {

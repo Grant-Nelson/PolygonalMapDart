@@ -1,76 +1,6 @@
 part of PolygonalMapDart.Plotter;
 
-/// A plotter customized to work with quad-trees.
-class QuadTreePlotter extends plotter.Plotter {
-  /// Shows a quad-tree in a plot panel.
-  static plotSvg.PlotSvg Show(qt.QuadTree tree, html.DivElement div,
-      {bool showPassNodes = true,
-      bool showPointNodes = true,
-      bool showEmptyNodes = false,
-      bool showBranchNodes = false,
-      bool showEdges = true,
-      bool showPoints = true,
-      bool showBoundary = true,
-      bool showRootBoundary = true}) {
-    QuadTreePlotter plot = new QuadTreePlotter();
-    plot.addTree(tree)
-      ..showPassNodes = showPassNodes
-      ..showPointNodes = showPointNodes
-      ..showEmptyNodes = showEmptyNodes
-      ..showBranchNodes = showBranchNodes
-      ..showEdges = showEdges
-      ..showPoints = showPoints
-      ..showBoundary = showBoundary
-      ..showRootBoundary = showRootBoundary;
-    plot.updateBounds();
-    plot.focusOnData();
-    return new plotSvg.PlotSvg.fromElem(div, plot);
-  }
-
-  /// Adds a quad-tree plotter item with the given tree.
-  QuadTree addTree(qt.QuadTree tree, [String label = "Tree"]) {
-    QuadTree item = new QuadTree(tree, label);
-    add([item]);
-    return item;
-  }
-
-  /// Adds a point to the given point list.
-  plotter.Points addPoint(plotter.Points points, qt.IPoint point) {
-    if (points != null) {
-      points.add([point.x.toDouble(), point.y.toDouble()]);
-    }
-    return points;
-  }
-
-  /// Adds a set of points to the given point list.
-  plotter.Points addPointSet(plotter.Points points, Set<qt.PointNode> pointSet) {
-    if (points != null) {
-      for (qt.PointNode point in pointSet) points.add([point.x.toDouble(), point.y.toDouble()]);
-    }
-    return points;
-  }
-
-  /// Adds an edge to the given line list.
-  plotter.Lines addLine(plotter.Lines lines, qt.IEdge edge) {
-    if (lines != null) {
-      lines.add([edge.x1.toDouble(), edge.y1.toDouble(), edge.x2.toDouble(), edge.y2.toDouble()]);
-    }
-    return lines;
-  }
-
-  /// Adds a boundary to the given rectangle list.
-  plotter.Rectangles addBound(plotter.Rectangles rects, qt.Boundary bound, double inset) {
-    double inset2 = 1.0 - inset * 2.0;
-    rects.add([
-      bound.xmin.toDouble() - inset,
-      bound.ymin.toDouble() - inset,
-      bound.width.toDouble() - inset2,
-      bound.height.toDouble() - inset2
-    ]);
-    return rects;
-  }
-}
-
+/// The quad-tree plotter group for rendering a quad-tree parts
 class QuadTree extends plotter.Group {
   qt.QuadTree _tree;
 
@@ -98,7 +28,7 @@ class QuadTree extends plotter.Group {
   plotter.Rectangles _rootBoundaryRect;
   plotter.Group _rootBoundaryGroup;
 
-  /// Creates a new quad-tree plotter.
+  /// Creates a new quad-tree plotter group.
   QuadTree(this._tree, [String label = "Tree", bool enabled = true]) : super(label, enabled) {
     _passRects = new plotter.Rectangles();
     _passRects.addColor(0.0, 0.0, 0.6);
@@ -143,52 +73,36 @@ class QuadTree extends plotter.Group {
     updateTree();
   }
 
-  void set showPassNodes(bool value) {
-    _passRectsGroup.enabled = value;
-  }
-
+  /// Indicates if pass nodes should be shown or not.
+  set showPassNodes(bool value) => _passRectsGroup.enabled = value;
   bool get showPassNodes => _passRectsGroup.enabled;
 
-  void set showPointNodes(bool value) {
-    _pointRectsGroup.enabled = value;
-  }
-
+  /// Indicates if point nodes should be shown or not.
+  set showPointNodes(bool value) => _pointRectsGroup.enabled = value;
   bool get showPointNodes => _pointRectsGroup.enabled;
 
-  void set showEmptyNodes(bool value) {
-    _emptyRectsGroup.enabled = value;
-  }
-
+  /// Indicates if empty nodes should be shown or not.
+  set showEmptyNodes(bool value) => _emptyRectsGroup.enabled = value;
   bool get showEmptyNodes => _emptyRectsGroup.enabled;
 
-  void set showBranchNodes(bool value) {
-    _branchRectsGroup.enabled = value;
-  }
-
+  /// Indicates if branch nodes should be shown or not.
+  set showBranchNodes(bool value) => _branchRectsGroup.enabled = value;
   bool get showBranchNodes => _branchRectsGroup.enabled;
 
-  void set showEdges(bool value) {
-    _edgesGroup.enabled = value;
-  }
-
+  /// Indicates if edges should be shown or not.
+  set showEdges(bool value) => _edgesGroup.enabled = value;
   bool get showEdges => _edgesGroup.enabled;
 
-  void set showPoints(bool value) {
-    _pointsGroup.enabled = value;
-  }
-
+  /// Indicates if points should be shown or not.
+  set showPoints(bool value) => _pointsGroup.enabled = value;
   bool get showPoints => _pointsGroup.enabled;
 
-  void set showBoundary(bool value) {
-    _boundaryGroup.enabled = value;
-  }
-
+  /// Indicates if the data boundaries should be shown or not.
+  set showBoundary(bool value) => _boundaryGroup.enabled = value;
   bool get showBoundary => _boundaryGroup.enabled;
 
-  void set showRootBoundary(bool value) {
-    _rootBoundaryGroup.enabled = value;
-  }
-
+  /// Indicates if the root boundaries should be shown or not.
+  set showRootBoundary(bool value) => _rootBoundaryGroup.enabled = value;
   bool get showRootBoundary => _rootBoundaryGroup.enabled;
 
   /// Adds a point to the given point list.
@@ -257,7 +171,7 @@ class QuadTree extends plotter.Group {
 
 /// Handler for collecting all the nodes from the quadtree for plotting.
 class _quadTreePlotterNodeHandler extends qt.INodeHandler {
-  static const double _pad = 0.45;
+  final double _pad;
   QuadTree _plot;
   plotter.Rectangles _passRects;
   plotter.Rectangles _pointRects;
@@ -265,7 +179,8 @@ class _quadTreePlotterNodeHandler extends qt.INodeHandler {
   plotter.Rectangles _branchRects;
 
   /// Creates a new quadtree plotter handler.
-  _quadTreePlotterNodeHandler(this._plot, this._passRects, this._pointRects, this._emptyRects, this._branchRects);
+  _quadTreePlotterNodeHandler(this._plot, this._passRects, this._pointRects, this._emptyRects, this._branchRects,
+      [this._pad = 0.45]);
 
   /// Handles adding a new node into the plot.
   bool handle(qt.INode node) {

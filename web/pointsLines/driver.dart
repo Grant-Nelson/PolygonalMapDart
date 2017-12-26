@@ -24,6 +24,8 @@ class Driver {
   BoolValue _addLines;
   BoolValue _removeLines;
   BoolValue _removeLinesAndTrim;
+  BoolValue _validate;
+  BoolValue _printTree;
   BoolValue _clearAll;
 
   Tool _selectedTool;
@@ -57,6 +59,8 @@ class Driver {
     _addLines = new BoolValue(false)..onChange.add(_onAddLinesChange);
     _removeLines = new BoolValue(false)..onChange.add(_onRemoveLinesChange);
     _removeLinesAndTrim = new BoolValue(false)..onChange.add(_onRemoveLinesAndTrimChange);
+    _validate = new BoolValue(false)..onChange.add(_onValidateChange);
+    _printTree = new BoolValue(false)..onChange.add(_onPrintTreeChange);
     _clearAll = new BoolValue(false)..onChange.add(_onClearAllChange);
 
     _shiftPanViewTool = new plotter.MousePan(_plot, new plotter.MouseButtonState(0, shiftKey: true));
@@ -97,6 +101,8 @@ class Driver {
   BoolValue get addLines => _addLines;
   BoolValue get removeLines => _removeLines;
   BoolValue get removeLinesAndTrim => _removeLinesAndTrim;
+  BoolValue get validate => _validate;
+  BoolValue get printTree => _printTree;
   BoolValue get clearAll => _clearAll;
 
   void _onCenterViewChange(bool value) {
@@ -194,6 +200,20 @@ class Driver {
     _lineAdderTool.enabled = (_selectedTool == Tool.AddLines);
     _lineRemoverTool.enabled = (_selectedTool == Tool.RemoveLines);
     _lineRemoverAndTrimTool.enabled = (_selectedTool == Tool.RemoveLinesAndTrim);
+  }
+
+  void _onValidateChange(bool value) {
+    if (value) {
+      _validate.value = false;
+      _tree.validate();
+    }
+  }
+
+  void _onPrintTreeChange(bool value) {
+    if (value) {
+      _printTree.value = false;
+      print(_tree.toString());
+    }
   }
 
   void _onClearAllChange(bool value) {

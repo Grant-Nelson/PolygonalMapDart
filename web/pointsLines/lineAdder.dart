@@ -1,25 +1,18 @@
 part of main;
 
-/// A mouse handler for translating the view port.
+/// A mouse handler for adding lines.
 class LineAdder implements plotter.IMouseHandle {
-  /// The plotter this mouse handle is changing.
-  qtPlot.QuadTreePlotter _plot;
-
-  qtPlot.QuadTree _plotItem;
-
-  qt.QuadTree _tree;
-
-  /// Indicates if mouse panning is enabled or not.
-  bool _enabled;
-
-  /// The mouse button pressed.
   final plotter.MouseButtonState _state;
+  qtPlot.QuadTreePlotter _plot;
+  qtPlot.QuadTree _plotItem;
+  qt.QuadTree _tree;
+  bool _enabled;
   bool _mouseDown;
   double _startX;
   double _startY;
   plotter.Lines _tempLine;
 
-  /// Creates a new mouse pan handler.
+  /// Creates a new mouse handler for adding lines.
   LineAdder(this._tree, this._plot, this._plotItem, this._state) {
     _enabled = true;
     _mouseDown = false;
@@ -33,6 +26,7 @@ class LineAdder implements plotter.IMouseHandle {
   bool get enabled => _enabled;
   set enabled(bool value) => _enabled = value;
 
+  /// Translates the mouse location into the tree space based on the view.
   List<double> _transMouse(plotter.MouseEvent e) {
     plotter.Transformer trans = e.projection.mul(_plot.view);
     return [trans.untransformX(e.x), trans.untransformY(e.window.ymax - e.y)];

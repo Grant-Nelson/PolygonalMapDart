@@ -70,7 +70,8 @@ void addMenuTools(html.DivElement menu, Driver dvr) {
   addMenuItem(items, "Add Lines", dvr.addLines);
   addMenuItem(items, "Remove Lines", dvr.removeLines);
   addMenuItem(items, "Remove Lines And Trim", dvr.removeLinesAndTrim);
-  // TODO: Add Validate
+  addMenuItem(items, "Validate", dvr.validate);
+  addMenuItem(items, "Print Tree", dvr.printTree);
   addMenuItem(items, "Clear All", dvr.clearAll);
 }
 

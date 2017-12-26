@@ -1,23 +1,16 @@
 part of main;
 
-/// A mouse handler for translating the view port.
+/// A mouse handler for removing points.
 class PointRemover implements plotter.IMouseHandle {
-  /// The plotter this mouse handle is changing.
-  qtPlot.QuadTreePlotter _plot;
-
-  qtPlot.QuadTree _plotItem;
-
-  qt.QuadTree _tree;
-
-  /// Indicates if mouse panning is enabled or not.
-  bool _enabled;
-
-  /// The mouse button pressed.
   final plotter.MouseButtonState _state;
+  qtPlot.QuadTreePlotter _plot;
+  qtPlot.QuadTree _plotItem;
+  qt.QuadTree _tree;
+  bool _enabled;
   bool _mouseDown;
   plotter.Points _tempPoint;
 
-  /// Creates a new mouse pan handler.
+  /// Creates a new mouse handler for removing points.
   PointRemover(this._tree, this._plot, this._plotItem, this._state) {
     _enabled = true;
     _mouseDown = false;
@@ -30,6 +23,7 @@ class PointRemover implements plotter.IMouseHandle {
   bool get enabled => _enabled;
   set enabled(bool value) => _enabled = value;
 
+  /// Finds the point which has its node under the mouse.
   qt.PointNode _findNearPoint(plotter.MouseEvent e) {
     plotter.Transformer trans = e.projection.mul(_plot.view);
     int msx = trans.untransformX(e.x).round();

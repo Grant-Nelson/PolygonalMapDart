@@ -1,24 +1,17 @@
 part of main;
 
-/// A mouse handler for translating the view port.
+/// A mouse handler for removing lines.
 class LineRemover implements plotter.IMouseHandle {
-  /// The plotter this mouse handle is changing.
-  qtPlot.QuadTreePlotter _plot;
-
-  qtPlot.QuadTree _plotItem;
-
-  qt.QuadTree _tree;
-
-  /// Indicates if mouse panning is enabled or not.
-  bool _enabled;
-
-  /// The mouse button pressed.
   final plotter.MouseButtonState _state;
+  qtPlot.QuadTreePlotter _plot;
+  qtPlot.QuadTree _plotItem;
+  qt.QuadTree _tree;
+  bool _enabled;
   bool _mouseDown;
   bool _trimTree;
   plotter.Lines _tempLine;
 
-  /// Creates a new mouse pan handler.
+  /// Creates a new mouse handler for removing lines.
   LineRemover(this._tree, this._plot, this._plotItem, this._state, this._trimTree) {
     _enabled = true;
     _mouseDown = false;
@@ -32,6 +25,7 @@ class LineRemover implements plotter.IMouseHandle {
   bool get enabled => _enabled;
   set enabled(bool value) => _enabled = value;
 
+  /// Finds the nearest edge for a point under the mouse.
   qt.EdgeNode _findEdge(plotter.MouseEvent e) {
     plotter.Transformer trans = e.projection.mul(_plot.view);
     int x = trans.untransformX(e.x).round();

@@ -145,10 +145,8 @@ class PointNode extends BaseNode implements IPoint, Comparable<PointNode> {
     INode result = this;
     if (edge.startNode == this) {
       _startEdges.remove(edge);
-      if (trimTree && orphan) result = replacement;
     } else if (edge.endNode == this) {
       _endEdges.remove(edge);
-      if (trimTree && orphan) result = replacement;
     } else
       _passEdges.remove(edge);
     return result;

@@ -628,6 +628,7 @@ class QuadTree {
     assert(_root is! EmptyNode);
     _pointCount++;
     _expandBoundingBox(pntNode);
+    _reduceFootprint();
     return new InsertPointResult(pntNode, false);
   }
 
@@ -639,19 +640,12 @@ class QuadTree {
     BranchNode ancestor = edge.startNode.commonAncestor(edge.endNode);
     assert(ancestor != null);
 
-    print(">>>>> ${edge}");
-    print("${toString()}");
-
     INode replacement = ancestor.removeEdge(edge, trimTree);
     _reduceBranch(ancestor, replacement);
     --_edgeCount;
 
     // If trimming the tree, see if the black nodes need to be deleted.
     if (trimTree) {
-      print("start: ${edge.startNode}");
-      print("end: ${edge.endNode}");
-      print("${toString()}");
-
       if (edge.startNode.orphan) {
         removePoint(edge.startNode);
       }
@@ -686,7 +680,9 @@ class QuadTree {
       parent.setChild(quad, replacement);
       replacement = parent.reduce();
       _reduceBranch(parent, replacement);
+      _reduceFootprint();
     }
+
     --_pointCount;
     _collapseBoundingBox(point);
   }
@@ -890,6 +886,28 @@ class QuadTree {
       _boundary = new Boundary(point.x, point.y, point.x, point.y);
     } else {
       _boundary = Boundary.expand(_boundary, point);
+    }
+  }
+
+  /// This reduces the footprint to the smallest root needed.
+  void _reduceFootprint() {
+    while ((_root != null) && (_root is BranchNode)) {
+      BranchNode broot = _root as BranchNode;
+
+      int emptyCount = 0;
+      INode onlyChild = null;
+      for (Quadrant quad in Quadrant.All) {
+        INode child = broot.child(quad);
+        if (child is EmptyNode)
+          emptyCount++;
+        else
+          onlyChild = child;
+      }
+
+      if (emptyCount == 3) {
+        _setRoot(onlyChild);
+      } else
+        break;
     }
   }
 

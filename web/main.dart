@@ -4,6 +4,7 @@ import 'dart:html' as html;
 
 void addExamples(html.DivElement elem) {
   addExample(elem, "pointsLines");
+  addExample(elem, "regions");
 }
 
 void main() {

@@ -42,14 +42,20 @@ class Regions {
   /// Adds a region into the map.
   /// Note: The region will overwrite any region contained in it.
   void addRegion(int regionId, List<qt.IPoint> pnts) {
-    // Insert all the end points into the tree.
     int count = pnts.length;
+    if (count < 3) return;
+
+    print("Flag 1");
+
+    // Insert all the end points into the tree.
     qt.PointNodeVector nodes = new qt.PointNodeVector();
     for (int i = count - 1; i >= 0; --i) {
       qt.PointNode point = _insertPoint(pnts[i]);
       assert(point != null);
       nodes.nodes.add(point);
     }
+
+    print("Flag 2");
 
     // Find all near points to the new edges.
     for (int i = 0; i < count; ++i) {
@@ -61,6 +67,8 @@ class Regions {
         --i;
       }
     }
+
+    print("Flag 3");
 
     // Find all edge intersections.
     for (int i = 0; i < count; ++i) {
@@ -74,9 +82,14 @@ class Regions {
       }
     }
 
+    print("Flag 4");
+
     // Make sure the polygon is counter-clockwise.
     qt.AreaAccumulator area = nodes.area;
     if (!area.ccw) nodes.reverse();
+
+    print(_tree.toBasicString());
+    print("Flag 5");
 
     // Remove any contained data.
     // Create a tree which contains the input so it can be queried.
@@ -86,6 +99,8 @@ class Regions {
     }
     _removeContainedPoints(newRegion);
     _removeContainedEdges(newRegion);
+
+    print("Flag 6");
 
     // Insert the edges of the boundary while checking the outside boundary region value.
     List<qt.EdgeNode> removeEdge = new List<qt.EdgeNode>();
@@ -139,7 +154,7 @@ class Regions {
     _tree.foreachEdge(edgeRemover, newRegion.boundary, true);
 
     // Remove all the inner edges and points.
-    for (qt.EdgeNode node in edgeRemover.remove) _tree.removeEdge(node, false);
+    for (qt.EdgeNode node in edgeRemover.remove) _tree.removeEdge(node, true);
   }
 
   /// Gets the right side value for the given edge.

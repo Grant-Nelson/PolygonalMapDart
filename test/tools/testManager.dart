@@ -9,6 +9,7 @@ class TestManager {
   int _finished;
   int _failed;
   int _testDivIndex;
+  String _prefix;
 
   /// Creates new test manager attached to the given element.
   TestManager(this._elem) {
@@ -25,7 +26,13 @@ class TestManager {
     _finished = 0;
     _failed = 0;
     _testDivIndex = 0;
+    _prefix = "";
   }
+
+  /// The filter to only let tests with the given prefix to be run.
+  /// Set to empty to run all tests.
+  String get testPrefixFilter => _prefix;
+  set testPrefixFilter(String prefix) => _prefix = prefix;
 
   /// Gets an index for a test div which is unique.
   int get takeDivIndex {
@@ -97,6 +104,7 @@ class TestManager {
   /// Adds a new test to be run.
   void add(String testName, TestHandler test) {
     if (testName.length <= 0) testName = "$test";
+    if (!testName.startsWith(_prefix)) return;
     _tests.add(new TestBlock(this, test, testName));
     _update();
 

@@ -45,20 +45,6 @@ part 'StringParts.dart';
 /// Roughly the distance to the corner of an unit square.
 const double _distToCorner = 1.415;
 
-/// ValidateHandler is an assistant method to the validate method.
-class ValidateHandler implements IPointHandler {
-  Boundary bounds = null;
-  int pointCount = 0;
-  int edgeCount = 0;
-
-  bool handle(PointNode point) {
-    this.bounds = Boundary.expand(this.bounds, point);
-    this.pointCount++;
-    this.edgeCount += point.startEdges.length;
-    return true;
-  }
-}
-
 /// A polygon mapping quad-tree for storing edges and
 /// points in a two dimensional logarithmic data structure.
 class QuadTree {
@@ -221,6 +207,7 @@ class QuadTree {
   /// [queryEdge] is the query edge to find a close point to.
   /// [handle] is the handle to filter acceptable points with, or null to not filter.
   PointNode findClosePoint(IEdge queryEdge, IPointHandler handle) {
+    if (Edge.degenerate(queryEdge)) return null;
     NodeStack stack = new NodeStack([_root]);
     while (!stack.isEmpty) {
       INode node = stack.pop;
@@ -699,7 +686,7 @@ class QuadTree {
       toConsole = true;
     }
 
-    ValidateHandler vHndl = new ValidateHandler();
+    _validateHandler vHndl = new _validateHandler();
     foreachPoint(vHndl);
 
     if (_pointCount != vHndl.pointCount) {
@@ -800,6 +787,20 @@ class QuadTree {
     StringBuffer sout = new StringBuffer();
     toBuffer(sout);
     return sout.toString();
+  }
+
+  /// Gets the string for the points and edges of the quad-tree.
+  String toBasicString() {
+    StringBuffer soutPoints = new StringBuffer();
+    soutPoints.write("Points:");
+    soutPoints.write(StringParts.Sep);
+
+    StringBuffer soutEdges = new StringBuffer();
+    soutEdges.write("Edges:");
+    soutEdges.write(StringParts.Sep);
+
+    foreachPoint(new _basicStringHandler(soutPoints, soutEdges));
+    return soutPoints.toString() + soutEdges.toString();
   }
 
   /// This reduces the root to the smallest branch needed.
@@ -997,5 +998,42 @@ class QuadTree {
       }
     }
     return value;
+  }
+}
+
+/// Validation handler is an assistant method to the validate method.
+class _validateHandler implements IPointHandler {
+  Boundary bounds = null;
+  int pointCount = 0;
+  int edgeCount = 0;
+
+  bool handle(PointNode point) {
+    bounds = Boundary.expand(bounds, point);
+    pointCount++;
+    edgeCount += point.startEdges.length;
+    return true;
+  }
+}
+
+/// Basic string handler is an assistant method to the basic string method.
+class _basicStringHandler implements IPointHandler {
+  StringBuffer _soutPoints;
+  StringBuffer _soutEdges;
+
+  _basicStringHandler(this._soutPoints, this._soutEdges);
+
+  bool handle(PointNode point) {
+    _soutPoints.write(StringParts.Space);
+    String dataStr = (point.data != null) ? ", ${point.data}" : "";
+    _soutPoints.write("[${point.x}, ${point.y}]$dataStr");
+    _soutPoints.write(StringParts.Sep);
+
+    for (EdgeNode edge in point.startEdges) {
+      _soutEdges.write(StringParts.Space);
+      dataStr = (edge.data != null) ? ", ${edge.data}" : "";
+      _soutEdges.write("[${edge.x1}, ${edge.y1}, ${edge.x2}, ${edge.y2}]$dataStr");
+      _soutEdges.write(StringParts.Sep);
+    }
+    return true;
   }
 }

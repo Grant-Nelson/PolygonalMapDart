@@ -28,16 +28,16 @@ class Boundary implements IBoundary {
     }
   }
 
-  /// The minimum x component.
+  /// The minimum x component, inclusive.
   final int _xmin;
 
-  /// The minimum y component.
+  /// The minimum y component, inclusive.
   final int _ymin;
 
-  /// The maximum x component.
+  /// The maximum x component, inclusive.
   final int _xmax;
 
-  /// The maximum y component.
+  /// The maximum y component, inclusive.
   final int _ymax;
 
   /// Creates a new boundary.
@@ -140,8 +140,7 @@ class Boundary implements IBoundary {
     BoundaryRegion orRegion = region1 | region2;
     if ((orRegion == BoundaryRegion.Horizontal) || (orRegion == BoundaryRegion.Vertical)) return true;
 
-    // Check if both points are on the same side so the edge cannot be
-    // contained.
+    // Check if both points are on the same side so the edge cannot be contained.
     BoundaryRegion andRegion = region1 & region2;
     if (andRegion.has(BoundaryRegion.West) ||
         andRegion.has(BoundaryRegion.East) ||
@@ -154,11 +153,11 @@ class Boundary implements IBoundary {
       if ((y >= _ymin) && (y <= _ymax)) return true;
     }
     if (orRegion.has(BoundaryRegion.East)) {
-      int y = ((_xmax - edge.x1) * (edge.dy / edge.dx) + edge.y1).round();
+      int y = ((_xmax - edge.x1 + 1) * (edge.dy / edge.dx) + edge.y1).round();
       if ((y >= _ymin) && (y <= _ymax)) return true;
     }
     if (orRegion.has(BoundaryRegion.North)) {
-      int x = ((_ymin - edge.y1) * (edge.dx / edge.dy) + edge.x1).round();
+      int x = ((_ymin - edge.y1 + 1) * (edge.dx / edge.dy) + edge.x1).round();
       if ((x >= _xmin) && (x <= _xmax)) return true;
     }
     if (orRegion.has(BoundaryRegion.South)) {

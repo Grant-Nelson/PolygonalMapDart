@@ -35,6 +35,11 @@ class QuadTreePlotter extends plotter.Plotter {
     return new plotSvg.PlotSvg.fromElem(div, plot);
   }
 
+  /// Creates a new quad-tree plotter.
+  QuadTreePlotter() {
+    MouseHandles.add(new plotter.MouseCoords(this));
+  }
+
   /// Adds a quad-tree plotter item with the given tree.
   QuadTree addTree(qt.QuadTree tree, [String label = "Tree"]) {
     QuadTree item = new QuadTree(tree, label);

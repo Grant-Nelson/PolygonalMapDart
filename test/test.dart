@@ -31,8 +31,6 @@ part 'unittests/regionMap.dart';
 part 'unittests/regions.dart';
 
 void addTests(TestManager tests) {
-  tests.testPrefixFilter = "Region Map 12"; // TODO: Reset
-
   addConversionsTests(tests);
   addEdgeIntersectTests(tests);
   addFindAllIntersectionsTests(tests);

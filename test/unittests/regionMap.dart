@@ -213,7 +213,6 @@ void addRegionMapTests(TestManager tests) {
   tests.add("Region Map 12", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([9, 59, -11, 54, -7, 37], 1);
-    print("======================"); // TODO: Remove
     test.add([17, 47, -1, 52, 4, 33], 1);
 
     test.pointTest(5, 35, 1);

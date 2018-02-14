@@ -120,7 +120,7 @@ void addRegionMapTests(TestManager tests) {
     test.showPlot();
   });
 
-  tests.add("Region Map 7", (TestArgs args) {
+  tests.add("Region Map 7 - Two identical regions", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([15, 5, 15, 15, 5, 15, 5, 5]);
     test.add([15, 5, 15, 15, 5, 15, 5, 5]);
@@ -128,7 +128,7 @@ void addRegionMapTests(TestManager tests) {
     test.showPlot();
   });
 
-  tests.add("Region Map 8", (TestArgs args) {
+  tests.add("Region Map 8 - Overwrite a smaller region", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([10, 5, 10, 10, 5, 10, 5, 5]);
     test.add([15, 0, 15, 15, 0, 15, 0, 0]);
@@ -140,7 +140,7 @@ void addRegionMapTests(TestManager tests) {
     test.showPlot();
   });
 
-  tests.add("Region Map 9", (TestArgs args) {
+  tests.add("Region Map 9 - Add a hole", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([15, 0, 15, 15, 0, 15, 0, 0]);
     test.add([10, 5, 10, 10, 5, 10, 5, 5]);
@@ -160,7 +160,7 @@ void addRegionMapTests(TestManager tests) {
     test.showPlot();
   });
 
-  tests.add("Region Map 10", (TestArgs args) {
+  tests.add("Region Map 10 - Four corners", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([0, 10, 100, 10, 50, 60]);
     test.add([90, 0, 90, 100, 40, 50]);
@@ -180,7 +180,7 @@ void addRegionMapTests(TestManager tests) {
     test.showPlot();
   });
 
-  tests.add("Region Map 11", (TestArgs args) {
+  tests.add("Region Map 11 - Create a bounded region", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([0, 0, 0, 40, 10, 40, 10, 0], 1);
     test.add([0, 0, 0, 10, 30, 10, 30, 30, 0, 30, 0, 40, 40, 40, 40, 0], 1);
@@ -210,13 +210,49 @@ void addRegionMapTests(TestManager tests) {
     test.showPlot();
   });
 
-  tests.add("Region Map 12", (TestArgs args) {
+  tests.add("Region Map 12 - Two triangles, boundary issue", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([9, 59, -11, 54, -7, 37], 1);
     test.add([17, 47, -1, 52, 4, 33], 1);
 
     test.pointTest(5, 35, 1);
+    test.showPlot();
+  });
 
+  tests.add("Region Map 13 - Overlapping lines of same regions", (TestArgs args) {
+    RegionMapTester test = new RegionMapTester(args);
+    test.add([5, 0, 5, 5, 3, 0], 1);
+    test.add([5, 0, 5, 5, 7, 5], 1);
+
+    test.pointTest(4, 1, 1);
+    test.pointTest(6, 4, 1);
+    test.showPlot();
+  });
+
+  tests.add("Region Map 14 - Overlapping lines of different regions", (TestArgs args) {
+    RegionMapTester test = new RegionMapTester(args);
+    test.add([5, 0, 5, 5, 3, 0], 1);
+    test.add([5, 0, 5, 5, 7, 5], 2);
+
+    test.pointTest(4, 1, 1);
+    test.pointTest(6, 4, 2);
+    test.showPlot();
+  });
+
+  tests.add("Region Map 15 - Repeat point", (TestArgs args) {
+    RegionMapTester test = new RegionMapTester(args);
+    test.add([5, 0, 5, 0, 5, 5, 3, 0], 1);
+
+    test.pointTest(4, 1, 1);
+    test.showPlot();
+  });
+
+  tests.add("Region Map 16 - Bow tie", (TestArgs args) {
+    RegionMapTester test = new RegionMapTester(args);
+    test.add([-36, 42, -36, 42, -38, -10, 32, 53, 49, -17], 1);
+    test.add([-15, 60, -15, 60, 13, 61, 19, -35, -17, -39], 1);
+
+    test.pointTest(0, 50, 1);
     test.showPlot();
   });
 }

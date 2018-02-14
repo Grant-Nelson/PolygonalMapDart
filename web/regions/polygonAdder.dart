@@ -29,25 +29,31 @@ class PolygonAdder implements plotter.IMouseHandle {
   bool get enabled => _enabled;
   set enabled(bool value) => _enabled = value;
 
+  /// Is the region Id which is about to be applied.
   int get regionId => _regionId;
   set regionId(int value) => _regionId = value;
 
+  /// Prints the region in the buffer.
+  void _printRegion() {
+    String result = "";
+    bool first = true;
+    for (qt.Point pnt in _points) {
+      if (first) {
+        result += "{";
+        first = false;
+      } else {
+        result += ", ";
+      }
+      result += "[${pnt.x}, ${pnt.y}]";
+    }
+    print(result + "}");
+  }
+
+  /// Finished and inserts a region.
   void finishRegion() {
     if (_points.length > 0) {
+      _printRegion();
       _regions.addRegion(_regionId, _points);
-
-      String result = "";
-      bool first = true;
-      for (qt.Point pnt in _points) {
-        if (first) {
-          result += "[";
-          first = false;
-        } else {
-          result += ", ";
-        }
-        result += "${pnt.x}, ${pnt.y}";
-      }
-      print(result + "]");
     }
     _plotItem.updateTree();
     _points.clear();
@@ -76,6 +82,7 @@ class PolygonAdder implements plotter.IMouseHandle {
           _tempLines.add([last[2], last[3], x, y]);
         } else {
           _tempLines.add([x, y, x, y]);
+          _points.add(new qt.Point(x.round(), y.round()));
         }
         e.redraw = true;
       }
@@ -99,7 +106,6 @@ class PolygonAdder implements plotter.IMouseHandle {
       List<double> last = _tempLines.get(_tempLines.count - 1, 1);
       _tempLines.set(_tempLines.count - 1, [last[0], last[1], loc[0].roundToDouble(), loc[1].roundToDouble()]);
       _points.add(new qt.Point(loc[0].round(), loc[1].round()));
-      _plotItem.updateTree();
       e.redraw = true;
       _mouseDown = false;
     }

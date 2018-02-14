@@ -24,8 +24,7 @@ class PointNodeVector {
 
   /// Reverses the location of all the points in the vector.
   void reverse() {
-    final int count = _list.length;
-    for (int i = 0, j = count - 1; i < j; ++i, --j) {
+    for (int i = 0, j = _list.length - 1; i < j; ++i, --j) {
       PointNode temp = _list[i];
       _list[i] = _list[j];
       _list[j] = temp;

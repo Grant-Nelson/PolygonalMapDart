@@ -68,7 +68,8 @@ class Driver {
       ..clear()
       ..add(_shiftPanViewTool)
       ..add(_panViewTool)
-      ..add(_polygonAdderTool);
+      ..add(_polygonAdderTool)
+      ..add(new plotter.MouseCoords(_plot));
     _plot.focusOnBounds(new plotter.Bounds(-100.0, -100.0, 100.0, 100.0));
     _setTool(Tool.AddPolygon, true, 1);
   }

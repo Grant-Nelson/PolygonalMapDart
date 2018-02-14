@@ -36,14 +36,16 @@ class Regions {
     for (int i = 0; i < count; ++i) {
       pnts[i] = new qt.Point(pntCoords[i * 2], pntCoords[i * 2 + 1]);
     }
-    addRegion(regionId, pnts);
+
+    List<List<qt.IPoint>> polys = PolygonClipper.Clip(pnts);
+    for (List<qt.IPoint> poly in polys)
+      addRegion(regionId, poly);
   }
 
   /// Adds a region into the map.
   /// Note: The region will overwrite any region contained in it.
   void addRegion(int regionId, List<qt.IPoint> pnts) {
     int count = pnts.length;
-    if (count < 3) return;
 
     // Insert all the end points into the tree.
     qt.PointNodeVector nodes = new qt.PointNodeVector();
@@ -52,6 +54,21 @@ class Regions {
       assert(point != null);
       nodes.nodes.add(point);
     }
+
+    // Remove all degenerate edges.
+    // for (int i = count - 1; i >= 0; --i) {
+    //   qt.Edge edge = nodes.edge(i);
+    //   if (qt.Edge.degenerate(edge)) {
+    //     nodes.nodes.removeAt(i);
+    //     --count;
+    //   }
+    // }
+
+    // Make sure the polygon is counter-clockwise.
+    qt.AreaAccumulator area = nodes.area;
+    if (!area.ccw) nodes.reverse();
+
+    //===========================================
 
     // Find all near points to the new edges.
     for (int i = 0; i < count; ++i) {
@@ -76,10 +93,6 @@ class Regions {
       }
     }
 
-    // Make sure the polygon is counter-clockwise.
-    qt.AreaAccumulator area = nodes.area;
-    if (!area.ccw) nodes.reverse();
-
     // Remove any contained data.
     // Create a tree which contains the input so it can be queried.
     qt.QuadTree newRegion = new qt.QuadTree();
@@ -95,24 +108,24 @@ class Regions {
       qt.Edge edge = nodes.edge(i);
       qt.PointNode start = edge.start;
       qt.PointNode end = edge.end;
-
       qt.EdgeNode last = start.findEdgeTo(end);
       if (last != null) {
         EdgeSide sideData = last.data;
         assert(sideData != null);
         sideData.left = regionId;
-        if (sideData.right == regionId) removeEdge.last;
+        if (sideData.right == regionId) removeEdge.add(last);
       } else {
         last = end.findEdgeTo(start);
         if (last != null) {
           EdgeSide sideData = last.data;
           assert(sideData != null);
           sideData.right = regionId;
-          if (sideData.left == regionId) removeEdge.last;
+          if (sideData.left == regionId) removeEdge.add(last);
         } else {
           int outterRangeId = _getSide(start, end);
           if (outterRangeId != regionId) {
             qt.EdgeNode e = _tree.insertEdge(edge);
+            assert(e != null);
             e.data = new EdgeSide(regionId, outterRangeId);
           }
         }
@@ -223,7 +236,6 @@ class Regions {
       node.data = new EdgeSide.copy(edge.data);
     }
 
-    _tree.validate(); // TODO: REMOVE
     return result.point;
   }
 

@@ -13,6 +13,7 @@ import 'package:PolygonalMapDart/Quadtree.dart' as qt;
 import 'package:PolygonalMapDart/Maps.dart' as maps;
 import 'package:PolygonalMapDart/Plotter.dart' as qtplotter;
 
+part 'tools/points.dart';
 part 'tools/quadTreeTester.dart';
 part 'tools/testArgs.dart';
 part 'tools/testBlock.dart';
@@ -27,10 +28,13 @@ part 'unittests/foreachPointInBoundary.dart';
 part 'unittests/insertEdges.dart';
 part 'unittests/insertPoint.dart';
 part 'unittests/overlaps.dart';
+part 'unittests/polygonClipper.dart';
 part 'unittests/regionMap.dart';
 part 'unittests/regions.dart';
 
 void addTests(TestManager tests) {
+  //tests.testPrefixFilter = "Region Map 16"; // TODO: Remove
+
   addConversionsTests(tests);
   addEdgeIntersectTests(tests);
   addFindAllIntersectionsTests(tests);
@@ -40,6 +44,7 @@ void addTests(TestManager tests) {
   addInsertEdgesTests(tests);
   addInsertPointTests(tests);
   addOverlapsTests(tests);
+  addPolygonClipperTests(tests);
   addRegionMapTests(tests);
   addRegionTests(tests);
 }

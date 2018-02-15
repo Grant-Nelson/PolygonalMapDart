@@ -36,20 +36,24 @@ class Regions {
     for (int i = 0; i < count; ++i) {
       pnts[i] = new qt.Point(pntCoords[i * 2], pntCoords[i * 2 + 1]);
     }
-
-    List<List<qt.IPoint>> polys = PolygonClipper.Clip(pnts);
-    for (List<qt.IPoint> poly in polys)
-      addRegion(regionId, poly);
+    addRegion(regionId, pnts);
   }
+  
 
   /// Adds a region into the map.
   /// Note: The region will overwrite any region contained in it.
   void addRegion(int regionId, List<qt.IPoint> pnts) {
+    List<List<qt.IPoint>> polys = PolygonClipper.Clip(pnts);
+    for (List<qt.IPoint> poly in polys) _addRegion(regionId, poly);
+  }
+
+  /// Adds a clipped region into the map.
+  void _addRegion(int regionId, List<qt.IPoint> pnts) {
     int count = pnts.length;
 
     // Insert all the end points into the tree.
     qt.PointNodeVector nodes = new qt.PointNodeVector();
-    for (int i = 0; i <count; i++) {
+    for (int i = 0; i <count; ++i) {
       qt.PointNode point = _insertPoint(pnts[i]);
       assert(point != null);
       nodes.nodes.add(point);
@@ -65,7 +69,7 @@ class Regions {
         --i;
       }
     }
-
+    
     // Find all edge intersections.
     for (int i = 0; i < count; ++i) {
       qt.Edge edge = nodes.edge(i);
@@ -77,7 +81,7 @@ class Regions {
         --i;
       }
     }
-
+    
     // Remove any contained data.
     // Create a tree which contains the input so it can be queried.
     qt.QuadTree newRegion = new qt.QuadTree();
@@ -94,6 +98,7 @@ class Regions {
       qt.PointNode start = edge.start;
       qt.PointNode end = edge.end;
       qt.EdgeNode last = start.findEdgeTo(end);
+
       if (last != null) {
         EdgeSide sideData = last.data;
         assert(sideData != null);
@@ -116,7 +121,7 @@ class Regions {
         }
       }
     }
-
+    
     // Remove any edge which ends up with the same data on both sides.
     for (qt.EdgeNode edge in removeEdge) {
       _tree.removeEdge(edge, false);

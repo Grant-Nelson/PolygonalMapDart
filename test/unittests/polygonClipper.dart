@@ -38,6 +38,11 @@ void addPolygonClipperTests(TestManager tests) {
       "(-38, 33) (-23, 32) (-37, 50) (-35, 69) (-52, 71) (-59, 81)"
     ]);
   });
+
+  tests.add("Polygon Clipper 7 - Repeats", (TestArgs args) {
+    _testClipper(
+        args, "(-68, 67) (-68, 67) (-24, 16) (2, 57) (-68, 67)", ["(-68, 67) (-24, 16) (2, 57)"]);
+  });
 }
 
 void _testClipper(TestArgs args, String input, List<String> results,

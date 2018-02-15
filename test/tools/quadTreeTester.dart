@@ -88,10 +88,11 @@ class QuadTreeTester {
   }
 
   /// Inserts a set of points into the test tree.
-  void insertPoints(List<int> pntCoords) {
-    int count = pntCoords.length ~/ 2;
+  void insertPoints(String pntCoords) {
+    List<qt.Point> pnts = points.parse(pntCoords);
+    int count = pnts.length;
     for (int i = 0; i < count; ++i) {
-      insertPoint(pntCoords[i * 2], pntCoords[i * 2 + 1]);
+      insertPoint(pnts[i].x, pnts[i].y);
     }
   }
 
@@ -136,11 +137,12 @@ class QuadTreeTester {
   }
 
   /// Inserts a polygon into the test tree.
-  void insertPolygon(List<int> pntCoords) {
+  void insertPolygon(String pntCoords) {
+    List<qt.Point> pnts = points.parse(pntCoords);
     qt.PointNodeVector nodes = new qt.PointNodeVector();
-    int count = pntCoords.length ~/ 2;
+    int count = pnts.length;
     for (int i = 0; i < count; ++i) {
-      qt.PointNode node = _tree.insertPoint(new qt.Point(pntCoords[i * 2], pntCoords[i * 2 + 1]));
+      qt.PointNode node = _tree.insertPoint(pnts[i]);
       nodes.nodes.add(node);
     }
     for (int i = 0; i < count; ++i) {
@@ -293,12 +295,12 @@ class QuadTreeTester {
   }
 
   /// Checkst the bounded foreach method works as expected.
-  void checkForeach(List<int> inside, List<int> outside, int x1, int y1, int x2, int y2, [bool showPlot = true]) {
+  void checkForeach(List<qt.Point> inside, List<qt.Point> outside, int x1, int y1, int x2, int y2, [bool showPlot = true]) {
     Set<qt.PointNode> expOutside = new Set<qt.PointNode>();
-    for (int i = 0; i < outside.length; i += 2) expOutside.add(insertPoint(outside[i], outside[i + 1]));
+    for (int i = 0; i < outside.length; ++i) expOutside.add(insertPoint(outside[i].x, outside[i].y));
 
     Set<qt.PointNode> expInside = new Set<qt.PointNode>();
-    for (int i = 0; i < inside.length; i += 2) expInside.add(insertPoint(inside[i], inside[i + 1]));
+    for (int i = 0; i < inside.length; ++i) expInside.add(insertPoint(inside[i].x, inside[i].y));
 
     qt.Boundary boundary = new qt.Boundary(x1, y1, x2, y2);
     qt.PointCollectorHandle collector = new qt.PointCollectorHandle();

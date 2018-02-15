@@ -49,26 +49,11 @@ class Regions {
 
     // Insert all the end points into the tree.
     qt.PointNodeVector nodes = new qt.PointNodeVector();
-    for (int i = count - 1; i >= 0; --i) {
+    for (int i = 0; i <count; i++) {
       qt.PointNode point = _insertPoint(pnts[i]);
       assert(point != null);
       nodes.nodes.add(point);
     }
-
-    // Remove all degenerate edges.
-    // for (int i = count - 1; i >= 0; --i) {
-    //   qt.Edge edge = nodes.edge(i);
-    //   if (qt.Edge.degenerate(edge)) {
-    //     nodes.nodes.removeAt(i);
-    //     --count;
-    //   }
-    // }
-
-    // Make sure the polygon is counter-clockwise.
-    qt.AreaAccumulator area = nodes.area;
-    if (!area.ccw) nodes.reverse();
-
-    //===========================================
 
     // Find all near points to the new edges.
     for (int i = 0; i < count; ++i) {

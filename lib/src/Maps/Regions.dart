@@ -39,7 +39,6 @@ class Regions {
     addRegion(regionId, pnts);
   }
   
-
   /// Adds a region into the map.
   /// Note: The region will overwrite any region contained in it.
   void addRegion(int regionId, List<qt.IPoint> pnts) {
@@ -125,6 +124,14 @@ class Regions {
     // Remove any edge which ends up with the same data on both sides.
     for (qt.EdgeNode edge in removeEdge) {
       _tree.removeEdge(edge, false);
+    }
+
+    // Find any remaining points which have been orphaned.
+    for (int i = 0; i < count; ++i) {
+      qt.PointNode point = _tree.findPoint(nodes.nodes[i]);
+      if ((point != null) && point.orphan) {
+        _tree.removePoint(point);
+      }
     }
   }
 

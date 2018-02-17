@@ -210,6 +210,7 @@ class Driver {
     if (value) {
       _clearAll.value = false;
       _regions.tree.clear();
+      _polygonAdderTool.reset();
       _plotItem.updateTree();
       _svgPlot.refresh();
     }

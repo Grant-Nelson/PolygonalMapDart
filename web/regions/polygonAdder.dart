@@ -49,6 +49,12 @@ class PolygonAdder implements plotter.IMouseHandle {
     print(result + "}");
   }
 
+  /// Resets the currently being created polygon.
+  void reset() {
+    _points.clear();
+    _tempLines.clear();
+  }
+
   /// Finished and inserts a region.
   void finishRegion() {
     if (_points.length > 0) {

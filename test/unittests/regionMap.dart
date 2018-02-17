@@ -255,6 +255,18 @@ void addRegionMapTests(TestManager tests) {
     test.pointTest(0, 50, 1);
     test.showPlot();
   });
+  
+  tests.add("Region Map 16 - Bow tie", (TestArgs args) {
+    RegionMapTester test = new RegionMapTester(args);
+    test.add([-6, 7, 0, 0, 6, 7], 1);
+    test.add([-2, 5, 2, 5, 0, 10], 1);
+
+    qt.PointNode pnt = test._map.tree.findPoint(new qt.Point(-2, 5));
+    if (pnt != null) {
+        test._args.error("Point ${pnt.toString()} should have been removed");
+    }
+    test.showPlot();
+  });
 }
 
 class RegionMapTester {

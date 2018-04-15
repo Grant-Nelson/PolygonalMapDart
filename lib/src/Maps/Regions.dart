@@ -1,4 +1,4 @@
-part of maps;
+part of PolygonalMapDart.Maps;
 
 /// A map of regions.
 /// Useful for defining country, state, and zone maps,

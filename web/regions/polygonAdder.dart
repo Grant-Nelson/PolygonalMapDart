@@ -27,7 +27,10 @@ class PolygonAdder implements plotter.IMouseHandle {
 
   /// Indicates of the point adder tool is enabled or not.
   bool get enabled => _enabled;
-  set enabled(bool value) => _enabled = value;
+  set enabled(bool value) {
+    _enabled = value;
+    reset();
+  }
 
   /// Is the region Id which is about to be applied.
   int get regionId => _regionId;
@@ -111,7 +114,15 @@ class PolygonAdder implements plotter.IMouseHandle {
       List<double> loc = _transMouse(e);
       List<double> last = _tempLines.get(_tempLines.count - 1, 1);
       _tempLines.set(_tempLines.count - 1, [last[0], last[1], loc[0].roundToDouble(), loc[1].roundToDouble()]);
-      _points.add(new qt.Point(loc[0].round(), loc[1].round()));
+
+      if (_points.length > 0) {
+        qt.Point lastPnt = _points[_points.length-1];
+        int x = loc[0].round();
+        int y = loc[1].round();
+        if ((lastPnt.x != x) || (lastPnt.y != y))
+          _points.add(new qt.Point(x, y));
+      } else
+        _points.add(new qt.Point(loc[0].round(), loc[1].round()));
       e.redraw = true;
       _mouseDown = false;
     }

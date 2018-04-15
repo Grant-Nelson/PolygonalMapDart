@@ -1,4 +1,4 @@
-part of maps;
+part of PolygonalMapDart.Maps;
 
 /// The data for the edges in the region map.
 /// The data defining identifier for the regions to the left and right of the edge

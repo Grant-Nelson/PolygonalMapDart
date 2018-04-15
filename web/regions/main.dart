@@ -10,6 +10,7 @@ import 'package:PolygonalMapDart/Maps.dart' as maps;
 part 'boolValue.dart';
 part 'driver.dart';
 part 'polygonAdder.dart';
+part 'regionChecker.dart';
 
 void main() {
   html.document.title = "Points & Lines";
@@ -68,6 +69,7 @@ void addMenuTools(html.DivElement menu, Driver dvr) {
   addMenuItem(items, "Add Polygon 3", dvr.addPolygon3);
   addMenuItem(items, "Add Polygon 4", dvr.addPolygon4);
   addMenuItem(items, "Add Polygon 5", dvr.addPolygon5);
+  addMenuItem(items, "Check Region", dvr.checkRegion);
   addMenuItem(items, "Validate", dvr.validate);
   addMenuItem(items, "Print Tree", dvr.printTree);
   addMenuItem(items, "Clear All", dvr.clearAll);

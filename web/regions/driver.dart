@@ -1,6 +1,6 @@
 part of main;
 
-enum Tool { None, PanView, AddPolygon }
+enum Tool { None, PanView, AddPolygon, CheckRegion }
 
 class Driver {
   plotSvg.PlotSvg _svgPlot;
@@ -24,6 +24,7 @@ class Driver {
   BoolValue _addPolygon3;
   BoolValue _addPolygon4;
   BoolValue _addPolygon5;
+  BoolValue _checkRegion;
   BoolValue _validate;
   BoolValue _printTree;
   BoolValue _clearAll;
@@ -32,6 +33,7 @@ class Driver {
   plotter.MousePan _shiftPanViewTool;
   plotter.MousePan _panViewTool;
   PolygonAdder _polygonAdderTool;
+  RegionChecker _regionCheckTool;
 
   Driver(this._svgPlot, this._plot) {
     _regions = new maps.Regions();
@@ -55,20 +57,23 @@ class Driver {
     _addPolygon3 = new BoolValue(false)..onChange.add(_onAddPolygon3Change);
     _addPolygon4 = new BoolValue(false)..onChange.add(_onAddPolygon4Change);
     _addPolygon5 = new BoolValue(false)..onChange.add(_onAddPolygon5Change);
+    _checkRegion = new BoolValue(false)..onChange.add(_onCheckRegion);
     _validate = new BoolValue(false)..onChange.add(_onValidateChange);
     _printTree = new BoolValue(false)..onChange.add(_onPrintTreeChange);
     _clearAll = new BoolValue(false)..onChange.add(_onClearAllChange);
 
     _shiftPanViewTool = new plotter.MousePan(_plot, new plotter.MouseButtonState(0, shiftKey: true));
     _panViewTool = new plotter.MousePan(_plot, new plotter.MouseButtonState(0));
-    _polygonAdderTool = new PolygonAdder(
-        _regions, _plot, _plotItem, new plotter.MouseButtonState(0), new plotter.MouseButtonState(0, ctrlKey: true));
+    _polygonAdderTool = new PolygonAdder(_regions, _plot, _plotItem,
+      new plotter.MouseButtonState(0), new plotter.MouseButtonState(0, ctrlKey: true));
+    _regionCheckTool = new RegionChecker(_regions, _plot, _plotItem);
 
     _plot.MouseHandles
       ..clear()
       ..add(_shiftPanViewTool)
       ..add(_panViewTool)
       ..add(_polygonAdderTool)
+      ..add(_regionCheckTool)
       ..add(new plotter.MouseCoords(_plot));
     _plot.focusOnBounds(new plotter.Bounds(-100.0, -100.0, 100.0, 100.0));
     _setTool(Tool.AddPolygon, true, 1);
@@ -90,6 +95,7 @@ class Driver {
   BoolValue get addPolygon3 => _addPolygon3;
   BoolValue get addPolygon4 => _addPolygon4;
   BoolValue get addPolygon5 => _addPolygon5;
+  BoolValue get checkRegion => _checkRegion;
   BoolValue get validate => _validate;
   BoolValue get printTree => _printTree;
   BoolValue get clearAll => _clearAll;
@@ -172,6 +178,10 @@ class Driver {
     _setTool(Tool.AddPolygon, value, 5);
   }
 
+  void _onCheckRegion(bool value) {
+    _setTool(Tool.CheckRegion, value);
+  }
+
   void _setTool(Tool newTool, bool value, [int regionId = 0]) {
     if (!value) return;
     _selectedTool = newTool;
@@ -182,9 +192,13 @@ class Driver {
     _addPolygon3.value = (_selectedTool == Tool.AddPolygon) && (regionId == 3);
     _addPolygon4.value = (_selectedTool == Tool.AddPolygon) && (regionId == 4);
     _addPolygon5.value = (_selectedTool == Tool.AddPolygon) && (regionId == 5);
+    _checkRegion.value = (_selectedTool == Tool.CheckRegion);
 
     _panViewTool.enabled = (_selectedTool == Tool.PanView);
     _polygonAdderTool.enabled = (_selectedTool == Tool.AddPolygon);
+    _polygonAdderTool.enabled = (_selectedTool == Tool.AddPolygon);
+    _regionCheckTool.enabled = (_selectedTool == Tool.CheckRegion);
+    
     if (_selectedTool == Tool.AddPolygon) {
       _polygonAdderTool.finishRegion();
       _polygonAdderTool.regionId = regionId;

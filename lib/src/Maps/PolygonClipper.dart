@@ -1,4 +1,4 @@
-part of maps;
+part of PolygonalMapDart.Maps;
 
 /// A tool for clipping polygons into simpler set of polygons.
 class PolygonClipper {

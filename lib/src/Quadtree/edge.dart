@@ -500,7 +500,7 @@ class Edge implements IEdge, Comparable<Edge> {
   /// Gets the string for this edge.
   String toString([IFormatter format = null]) {
     if (format == null)
-      return "[ $x1, $y1, $x2, $y2]";
+      return "[$x1, $y1, $x2, $y2]";
     else
       return format.toEdgeString(this);
   }

@@ -1,13 +1,19 @@
 name: PolygonalMapDart
-version: 0.0.2
+version: 0.1.0
 description: Polygonal mapping tool built on a quadtree.
 environment:
   sdk: '>=2.0.0'
+
 dependencies:
-  browser: any
+  build_runner: ^1.0.0
+  build_test: ^0.10.2
+  build_web_compilers: ^2.4.0
   intl: any
   plotterDart:
     git: git://github.com/Grant-Nelson/plotterDart.git
+
+dev_dependencies:
+  webdev: ^1.0.0
 
 # dependency_overrides:
 #   plotterDart:

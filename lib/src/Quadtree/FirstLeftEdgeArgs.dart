@@ -24,7 +24,7 @@ class FirstLeftEdgeArgs {
   /// left of the given query point.
   /// [queryPoint] is the point to find the first edge left of.
   FirstLeftEdgeArgs(this._queryPoint, this._handle) {
-    _rightValue = -double.MAX_FINITE;
+    _rightValue = -double.maxFinite;
     _resultEdge = null;
     _resultPoint = null;
   }

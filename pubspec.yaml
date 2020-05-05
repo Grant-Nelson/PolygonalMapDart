@@ -1,8 +1,8 @@
 name: PolygonalMapDart
-version: 0.0.1
+version: 0.0.2
 description: Polygonal mapping tool built on a quadtree.
 environment:
-  sdk: '>=1.0.0 <2.0.0'
+  sdk: '>=2.0.0'
 dependencies:
   browser: any
   intl: any

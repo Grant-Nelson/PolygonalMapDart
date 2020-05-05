@@ -29,10 +29,10 @@ void regionTest(TestArgs args, qt.Boundary rect, int x, int y, qt.BoundaryRegion
         "   Result:   $result, $result\n\n");
 
     plotter.Plotter plot = new plotter.Plotter();
-    plot.addRects([rect.xmin, rect.ymin, rect.width, rect.height])
+    plot.addRects([rect.xmin.toDouble(), rect.ymin.toDouble(), rect.width.toDouble(), rect.height.toDouble()])
       ..addColor(0.8, 0.0, 0.0)
       ..addPointSize(4.0);
-    plot.addPoints([x, y])
+    plot.addPoints([x.toDouble(), y.toDouble()])
       ..addColor(0.0, 0.8, 0.0)
       ..addPointSize(4.0);
     plot.updateBounds();

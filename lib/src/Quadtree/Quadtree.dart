@@ -148,7 +148,7 @@ class QuadTree {
   /// [cutoffDist2] is the maximum allowable distance squared to the nearest point.
   /// [handle] is the handle to filter acceptable points with, or null to not filter.
   PointNode findNearestPointToPoint(IPoint queryPoint,
-      {double cutoffDist2: double.MAX_FINITE, IPointHandler handle: null}) {
+      {double cutoffDist2: double.maxFinite, IPointHandler handle: null}) {
     PointNode result = null;
     NodeStack stack = new NodeStack([_root]);
     while (!stack.isEmpty) {
@@ -177,7 +177,7 @@ class QuadTree {
   /// [cutoffDist2] is the maximum allowable distance squared to the nearest point.
   /// [handle] is the handle to filter acceptable points with, or null to not filter.
   PointNode findNearestPointToEdge(IEdge queryEdge,
-      {double cutoffDist2: double.MAX_FINITE, IPointHandler handle: null}) {
+      {double cutoffDist2: double.maxFinite, IPointHandler handle: null}) {
     PointNode result = null;
     NodeStack stack = new NodeStack([_root]);
     while (!stack.isEmpty) {
@@ -237,7 +237,7 @@ class QuadTree {
   /// [cutoffDist2] is the maximum distance squared edges may be
   /// away from the given point to be an eligible result.
   /// [handler] is the matcher to filter eligible edges, if null all edges are accepted.
-  EdgeNode findNearestEdge(IPoint point, {double cutoffDist2: double.MAX_FINITE, IEdgeHandler handler: null}) {
+  EdgeNode findNearestEdge(IPoint point, {double cutoffDist2: double.maxFinite, IEdgeHandler handler: null}) {
     NearestEdgeArgs args = new NearestEdgeArgs(point, cutoffDist2, handler);
     args.run(_root);
     return args.result();

@@ -215,7 +215,7 @@ class _quadTreePlotterEdgeHandler extends qt.IEdgeHandler {
   _quadTreePlotterEdgeHandler(this._plot, this._edges);
 
   /// Handles adding a new edge into the plot.
-  bool handle(qt.EdgeNode edge) {
+  bool handle(qt.IEdge edge) {
     _plot.addLine(_edges, edge);
     return true;
   }

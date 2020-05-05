@@ -424,7 +424,7 @@ class _LineCollector implements qt.IEdgeHandler {
 
   _LineCollector(this._lines);
 
-  bool handle(qt.EdgeNode edge) {
+  bool handle(qt.IEdge edge) {
     maps.EdgeSide pair = edge.data;
     double dx = edge.dx.toDouble();
     double dy = edge.dy.toDouble();

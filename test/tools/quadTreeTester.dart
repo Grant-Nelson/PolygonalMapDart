@@ -169,9 +169,10 @@ class QuadTreeTester {
       qtplotter.QuadTreePlotter plot = new qtplotter.QuadTreePlotter();
       plot.addTree(_tree);
       if (node != null) {
-        plot.addLines([node.x1, node.y1, node.x2, node.y2])..addColor(0.2, 0.2, 1.0);
+        plot.addLines([node.x1.toDouble(), node.y1.toDouble(),
+          node.x2.toDouble(), node.y2.toDouble()])..addColor(0.2, 0.2, 1.0);
       }
-      plot.addPoints([x, y])
+      plot.addPoints([x.toDouble(), y.toDouble()])
         ..addColor(1.0, 0.0, 0.0)
         ..addPointSize(3.0);
 
@@ -225,14 +226,14 @@ class QuadTreeTester {
       plot.addTree(_tree, "Intersects: $edge => $count");
 
       plotter.Lines lines = new plotter.Lines();
-      lines.add([edge.x1, edge.y1, edge.x2, edge.y2]);
+      lines.add([edge.x1.toDouble(), edge.y1.toDouble(), edge.x2.toDouble(), edge.y2.toDouble()]);
       lines.addColor(0.0, 0.0, 0.8);
       plot.add([lines]);
 
       plotter.Points points = new plotter.Points();
       for (qt.IntersectionResult inter in inters.results) {
         if (inter.point != null) {
-          points.add([inter.point.x, inter.point.y]);
+          points.add([inter.point.x.toDouble(), inter.point.y.toDouble()]);
         }
       }
       points.addPointSize(4.0);
@@ -276,13 +277,13 @@ class QuadTreeTester {
       plot.addTree(_tree, "Intersects: $edge");
 
       plotter.Lines lines = new plotter.Lines();
-      lines.add([edge.x1, edge.y1, edge.x2, edge.y2]);
+      lines.add([edge.x1.toDouble(), edge.y1.toDouble(), edge.x2.toDouble(), edge.y2.toDouble()]);
       lines.addColor(0.0, 0.0, 0.8);
       plot.add([lines]);
 
       plotter.Points points = new plotter.Points();
       if (result?.point != null) {
-        points.add([result.point.x, result.point.y]);
+        points.add([result.point.x.toDouble(), result.point.y.toDouble()]);
       }
       points.addPointSize(4.0);
       points.addColor(1.0, 0.0, 0.0);
@@ -349,7 +350,8 @@ class QuadTreeTester {
         ..addPointSize(4.0);
       plot.addPointSet(wrongInsidePoint, wrongInside);
 
-      plot.addGroup("Boundary").addRects([x1, y1, x2 - x1, y2 - y1]);
+      plot.addGroup("Boundary").addRects([x1.toDouble(),
+        y1.toDouble(), (x2 - x1).toDouble(), (y2 - y1).toDouble()]);
       plot.updateBounds();
       plot.focusOnData();
       _showPlot(plot);
@@ -416,7 +418,7 @@ class QuadTreeTester {
 /// This is not as fast as findNearestPointToPoint but can be used to test it.
 class _testNearestPointHandle implements qt.IPointHandler {
   /// minimum distance squared to found point.
-  double minDist2 = double.MAX_FINITE;
+  double minDist2 = double.maxFinite;
 
   /// The point to get the point closest to.
   qt.Point focus = null;

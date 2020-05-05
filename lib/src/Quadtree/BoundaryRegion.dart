@@ -52,7 +52,10 @@ class BoundaryRegion {
   bool has(BoundaryRegion other) => (_value & other._value) == other._value;
 
   /// Checks if this BoundaryRegion is equal to the given [other] BoundaryRegion.
-  bool operator ==(BoundaryRegion other) => _value == other._value;
+  bool operator ==(dynamic other) {
+    if (other is! BoundaryRegion) return false;
+    return _value == other._value;
+  }
 
   /// Gets the OR of the two boundary regions.
   BoundaryRegion operator |(BoundaryRegion other) => new BoundaryRegion._(_value | other._value);

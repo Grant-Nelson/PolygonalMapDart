@@ -53,7 +53,10 @@ void edgeIntersectTest(TestArgs args, qt.Edge edgeA, qt.Edge edgeB, String exp) 
   if (exp != resultStr) {
     if (!args.failed) {
       plotter.Plotter plot = new plotter.Plotter();
-      plot.addLines([edgeA.x1, edgeA.y1, edgeA.x2, edgeA.y2, edgeB.x1, edgeB.y1, edgeB.x2, edgeB.y2]);
+      plot.addLines([edgeA.x1.toDouble(), edgeA.y1.toDouble(),
+        edgeA.x2.toDouble(), edgeA.y2.toDouble(),
+        edgeB.x1.toDouble(), edgeB.y1.toDouble(),
+        edgeB.x2.toDouble(), edgeB.y2.toDouble()]);
       plot.updateBounds();
       plot.focusOnData();
       new plotSvg.PlotSvg.fromElem(args.addDiv(), plot);

@@ -21,7 +21,7 @@ class EdgeCollectorHandle implements IEdgeHandler {
   IEdgeHandler get filter => _filter;
 
   /// Handles a new edge.
-  bool handle(EdgeNode edge) {
+  bool handle(IEdge edge) {
     if (_filter != null) {
       if (!_filter.handle(edge)) return true;
     }

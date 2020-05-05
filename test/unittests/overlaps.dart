@@ -27,10 +27,10 @@ void overlapTest(TestArgs args, qt.IBoundary bounds, qt.IEdge edge, bool overlap
         "   Edge:   $edge\n\n");
 
     plotter.Plotter plot = new plotter.Plotter();
-    plot.addRects([bounds.xmin, bounds.ymin, bounds.width, bounds.height])
+    plot.addRects([bounds.xmin.toDouble(), bounds.ymin.toDouble(), bounds.width.toDouble(), bounds.height.toDouble()])
       ..addColor(0.8, 0.0, 0.0)
       ..addPointSize(4.0);
-    plot.addLines([edge.x1, edge.y1, edge.x2, edge.y2])
+    plot.addLines([edge.x1.toDouble(), edge.y1.toDouble(), edge.x2.toDouble(), edge.y2.toDouble()])
       ..addColor(0.0, 0.8, 0.0)
       ..addPointSize(4.0);
     plot.updateBounds();

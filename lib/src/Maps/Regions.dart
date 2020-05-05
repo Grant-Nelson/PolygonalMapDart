@@ -333,7 +333,7 @@ class _EdgeRemover implements qt.IEdgeHandler {
 
   Set<qt.EdgeNode> get remove => _remove;
 
-  bool handle(qt.EdgeNode edge) {
+  bool handle(qt.IEdge edge) {
     qt.Point center = new qt.Point(edge.x1 + edge.dx ~/ 2, edge.y1 + edge.dy ~/ 2);
     if (qt.Point.equals(edge.start, center) || qt.Point.equals(edge.end, center)) {
       // Determine if the edge is inside.

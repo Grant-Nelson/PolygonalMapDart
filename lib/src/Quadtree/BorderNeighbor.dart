@@ -57,7 +57,7 @@ class BorderNeighbor implements IEdgeHandler {
 
   /// Updates the border neighbor with the given edge.
   /// Always returns true.
-  bool handle(EdgeNode edge) {
+  bool handle(IEdge edge) {
     if (_matcher != null) {
       if (edge is EdgeNode) {
         if (!_matcher.handle(edge)) return true;

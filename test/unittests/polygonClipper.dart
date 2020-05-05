@@ -95,7 +95,7 @@ void _testClipper(TestArgs args, String input, List<String> results,
       ..addColor(0.0, 0.0, 0.0)
       ..addDirected(true);
     for (int i = 0; i < inputPnts.length; ++i) {
-      inputPoly.add([inputPnts[i].x, inputPnts[i].y]);
+      inputPoly.add([inputPnts[i].x.toDouble(), inputPnts[i].y.toDouble()]);
     }
 
     for (int i = 0; i < resultPnts.length; ++i) {
@@ -105,7 +105,7 @@ void _testClipper(TestArgs args, String input, List<String> results,
         ..addDirected(true);
       List<qt.Point> pnts = resultPnts[i];
       for (int j = 0; j < pnts.length; ++j) {
-        poly.add([pnts[j].x, pnts[j].y]);
+        poly.add([pnts[j].x.toDouble(), pnts[j].y.toDouble()]);
       }
     }
 

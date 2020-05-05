@@ -71,9 +71,9 @@ class RegionChecker implements plotter.IMouseHandle {
       _lines.clear();
       qt.EdgeNode edge = _regions.tree.firstLeftEdge(pnt);
       if (edge != null) {
-        _lines.add([edge.start.x, edge.start.y, edge.end.x, edge.end.y]);
+        _lines.add([edge.start.x.toDouble(), edge.start.y.toDouble(), edge.end.x.toDouble(), edge.end.y.toDouble()]);
         double x = (pnt.y - edge.start.y)*edge.dx/edge.dy + edge.start.x;
-        _lines.add([pnt.x, pnt.y, x, pnt.y]);
+        _lines.add([pnt.x.toDouble(), pnt.y.toDouble(), x, pnt.y.toDouble()]);
       }
 
       e.redraw = true;

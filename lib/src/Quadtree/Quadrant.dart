@@ -27,7 +27,10 @@ class Quadrant {
   Quadrant._(this._value, this._name);
 
   /// Checks if this Quadrant is equal to the given [other] Quadrant.
-  bool operator ==(Quadrant other) => _value == other._value;
+  bool operator ==(dynamic other) {
+    if (other is! Quadrant) return false;
+    return _value == other._value;
+  }
 
   /// Gets the name of the quadrant.
   String toString() => _name;

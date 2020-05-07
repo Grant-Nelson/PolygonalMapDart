@@ -46,7 +46,8 @@ class PolygonClipper {
   }
 
   /// Trace out a polygon starting from the given edge.
-  bool _tracePolygon(qt.EdgeNode edge) {
+  bool _tracePolygon(qt.IEdge e) {
+    qt.EdgeNode edge = e as qt.EdgeNode;
     // If the data is true then this edge has already been handled so skip it.
     if (edge.data as bool) return true;
 

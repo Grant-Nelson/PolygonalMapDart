@@ -9,7 +9,7 @@ abstract class IEdgeHandler {
 }
 
 /// The method type for handling edge nodes.
-typedef bool EdgeHandler(IEdge);
+typedef bool EdgeHandler(IEdge value);
 
 /// Handler for calling a given function pointer for each edge.
 class EdgeMethodHandler implements IEdgeHandler {

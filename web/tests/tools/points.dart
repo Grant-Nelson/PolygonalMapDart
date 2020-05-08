@@ -36,4 +36,14 @@ class points {
     }
     return true;
   }
+
+  static bool equals2(List<qt.Point> a, List<qt.IPoint> b) {
+    int aLen = a.length;
+    if (aLen != b.length) return false;
+    for (int i = 0; i < aLen; ++i) {
+      if (a[i].x != b[i].x) return false;
+      if (a[i].y != b[i].y) return false;
+    }
+    return true;
+  }
 }

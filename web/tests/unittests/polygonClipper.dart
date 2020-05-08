@@ -52,7 +52,7 @@ void _testClipper(TestArgs args, String input, List<String> results,
   for (int i = 0; i < results.length; ++i)
     expPnts.add(points.parse(results[i]));
 
-  List<List<qt.Point>> resultPnts = maps.PolygonClipper.Clip(inputPnts);
+  List<List<qt.IPoint>> resultPnts = maps.PolygonClipper.Clip(inputPnts);
 
   if (expPnts.length != resultPnts.length) {
     args.error(
@@ -68,7 +68,7 @@ void _testClipper(TestArgs args, String input, List<String> results,
   } else {
     bool failed = false;
     for (int i = 0; i < expPnts.length; ++i) {
-      if (!points.equals(expPnts[i], resultPnts[i])) {
+      if (!points.equals2(expPnts[i], resultPnts[i])) {
         failed = true;
         break;
       }
@@ -103,7 +103,7 @@ void _testClipper(TestArgs args, String input, List<String> results,
       plotter.Polygon poly = plot.addGroup("Result $i").addPolygon([])
         ..addColor(0.0, 1.0 - f, f)
         ..addDirected(true);
-      List<qt.Point> pnts = resultPnts[i];
+      List<qt.IPoint> pnts = resultPnts[i];
       for (int j = 0; j < pnts.length; ++j) {
         poly.add([pnts[j].x.toDouble(), pnts[j].y.toDouble()]);
       }

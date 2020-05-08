@@ -289,6 +289,13 @@ void addRegionMapTests(TestManager tests) {
   // BUG
   // {[20, 20], [20, -20], [-30, 0]}
   // {[-40, 21], [-40, 21], [0, 0]} // Causes problem
+
+  
+  // BUG: These three caused the right outside to say it is inside polygon 1
+  // {[-39, 108], [32, 64], [-12, 15], [-83, 28], [-89, 76]}
+  // {[-57, 116], [-16, 49], [37, 47], [52, 83], [16, 129]}
+  // {[6, 66], [-42, 62], [-64, -3], [0, -24], [32, 0], [69, 33], [60, 50], [28, 70]}
+
 }
 
 class RegionMapTester {

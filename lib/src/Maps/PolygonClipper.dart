@@ -63,7 +63,7 @@ class PolygonClipper {
       edges.add(edge);
       
       qt.PointNode endPnt = edge.endNode;
-      if (endPnt.data as bool) {
+      if (endPnt.data is bool) {
         _popoffPolygon(pnts, edges, endPnt);
         if (pnts.nodes.length <= 0) return true;
         edge = edges.last;

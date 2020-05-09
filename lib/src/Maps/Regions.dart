@@ -303,14 +303,13 @@ class _PointRemover implements qt.IPointHandler {
   Set<qt.PointNode> _remove;
 
   _PointRemover(this._region) {
-    this._region = null;
     this._remove = new Set<qt.PointNode>();
   }
 
   Set<qt.PointNode> get remove => this._remove;
 
   bool handle(qt.PointNode point) {
-    qt.EdgeNode edge = _region.firstLeftEdge(point);
+    qt.EdgeNode edge = this._region.firstLeftEdge(point);
     if (edge != null) {
       if (qt.Edge.side(edge, point) == qt.Side.Left) {
         this._remove.add(point);
@@ -326,7 +325,6 @@ class _EdgeRemover implements qt.IEdgeHandler {
   Set<qt.EdgeNode> _remove;
 
   _EdgeRemover(this._region) {
-    this._region = null;
     this._remove = new Set<qt.EdgeNode>();
   }
 

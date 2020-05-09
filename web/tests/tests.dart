@@ -33,6 +33,7 @@ part 'unittests/regionMap.dart';
 part 'unittests/regions.dart';
 
 void addTests(TestManager tests) {
+  //tests.testPrefixFilter = "Region Map 19 - Degenerate triangle";
   addConversionsTests(tests);
   addEdgeIntersectTests(tests);
   addFindAllIntersectionsTests(tests);

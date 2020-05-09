@@ -2,13 +2,13 @@ part of tests;
 
 void addPolygonClipperTests(TestManager tests) {
   tests.add("Polygon Clipper 1 - No change", (TestArgs args) {
-    _testClipper(
-        args, "(0, 5) (0, 0) (5, 0) (5, 5)", ["(0, 5) (0, 0) (5, 0) (5, 5)"]);
+    _testClipper(args,
+      "(0, 5) (0, 0) (5, 0) (5, 5)", ["(0, 5) (0, 0) (5, 0) (5, 5)"]);
   });
 
   tests.add("Polygon Clipper 2 - Change to CCW", (TestArgs args) {
-    _testClipper(
-        args, "(0, 0) (0, 5) (5, 5) (5, 0)", ["(5, 5) (0, 5) (0, 0) (5, 0)"]);
+    _testClipper(args,
+        "(0, 0) (0, 5) (5, 5) (5, 0)", ["(5, 5) (0, 5) (0, 0) (5, 0)"]);
   });
 
   tests.add("Polygon Clipper 3 - Bowtie", (TestArgs args) {
@@ -18,31 +18,43 @@ void addPolygonClipperTests(TestManager tests) {
 
   tests.add("Polygon Clipper 4 - Bowtie reversed", (TestArgs args) {
     _testClipper(args, "(0, 5) (0, 0) (5, 5) (5, 0)",
-        ["(0, 5) (0, 0) (3, 3)", "(5, 5) (3, 3) (5, 0)"]);
+        ["(0, 5) (0, 0) (3, 3)",
+         "(5, 5) (3, 3) (5, 0)"]);
   });
 
   tests.add("Polygon Clipper 5 - Big bowtie", (TestArgs args) {
-    _testClipper(
-        args, "(-59, 81) (-23, 32) (-88, 38) (-90, 75) (-35, 69) (-39, 24) (-78, 84)", [
-      "(-59, 81) (-78, 84) (-71, 73) (-90, 75) (-88, 38) (-45, 34)..."+
-      "(-39, 24) (-38, 33) (-23, 32) (-37, 50) (-35, 69) (-52, 71)",
-      "(-52, 71) (-71, 73) (-45, 34) (-38, 33) (-37, 50)"
-    ]);
+    _testClipper(args,
+      "(-59, 81) (-23, 32) (-88, 38) (-90, 75) (-35, 69) (-39, 24) (-78, 84)",
+      ["(-59, 81) (-78, 84) (-71, 73) (-90, 75) (-88, 38) (-45, 34)..."+
+       "(-39, 24) (-38, 33) (-23, 32) (-37, 50) (-35, 69) (-52, 71)",
+       "(-52, 71) (-71, 73) (-45, 34) (-38, 33) (-37, 50)"]);
   });
 
   tests.add("Polygon Clipper 6 - Big bowtie reversed", (TestArgs args) {
-    _testClipper(
-        args, "(-78, 84) (-39, 24) (-35, 69) (-90, 75) (-88, 38) (-23, 32) (-59, 81)", [
-      "(-71, 73) (-45, 34) (-38, 33) (-37, 50) (-52, 71)",
-      "(-78, 84) (-71, 73) (-90, 75) (-88, 38) (-45, 34) (-39, 24)..."+
-      "(-38, 33) (-23, 32) (-37, 50) (-35, 69) (-52, 71) (-59, 81)"
-    ]);
+    _testClipper(args,
+      "(-78, 84) (-39, 24) (-35, 69) (-90, 75) (-88, 38) (-23, 32) (-59, 81)",
+      ["(-71, 73) (-45, 34) (-38, 33) (-37, 50) (-52, 71)",
+       "(-78, 84) (-71, 73) (-90, 75) (-88, 38) (-45, 34) (-39, 24)..."+
+       "(-38, 33) (-23, 32) (-37, 50) (-35, 69) (-52, 71) (-59, 81)"]);
   });
 
   tests.add("Polygon Clipper 7 - Repeats", (TestArgs args) {
-    _testClipper(
-        args, "(-68, 67) (-68, 67) (-24, 16) (2, 57) (-68, 67)", ["(-68, 67) (-24, 16) (2, 57)"]);
+    _testClipper(args,
+        "(-68, 67) (-68, 67) (-24, 16) (2, 57) (-68, 67)",
+        ["(-68, 67) (-24, 16) (2, 57)"]);
   });
+
+  tests.add("Polygon Clipper 8 - Degenerate", (TestArgs args) {
+    // RegionMapTester test = new RegionMapTester(args);
+    // test.add([ 20,  20,  20, -20, -30,  0], 1);
+    // test.add([-40,  21, -40,  21,   0,  0], 2); // Degenerate
+
+    // TODO: Update
+
+    // test.showPlot();
+  });
+
+  // TODO: Add zero area polygon
 }
 
 void _testClipper(TestArgs args, String input, List<String> results,

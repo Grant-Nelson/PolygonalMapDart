@@ -289,20 +289,6 @@ void addRegionMapTests(TestManager tests) {
     test.pointTest(  0, -5,  1);
     test.showPlot();
   });
-
-  tests.add("Region Map 19 - Crossing triangles", (TestArgs args) {
-    RegionMapTester test = new RegionMapTester(args);
-    test.add([ 20,  20,  20, -20, -30,  0], 1);
-    test.add([-40,  21, -40,  21,   0,  0], 2);
-
-
-    test.showPlot();
-  });
-
-  // BUG
-  // {[20, 20], [20, -20], [-30, 0]}
-  // {[-40, 21], [-40, 21], [0, 0]} // Causes problem
-
   
   // BUG: These three caused the right outside to say it is inside polygon 1
   // {[-39, 108], [32, 64], [-12, 15], [-83, 28], [-89, 76]}

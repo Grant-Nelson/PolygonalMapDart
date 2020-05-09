@@ -16,8 +16,8 @@ class PolygonClipper {
 
   /// Create a polygon clipper.
   PolygonClipper._() {
-    _tree = new qt.QuadTree();
-    _result = new List<List<qt.IPoint>>();
+    this._tree = new qt.QuadTree();
+    this._result = new List<List<qt.IPoint>>();
   }
 
   /// Sets the polygon to clip.
@@ -28,7 +28,7 @@ class PolygonClipper {
     // Insert all the end points into the tree.
     qt.PointNodeVector nodes = new qt.PointNodeVector();
     for (int i = count - 1; i >= 0; --i) {
-      qt.PointNode point = _insertPoint(pnts[i]);
+      qt.PointNode point = this._insertPoint(pnts[i]);
       point.data = false;
       assert(point != null);
       nodes.nodes.add(point);
@@ -36,13 +36,13 @@ class PolygonClipper {
 
     // Insert edges ignoring any degenerate ones.
     for (int i = pnts.length - 1; i >= 0; --i) {
-      _insertEdge(nodes.edge(i));
+      this._insertEdge(nodes.edge(i));
     }
   }
 
   /// Gets all the polygons out of the quad-tree.
   void _getPolygons() {
-    _tree.foreachEdge(new qt.EdgeMethodHandler(_tracePolygon));
+    this._tree.foreachEdge(new qt.EdgeMethodHandler(this._tracePolygon));
   }
 
   /// Trace out a polygon starting from the given edge.
@@ -64,11 +64,11 @@ class PolygonClipper {
       
       qt.PointNode endPnt = edge.endNode;
       if (endPnt.data is bool) {
-        _popoffPolygon(pnts, edges, endPnt);
+        this._popoffPolygon(pnts, edges, endPnt);
         if (pnts.nodes.length <= 0) return true;
         edge = edges.last;
       }
-      edge = edge.nextBorder(new qt.EdgeMethodHandler(_ignoreMarkedEdges));
+      edge = edge.nextBorder(new qt.EdgeMethodHandler(this._ignoreMarkedEdges));
     }
     return true;
   }
@@ -86,10 +86,16 @@ class PolygonClipper {
         pnts.nodes.removeRange(i, pnts.nodes.length);
         edges.removeRange(i, edges.length);
 
-        // Make sure the polygon is counter-clockwise.
-        qt.AreaAccumulator area = subpnts.area;
-        if (!area.ccw) subpnts.reverse();
-        _result.add(subpnts.nodes);
+        // Make sure the polygon has at least 3 points,
+        // it is counter-clockwise, and has more than a very tiny area.
+        if (subpnts.nodes.length >= 3) {
+          qt.AreaAccumulator area = subpnts.area;
+          double epsilon = 1.0e-12;
+          if (area.area > epsilon) {
+            if (!area.ccw) subpnts.reverse();
+            this._result.add(subpnts.nodes);
+          }
+        }
         return;
       }
       pnt.data = false;
@@ -106,42 +112,42 @@ class PolygonClipper {
     if (qt.Edge.degenerate(edge)) return;
 
     // Split edge for all near close points.
-    qt.PointNode point = _tree.findClosePoint(edge, new qt.EdgePointIgnorer(edge));
+    qt.PointNode point = this._tree.findClosePoint(edge, new qt.EdgePointIgnorer(edge));
     if (point != null) {
-      _insertEdge(new qt.Edge(edge.start, point));
-      _insertEdge(new qt.Edge(point, edge.end));
+      this._insertEdge(new qt.Edge(edge.start, point));
+      this._insertEdge(new qt.Edge(point, edge.end));
       return;
     }
 
     // Split edges which intersect.
-    qt.IntersectionResult result = _tree.findFirstIntersection(edge, new qt.NeighborEdgeIgnorer(edge));
+    qt.IntersectionResult result = this._tree.findFirstIntersection(edge, new qt.NeighborEdgeIgnorer(edge));
     if (result != null) {
-      qt.PointNode point = _insertPoint(result.point);
-      _insertEdge(new qt.Edge(edge.start, point));
-      _insertEdge(new qt.Edge(point, edge.end));
+      qt.PointNode point = this._insertPoint(result.point);
+      this._insertEdge(new qt.Edge(edge.start, point));
+      this._insertEdge(new qt.Edge(point, edge.end));
       return;
     }
 
     // Insert the edge.
-    qt.EdgeNode node = _tree.insertEdge(edge);
+    qt.EdgeNode node = this._tree.insertEdge(edge);
     node.data = false;
   }
 
   /// Inserts a point into the tree and collapses all near lines towards it.
   qt.PointNode _insertPoint(qt.IPoint pnt) {
-    qt.InsertPointResult result = _tree.tryInsertPoint(pnt);
+    qt.InsertPointResult result = this._tree.tryInsertPoint(pnt);
     if (result.existed) return result.point;
 
     // The point is new, check if any edges pass near it.
     Set<qt.EdgeNode> nearEdges = new Set<qt.EdgeNode>();
-    _tree.forCloseEdges(new qt.EdgeCollectorHandle(edgeSet: nearEdges), pnt);
+    this._tree.forCloseEdges(new qt.EdgeCollectorHandle(edgeSet: nearEdges), pnt);
 
     // Remove near edges, store the replacement edges.
     Set<qt.Edge> liftedEdges = new Set<qt.Edge>();
     for (qt.EdgeNode edge in nearEdges) {
       liftedEdges.add(new qt.Edge(edge.startNode, result.point, edge.data));
       liftedEdges.add(new qt.Edge(result.point, edge.endNode, edge.data));
-      _tree.removeEdge(edge, false);
+      this._tree.removeEdge(edge, false);
     }
 
     // Adjust all the near lines.
@@ -149,7 +155,7 @@ class PolygonClipper {
     while (liftedEdges.isNotEmpty) {
       qt.IEdge edge = liftedEdges.last;
       liftedEdges.remove(edge);
-      qt.PointNode point = _tree.findClosePoint(edge, new qt.EdgePointIgnorer(edge));
+      qt.PointNode point = this._tree.findClosePoint(edge, new qt.EdgePointIgnorer(edge));
       if (point == null) {
         finalEdges.add(edge);
       } else {
@@ -160,7 +166,7 @@ class PolygonClipper {
 
     // Push the adjusted lines to the tree.
     for (qt.IEdge edge in finalEdges) {
-      qt.EdgeNode node = _tree.insertEdge(edge);
+      qt.EdgeNode node = this._tree.insertEdge(edge);
       node.data = edge.data;
       assert(node != null);
     }

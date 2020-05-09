@@ -5,25 +5,25 @@ void addRegionMapTests(TestManager tests) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([0, 0, 0, 10, 10, 10, 10, 0]);
     test.add([15, 5, 15, 15, 5, 15, 5, 5]);
-    test.pointTest(0, 0, 0);
-    test.pointTest(1, 1, 1);
-    test.pointTest(4, 4, 1);
-    test.pointTest(5, 5, 1);
-    test.pointTest(6, 6, 2);
-    test.pointTest(9, 9, 2);
+    test.pointTest( 0,  0, 0);
+    test.pointTest( 1,  1, 1);
+    test.pointTest( 4,  4, 1);
+    test.pointTest( 5,  5, 1);
+    test.pointTest( 6,  6, 2);
+    test.pointTest( 9,  9, 2);
     test.pointTest(10, 10, 2);
     test.pointTest(11, 11, 2);
     test.pointTest(14, 14, 2);
     test.pointTest(15, 15, 0);
     test.pointTest(16, 16, 0);
-    test.pointTest(4, 11, 0);
-    test.pointTest(6, 11, 2);
-    test.pointTest(4, 9, 1);
-    test.pointTest(6, 9, 2);
-    test.pointTest(11, 4, 0);
-    test.pointTest(11, 6, 2);
-    test.pointTest(9, 4, 1);
-    test.pointTest(9, 6, 2);
+    test.pointTest( 4, 11, 0);
+    test.pointTest( 6, 11, 2);
+    test.pointTest( 4,  9, 1);
+    test.pointTest( 6,  9, 2);
+    test.pointTest(11,  4, 0);
+    test.pointTest(11,  6, 2);
+    test.pointTest( 9,  4, 1);
+    test.pointTest( 9,  6, 2);
     test.showPlot();
   });
 
@@ -31,14 +31,14 @@ void addRegionMapTests(TestManager tests) {
     RegionMapTester test = new RegionMapTester(args);
     test.add([0, 3, 0, 7, 3, 10, 7, 10, 10, 7, 10, 3, 7, 0, 3, 0]);
     test.add([5, 8, 5, 12, 8, 15, 12, 15, 15, 12, 15, 8, 12, 5, 8, 5]);
-    test.pointTest(4, 11, 0);
-    test.pointTest(6, 11, 2);
-    test.pointTest(4, 9, 1);
-    test.pointTest(6, 9, 2);
-    test.pointTest(11, 4, 0);
-    test.pointTest(11, 6, 2);
-    test.pointTest(9, 4, 1);
-    test.pointTest(9, 6, 2);
+    test.pointTest( 4, 11, 0);
+    test.pointTest( 6, 11, 2);
+    test.pointTest( 4,  9, 1);
+    test.pointTest( 6,  9, 2);
+    test.pointTest(11,  4, 0);
+    test.pointTest(11,  6, 2);
+    test.pointTest( 9,  4, 1);
+    test.pointTest( 9,  6, 2);
     test.showPlot();
   });
 
@@ -47,24 +47,24 @@ void addRegionMapTests(TestManager tests) {
     test.add([0, 0, 0, 40, 10, 40, 10, 0]);
     test.add([0, 0, 0, 10, 30, 10, 30, 30, 0, 30, 0, 40, 40, 40, 40, 0]);
     test.pointTest(-2, 5, 0);
-    test.pointTest(2, 5, 2);
-    test.pointTest(8, 5, 2);
+    test.pointTest( 2, 5, 2);
+    test.pointTest( 8, 5, 2);
     test.pointTest(12, 5, 2);
     test.pointTest(28, 5, 2);
     test.pointTest(34, 5, 2);
     test.pointTest(42, 5, 0);
 
     test.pointTest(-2, 20, 0);
-    test.pointTest(2, 20, 1);
-    test.pointTest(8, 20, 1);
+    test.pointTest( 2, 20, 1);
+    test.pointTest( 8, 20, 1);
     test.pointTest(12, 20, 0);
     test.pointTest(28, 20, 0);
     test.pointTest(34, 20, 2);
     test.pointTest(42, 20, 0);
 
     test.pointTest(-2, 35, 0);
-    test.pointTest(2, 35, 2);
-    test.pointTest(8, 35, 2);
+    test.pointTest( 2, 35, 2);
+    test.pointTest( 8, 35, 2);
     test.pointTest(12, 35, 2);
     test.pointTest(28, 35, 2);
     test.pointTest(34, 35, 2);
@@ -111,8 +111,8 @@ void addRegionMapTests(TestManager tests) {
 
   tests.add("Region Map 6", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
-    test.add([3, 0, 3, 15, 12, 15, 12, 0]);
-    test.add([0, 0, 3, 3, 3, 15, 12, 15, 12, 0]);
+    test.add([3, 0, 3, 15, 12, 15, 12,  0]);
+    test.add([0, 0, 3,  3,  3, 15, 12, 15, 12, 0]);
     test.pointTest(2, 1, 2);
     test.pointTest(3, 1, 2);
     test.pointTest(4, 1, 2);
@@ -133,8 +133,8 @@ void addRegionMapTests(TestManager tests) {
     test.add([10, 5, 10, 10, 5, 10, 5, 5]);
     test.add([15, 0, 15, 15, 0, 15, 0, 0]);
     test.pointTest(-2, -2, 0);
-    test.pointTest(2, 2, 2);
-    test.pointTest(7, 7, 2);
+    test.pointTest( 2,  2, 2);
+    test.pointTest( 7,  7, 2);
     test.pointTest(12, 12, 2);
     test.pointTest(17, 17, 0);
     test.showPlot();
@@ -145,16 +145,16 @@ void addRegionMapTests(TestManager tests) {
     test.add([15, 0, 15, 15, 0, 15, 0, 0]);
     test.add([10, 5, 10, 10, 5, 10, 5, 5]);
     test.pointTest(-2, 2, 0);
-    test.pointTest(2, 2, 1);
-    test.pointTest(6, 2, 1);
-    test.pointTest(9, 2, 1);
+    test.pointTest( 2, 2, 1);
+    test.pointTest( 6, 2, 1);
+    test.pointTest( 9, 2, 1);
     test.pointTest(12, 2, 1);
     test.pointTest(16, 2, 0);
 
     test.pointTest(-2, 8, 0);
-    test.pointTest(2, 8, 1);
-    test.pointTest(6, 8, 2);
-    test.pointTest(9, 8, 2);
+    test.pointTest( 2, 8, 1);
+    test.pointTest( 6, 8, 2);
+    test.pointTest( 9, 8, 2);
     test.pointTest(12, 8, 1);
     test.pointTest(16, 8, 0);
     test.showPlot();
@@ -162,10 +162,10 @@ void addRegionMapTests(TestManager tests) {
 
   tests.add("Region Map 10 - Four corners", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
-    test.add([0, 10, 100, 10, 50, 60]);
-    test.add([90, 0, 90, 100, 40, 50]);
-    test.add([100, 90, 0, 90, 50, 40]);
-    test.add([10, 100, 10, 0, 60, 50]);
+    test.add([  0,  10, 100,  10, 50, 60]);
+    test.add([ 90,   0,  90, 100, 40, 50]);
+    test.add([100,  90,   0,  90, 50, 40]);
+    test.add([ 10, 100,  10,   0, 60, 50]);
 
     test.pointTest(50, 50, 4);
     test.pointTest(50, 30, 1);
@@ -182,27 +182,28 @@ void addRegionMapTests(TestManager tests) {
 
   tests.add("Region Map 11 - Create a bounded region", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
-    test.add([0, 0, 0, 40, 10, 40, 10, 0], 1);
-    test.add([0, 0, 0, 10, 30, 10, 30, 30, 0, 30, 0, 40, 40, 40, 40, 0], 1);
+    test.add([0, 0, 0, 40, 10, 40, 10,  0], 1);
+    test.add([0,  0, 0, 10, 30, 10, 30, 30,
+              0, 30, 0, 40, 40, 40, 40,  0], 1);
     test.pointTest(-2, 5, 0);
-    test.pointTest(2, 5, 1);
-    test.pointTest(8, 5, 1);
+    test.pointTest( 2, 5, 1);
+    test.pointTest( 8, 5, 1);
     test.pointTest(12, 5, 1);
     test.pointTest(28, 5, 1);
     test.pointTest(34, 5, 1);
     test.pointTest(42, 5, 0);
 
     test.pointTest(-2, 20, 0);
-    test.pointTest(2, 20, 1);
-    test.pointTest(8, 20, 1);
+    test.pointTest( 2, 20, 1);
+    test.pointTest( 8, 20, 1);
     test.pointTest(12, 20, 0);
     test.pointTest(28, 20, 0);
     test.pointTest(34, 20, 1);
     test.pointTest(42, 20, 0);
 
     test.pointTest(-2, 35, 0);
-    test.pointTest(2, 35, 1);
-    test.pointTest(8, 35, 1);
+    test.pointTest( 2, 35, 1);
+    test.pointTest( 8, 35, 1);
     test.pointTest(12, 35, 1);
     test.pointTest(28, 35, 1);
     test.pointTest(34, 35, 1);
@@ -212,8 +213,8 @@ void addRegionMapTests(TestManager tests) {
 
   tests.add("Region Map 12 - Two triangles, boundary issue", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
-    test.add([9, 59, -11, 54, -7, 37], 1);
-    test.add([17, 47, -1, 52, 4, 33], 1);
+    test.add([ 9, 59, -11, 54, -7, 37], 1);
+    test.add([17, 47,  -1, 52,  4, 33], 1);
 
     test.pointTest(5, 35, 1);
     test.showPlot();
@@ -256,9 +257,9 @@ void addRegionMapTests(TestManager tests) {
     test.showPlot();
   });
   
-  tests.add("Region Map 16 - Bow tie", (TestArgs args) {
+  tests.add("Region Map 17 - Sailboat", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
-    test.add([-6, 7, 0, 0, 6, 7], 1);
+    test.add([-6, 7, 0, 0, 6,  7], 1);
     test.add([-2, 5, 2, 5, 0, 10], 1);
 
     qt.PointNode pnt = test._map.tree.findPoint(new qt.Point(-2, 5));
@@ -267,24 +268,36 @@ void addRegionMapTests(TestManager tests) {
     }
     test.showPlot();
   });
+  
+  tests.add("Region Map 18 - Complex bow tie", (TestArgs args) {
+    RegionMapTester test = new RegionMapTester(args);
+    test.add([10, 10, 10, -10, -20, 0], 1);
+    test.add([-30, 10, -30, -10], 2);
+    test.add([-30, 10, -30, -10, -1, -1], 3);
+    test.add([-26, 4, -26, -6, -10, 0], 4);
+    test.add([4, 5, -22, -1, 4, -5], 5);
 
-  // BUG
-  //  {[10, 10], [10, -10], [-20, 0]}
-  //  {[-30, 10], [-30, -10]}
-  //  {[-30, 10], [-30, -10], [-1, -1]}
-  //  {[-26, 4], [-26, -6], [-10, 0]}
-  //  {[4, 5], [-22, -1], [4, -5]}
-  //  [7, 0] -> 2  // SHOULD BE 1
-  //  [0, 5] -> 1
-  //  [-2, -1] -> 4
-  //  [-23, -3] -> 3
-  //  [-23, 1] -> 3
-  //  [-18, 3] -> 2
-  //  [-28, 6] -> 2
-  //  [-21, -6] -> 2
-  //  [-6, 4] -> 1
-  //  [0, -5] -> 1
+    test.pointTest(  7,  0,  1); // Wrong, thinks it's 3 because of wrong side value
+    test.pointTest(  0,  5,  1);
+    test.pointTest( -2, -1,  5);
+    test.pointTest(-23, -3,  4);
+    test.pointTest(-23,  1,  4);
+    test.pointTest(-18,  3,  3);
+    test.pointTest(-28,  6,  3);
+    test.pointTest(-21, -6,  3);
+    test.pointTest( -6,  4,  1);
+    test.pointTest(  0, -5,  1);
+    test.showPlot();
+  });
 
+  tests.add("Region Map 19 - Crossing triangles", (TestArgs args) {
+    RegionMapTester test = new RegionMapTester(args);
+    test.add([ 20,  20,  20, -20, -30,  0], 1);
+    test.add([-40,  21, -40,  21,   0,  0], 2);
+
+
+    test.showPlot();
+  });
 
   // BUG
   // {[20, 20], [20, -20], [-30, 0]}
@@ -296,6 +309,17 @@ void addRegionMapTests(TestManager tests) {
   // {[-57, 116], [-16, 49], [37, 47], [52, 83], [16, 129]}
   // {[6, 66], [-42, 62], [-64, -3], [0, -24], [32, 0], [69, 33], [60, 50], [28, 70]}
 
+
+  // BUG: Same as above
+  // {[-91, 53], [-34, 43], [10, 5], [-11, -44], [-66, -37], [-96, -2]}
+  // {[-39, 58], [-47, 16], [-41, -2], [43, -8], [34, 41]}
+  // {[-6, 13], [-28, -22], [-36, -55], [17, -62], [58, -35], [59, 25]}
+  // [42, 32] -> 1 // Wrong
+  // [66, 15] -> 0
+  // [66, -12] -> 0
+  // [44, -4] -> 3
+  // [32, 31] -> 2
+  // [41, 39] -> 1 // Wrong
 }
 
 class RegionMapTester {

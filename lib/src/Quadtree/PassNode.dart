@@ -72,10 +72,8 @@ class PassNode extends BaseNode {
   bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) {
     if (!exclusive) {
       if ((bounds == null) || overlapsBoundary(bounds)) {
-        for (EdgeNode edge in _passEdges) {
-          if (!handle.handle(edge)) {
-            return false;
-          }
+        for (EdgeNode edge in this._passEdges) {
+          if (!handle.handle(edge)) return false;
         }
       }
     }
@@ -84,11 +82,9 @@ class PassNode extends BaseNode {
 
   /// Handles each node reachable from this node in the boundary.
   bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) {
-    if (bounds != null) {
+    if (bounds != null)
       return overlapsBoundary(bounds) && handle.handle(this);
-    } else {
-      return handle.handle(this);
-    }
+    return handle.handle(this);
   }
 
   /// Determines if the node has any point nodes inside it. This node will

@@ -92,13 +92,13 @@ class BranchNode extends BaseNode {
   IntersectionResult findFirstIntersection(IEdge edge, IEdgeHandler hndl) {
     if (overlapsEdge(edge)) {
       IntersectionResult result;
-      result = _ne.findFirstIntersection(edge, hndl);
+      result = this._ne.findFirstIntersection(edge, hndl);
       if (result != null) return result;
-      result = _nw.findFirstIntersection(edge, hndl);
+      result = this._nw.findFirstIntersection(edge, hndl);
       if (result != null) return result;
-      result = _se.findFirstIntersection(edge, hndl);
+      result = this._se.findFirstIntersection(edge, hndl);
       if (result != null) return result;
-      result = _sw.findFirstIntersection(edge, hndl);
+      result = this._sw.findFirstIntersection(edge, hndl);
       if (result != null) return result;
     }
     return null;
@@ -108,34 +108,34 @@ class BranchNode extends BaseNode {
   bool findAllIntersections(IEdge edge, IEdgeHandler hndl, IntersectionSet intersections) {
     bool result = false;
     if (overlapsEdge(edge)) {
-      if (_ne.findAllIntersections(edge, hndl, intersections)) result = true;
-      if (_nw.findAllIntersections(edge, hndl, intersections)) result = true;
-      if (_se.findAllIntersections(edge, hndl, intersections)) result = true;
-      if (_sw.findAllIntersections(edge, hndl, intersections)) result = true;
+      if (this._ne.findAllIntersections(edge, hndl, intersections)) result = true;
+      if (this._nw.findAllIntersections(edge, hndl, intersections)) result = true;
+      if (this._se.findAllIntersections(edge, hndl, intersections)) result = true;
+      if (this._sw.findAllIntersections(edge, hndl, intersections)) result = true;
     }
     return result;
   }
 
   /// Gets the north-east child node.
-  INode get ne => _ne;
+  INode get ne => this._ne;
 
   /// Gets the north-west child node.
-  INode get nw => _nw;
+  INode get nw => this._nw;
 
   /// Gets the south-east child node.
-  INode get se => _se;
+  INode get se => this._se;
 
   /// Gets the south-west child node.
-  INode get sw => _sw;
+  INode get sw => this._sw;
 
   /// Handles each point node reachable from this node in the boundary.
   /// Returns true if all points in the boundary were run, false if stopped.
   bool foreachPoint(IPointHandler handle, [IBoundary bounds = null]) {
     if ((bounds == null) || overlapsBoundary(bounds)) {
-      return _ne.foreachPoint(handle, bounds) &&
-          _nw.foreachPoint(handle, bounds) &&
-          _se.foreachPoint(handle, bounds) &&
-          _sw.foreachPoint(handle, bounds);
+      return this._ne.foreachPoint(handle, bounds) &&
+             this._nw.foreachPoint(handle, bounds) &&
+             this._se.foreachPoint(handle, bounds) &&
+             this._sw.foreachPoint(handle, bounds);
     }
     return true;
   }
@@ -147,10 +147,10 @@ class BranchNode extends BaseNode {
   /// Returns true if all edges in the boundary were run, false if stopped.
   bool foreachEdge(IEdgeHandler handle, [IBoundary bounds = null, bool exclusive = false]) {
     if ((bounds == null) || overlapsBoundary(bounds)) {
-      return _ne.foreachEdge(handle, bounds, exclusive) &&
-          _nw.foreachEdge(handle, bounds, exclusive) &&
-          _se.foreachEdge(handle, bounds, exclusive) &&
-          _sw.foreachEdge(handle, bounds, exclusive);
+      return this._ne.foreachEdge(handle, bounds, exclusive) &&
+             this._nw.foreachEdge(handle, bounds, exclusive) &&
+             this._se.foreachEdge(handle, bounds, exclusive) &&
+             this._sw.foreachEdge(handle, bounds, exclusive);
     }
     return true;
   }
@@ -161,10 +161,10 @@ class BranchNode extends BaseNode {
   bool foreachNode(INodeHandler handle, [IBoundary bounds = null]) {
     if ((bounds == null) || overlapsBoundary(bounds)) {
       return handle.handle(this) &&
-          _ne.foreachNode(handle, bounds) &&
-          _nw.foreachNode(handle, bounds) &&
-          _se.foreachNode(handle, bounds) &&
-          _sw.foreachNode(handle, bounds);
+        this._ne.foreachNode(handle, bounds) &&
+        this._nw.foreachNode(handle, bounds) &&
+        this._se.foreachNode(handle, bounds) &&
+        this._sw.foreachNode(handle, bounds);
     }
     return true;
   }

@@ -103,9 +103,7 @@ class PolygonClipper {
   }
 
   /// Ignores any edges which have been marked.
-  bool _ignoreMarkedEdges(qt.IEdge edge) {
-    return !(edge.data as bool);
-  }
+  bool _ignoreMarkedEdges(qt.IEdge edge) => !(edge.data as bool);
 
   /// Inserts an edge into the tree and splits it for all instersections.
   void _insertEdge(qt.IEdge edge) {

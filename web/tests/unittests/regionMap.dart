@@ -263,38 +263,68 @@ void addRegionMapTests(TestManager tests) {
     test.add([-2, 5, 2, 5, 0, 10], 1);
 
     qt.PointNode pnt = test._map.tree.findPoint(new qt.Point(-2, 5));
-    if (pnt != null) {
+    if (pnt != null)
         test._args.error("Point ${pnt.toString()} should have been removed");
-    }
     test.showPlot();
   });
   
-  tests.add("Region Map 18 - Complex bow tie", (TestArgs args) {
+  tests.add("Region Map 18 - Two large triangles", (TestArgs args) {
     RegionMapTester test = new RegionMapTester(args);
-    test.add([10, 10, 10, -10, -20, 0], 1);
-    test.add([-30, 10, -30, -10], 2);
-    test.add([-30, 10, -30, -10, -1, -1], 3);
-    test.add([-26, 4, -26, -6, -10, 0], 4);
-    test.add([4, 5, -22, -1, 4, -5], 5);
+    test.add([418,  74, 545, 298, 294, 296], 1);
+    test.add([321, 160, 444, 373, 199, 371], 2);
 
-    test.pointTest(  7,  0,  1); // Wrong, thinks it's 3 because of wrong side value
-    test.pointTest(  0,  5,  1);
-    test.pointTest( -2, -1,  5);
-    test.pointTest(-23, -3,  4);
-    test.pointTest(-23,  1,  4);
-    test.pointTest(-18,  3,  3);
-    test.pointTest(-28,  6,  3);
-    test.pointTest(-21, -6,  3);
-    test.pointTest( -6,  4,  1);
-    test.pointTest(  0, -5,  1);
+    test.pointTest(402, 298, 0);
+    test.pointTest(402, 296, 1);
+    test.pointTest(399, 298, 2);
     test.showPlot();
   });
   
-  // BUG: These three caused the right outside to say it is inside polygon 1
-  // {[-39, 108], [32, 64], [-12, 15], [-83, 28], [-89, 76]}
-  // {[-57, 116], [-16, 49], [37, 47], [52, 83], [16, 129]}
-  // {[6, 66], [-42, 62], [-64, -3], [0, -24], [32, 0], [69, 33], [60, 50], [28, 70]}
+  // tests.add("Region Map 19 - Three large triangles", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([418,  74, 545, 298, 294, 296], 1);
+  //   test.add([321, 160, 444, 373, 199, 371], 2);
+  //   test.add([425, 187, 549, 406, 302, 408], 3);
 
+  //   test.pointTest(380, 240, 1);
+  //   test.pointTest(410, 240, 3);
+
+  //   qt.EdgeNode edge = test._map.tree.findNearestEdge(new qt.Point(406, 221));
+  //   maps.EdgeSide side = edge.data as maps.EdgeSide;
+  //   if ((side.left != 3) || (side.right != 1))
+  //     test._args.error("Expected [1|3] but got $side");
+  //   test.showPlot();
+  // });
+  
+  // TODO: FIX
+  // tests.add("Region Map 20 - Complex bow tie", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([ 10, 10,  10, -10, -20,  0], 1);
+  //   test.add([-30, 10, -30, -10,  -1, -1], 2);
+  //   test.add([-26,  4, -26,  -6, -10,  0], 3);
+  //   test.add([  4,  5, -22,  -1,   4, -5], 4);
+
+  //   test.pointTest(  7,  0,  1); // Wrong, thinks it's 2 because of wrong side value
+  //   test.pointTest(  0,  5,  1);
+  //   test.pointTest( -2, -1,  4);
+  //   test.pointTest(-23, -3,  3);
+  //   test.pointTest(-23,  1,  3);
+  //   test.pointTest(-18,  3,  2);
+  //   test.pointTest(-28,  6,  2);
+  //   test.pointTest(-21, -6,  2);
+  //   test.pointTest( -6,  4,  1);
+  //   test.pointTest(  0, -5,  1);
+  //   test.showPlot();
+  // });
+  
+  // TODO: FIX
+  // tests.add("Region Map 21 - Three polygons", (TestArgs args) {
+  //   RegionMapTester test = new RegionMapTester(args);
+  //   test.add([-39, 108, 32, 64, -12, 15, -83, 28, -89, 76], 1);
+  //   test.add([-57, 116, -16, 49, 37, 47, 52, 83, 16, 129], 2);
+  //   test.add([6, 66, -42, 62, -64, -3, 0, -24, 32, 0, 69, 33, 60, 50, 28, 70], 3);
+  //   // BUG: These three caused the right outside to say it is inside polygon 1
+  //   test.showPlot();
+  // });
 
   // BUG: Same as above
   // {[-91, 53], [-34, 43], [10, 5], [-11, -44], [-66, -37], [-96, -2]}

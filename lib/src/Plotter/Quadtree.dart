@@ -152,16 +152,12 @@ class QuadTree extends plotter.Group {
     _boundaryRect.clear();
     _rootBoundaryRect.clear();
 
-    if (_tree != null) {
-      _tree.foreachNode(new _quadTreePlotterNodeHandler(this, _passRects, _pointRects, _emptyRects, _branchRects));
-
-      if (_edges != null) {
-        _tree.foreachEdge(new _quadTreePlotterEdgeHandler(this, _edges));
-      }
-
-      if (_points != null) {
-        _tree.foreachPoint(new _quadTreePlotterPointHandler(this, _points));
-      }
+    if (this._tree != null) {
+      this._tree.foreachNode(new _quadTreePlotterNodeHandler(this, _passRects, _pointRects, _emptyRects, _branchRects));
+      if (this._edges != null)
+        this._tree.foreachEdge(new _quadTreePlotterEdgeHandler(this, _edges));
+      if (this._points != null)
+        this._tree.foreachPoint(new _quadTreePlotterPointHandler(this, _points));
     }
 
     addBound(_boundaryRect, _tree.boundary, 0.0);
@@ -179,8 +175,8 @@ class _quadTreePlotterNodeHandler extends qt.INodeHandler {
   plotter.Rectangles _branchRects;
 
   /// Creates a new quadtree plotter handler.
-  _quadTreePlotterNodeHandler(this._plot, this._passRects, this._pointRects, this._emptyRects, this._branchRects,
-      [this._pad = 0.45]);
+  _quadTreePlotterNodeHandler(this._plot, this._passRects, this._pointRects,
+    this._emptyRects, this._branchRects, [this._pad = 0.45]);
 
   /// Handles adding a new node into the plot.
   bool handle(qt.INode node) {

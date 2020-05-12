@@ -13,13 +13,13 @@ class Regions {
   }
 
   /// Gets the tree storing the regions.
-  qt.QuadTree get tree => _tree;
+  qt.QuadTree get tree => this._tree;
 
   /// Determines the region that the point is inside of.
   int getRegion(qt.IPoint pnt) {
     qt.EdgeNode node = this._tree.firstLeftEdge(pnt);
     if (node == null) return 0;
-    EdgeSide sideData = node.data;
+    EdgeSide sideData = node.data as EdgeSide;
     return (qt.Edge.side(node, pnt) == qt.Side.Left)?
       sideData.left: sideData.right;
   }
@@ -96,17 +96,19 @@ class Regions {
       qt.EdgeNode last = start.findEdgeTo(end);
 
       if (last != null) {
-        EdgeSide sideData = last.data;
+        EdgeSide sideData = last.data as EdgeSide;
         assert(sideData != null);
         sideData.left = regionId;
         if (sideData.right == regionId) removeEdge.add(last);
+
       } else {
         last = end.findEdgeTo(start);
         if (last != null) {
-          EdgeSide sideData = last.data;
+          EdgeSide sideData = last.data as EdgeSide;
           assert(sideData != null);
           sideData.right = regionId;
           if (sideData.left == regionId) removeEdge.add(last);
+
         } else {
           int outterRangeId = this._getSide(start, end);
           if (outterRangeId != regionId) {
@@ -155,27 +157,27 @@ class Regions {
   /// The given [start] is the start point of the edge to get the side for.
   /// The given [end] is the end point of the edge to get the side for.
   int _getSide(qt.PointNode start, qt.PointNode end) {
-    qt.BorderNeighbor border = new qt.BorderNeighbor.Points(start, end, true, null);
+    qt.BorderNeighbor border = new qt.BorderNeighbor.Points(start, end, true);
     for (qt.EdgeNode neighbor in end.startEdges) border.handle(neighbor);
     for (qt.EdgeNode neighbor in end.endEdges) border.handle(neighbor);
     qt.EdgeNode next = border.result;
     if (next != null) {
-      EdgeSide sideData = next.data;
+      EdgeSide sideData = next.data as EdgeSide;
       return next.startNode == end ? sideData.right : sideData.left;
     }
 
-    border = new qt.BorderNeighbor.Points(end, start, false, null);
+    border = new qt.BorderNeighbor.Points(end, start, false);
     for (qt.EdgeNode neighbor in start.startEdges) border.handle(neighbor);
     for (qt.EdgeNode neighbor in start.endEdges) border.handle(neighbor);
     qt.EdgeNode previous = border.result;
     if (previous != null) {
-      EdgeSide sideData = previous.data;
+      EdgeSide sideData = previous.data as EdgeSide;
       return previous.endNode == start ? sideData.right : sideData.left;
     }
 
-    qt.EdgeNode edge = _tree.firstLeftEdge(start);
+    qt.EdgeNode edge = this._tree.firstLeftEdge(start);
     while (edge != null) {
-      EdgeSide sideData = edge.data;
+      EdgeSide sideData = edge.data as EdgeSide;
       qt.Side side = qt.Edge.side(edge, start);
       if (side == qt.Side.Right) return sideData.right;
       if (side == qt.Side.Left) return sideData.left;

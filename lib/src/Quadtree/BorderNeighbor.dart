@@ -16,10 +16,15 @@ class BorderNeighbor implements IEdgeHandler {
   /// The current result neighbor edge.
   IEdge _result;
 
-  /// Indicates that forward edges are still allowed.
+  /// The current result edge or opposite to point away from query edge.
+  IEdge _adjusted;
+
+  /// Indicates that forward edges are still allowed,
+  /// edges which head in the same direction as the query edge.
   bool _allowFore;
 
-  /// Indicates that backward edges are still allowed.
+  /// Indicates that backward edges are still allowed,
+  /// edges which head back towards the query point.
   bool _allowBack;
 
   /// Indicates that left or right edges are still allowed.
@@ -36,172 +41,182 @@ class BorderNeighbor implements IEdgeHandler {
   /// The given [query] point is usually the other point on the border.
   /// Set [ccw] to true to use a counter-clockwise border, false if clockwise.
   /// The given [matcher] will filter possible neighbors.
-  BorderNeighbor.Points(IPoint origin, IPoint query, bool ccw, IEdgeHandler matcher)
-      : this(new Edge(origin, query), ccw, matcher);
+  BorderNeighbor.Points(IPoint origin, IPoint query, [bool ccw = true, IEdgeHandler matcher = null]):
+    this(new Edge(origin, query), ccw, matcher);
 
   /// Creates a new border neighbor finder.
   /// The given [query] point is usually the other point on the border.
   /// Set [ccw] to true to use a counter-clockwise border, false if clockwise.
   /// The given [matcher] will filter possible neighbors.
-  BorderNeighbor(this._query, this._ccw, this._matcher) {
-    _result = null;
-    _allowFore = true;
-    _allowBack = true;
-    _allowTurn = true;
-    _hasLeft = false;
-    _hasRight = false;
+  BorderNeighbor(this._query, [this._ccw = true, this._matcher = null]) {
+    this._result    = null;
+    this._adjusted  = null;
+    this._allowFore = true;
+    this._allowBack = true;
+    this._allowTurn = true;
+    this._hasLeft   = false;
+    this._hasRight  = false;
   }
 
   /// The currently found edge border neighbor or nill.
-  IEdge get result => _result;
+  IEdge get result => this._result;
 
   /// Updates the border neighbor with the given edge.
   /// Always returns true.
   bool handle(IEdge edge) {
-    if (_matcher != null) {
+    if (this._matcher != null) {
       if (edge is EdgeNode) {
-        if (!_matcher.handle(edge)) return true;
+        if (!this._matcher.handle(edge)) return true;
       }
     }
-    if (_ccw)
-      _ccwNeighbor(edge);
-    else
-      _cwNeighbor(edge);
+
+    IEdge adjusted = this._adjustedNeighbor(edge);
+    if (adjusted == null) return true;
+
+    if (this._ccw) this._ccwNeighbor(edge, adjusted);
+    else this._cwNeighbor(edge, adjusted);
     return true;
   }
 
+  /// Gets the neighbor edge edge or opposite to point away from query edge.
+  IEdge _adjustedNeighbor(IEdge edge) {
+    if (Point.equals(edge.start, this._query.start) ||
+        Point.equals(edge.start, this._query.end))
+      return edge;
+    
+    if (Point.equals(edge.end, this._query.start) ||
+        Point.equals(edge.end, this._query.end))
+      return new Edge(edge.end, edge.start);
+    
+    return null;
+  }
+
   /// Updates the counter-clockwise border neighbor.
-  void _ccwNeighbor(IEdge edge) {
+  void _ccwNeighbor(IEdge edge, IEdge adjusted) {
     // Get the far point in the other edge.
-    IPoint point = null;
-    if (Point.equals(edge.start, _query.start)) {
-      point = edge.end;
-    } else if (Point.equals(edge.end, _query.start)) {
-      point = edge.start;
-    } else if (Point.equals(edge.start, _query.end)) {
-      point = edge.end;
-    } else if (Point.equals(edge.end, _query.end)) {
-      point = edge.start;
-    } else
-      return;
+    IPoint point = adjusted.end;
 
     // Check if edge is opposite.
-    if (Point.equals(point, _query.end)) {
-      if (_allowBack) {
-        _result = edge;
-        _allowBack = false;
+    if (Point.equals(point, this._query.end)) {
+      if (this._allowBack) {
+        this._result    = edge;
+        this._adjusted  = adjusted;
+        this._allowBack = false;
       }
       return;
     }
 
     // Determine the side of the query edge that the other edge is on.
-    switch (Edge.side(_query, point)) {
+    switch (Edge.side(this._query, point)) {
       case Side.Inside:
-        if (_allowFore || _allowBack) {
+        if (this._allowFore || this._allowBack) {
           // Bias toward edges heading the same way.
-          if (Edge.acute(_query, edge)) {
-            if (_allowFore) {
-              _result = edge;
-              _allowFore = false;
-              _allowBack = false;
-              _allowTurn = false;
+          if (Edge.acute(this._query, edge)) {
+            if (this._allowFore) {
+              this._result    = edge;
+              this._adjusted  = adjusted;
+              this._allowFore = false;
+              this._allowBack = false;
+              this._allowTurn = false;
             }
-          } else if (_allowBack) {
-            _result = edge;
-            _allowBack = false;
+          } else if (this._allowBack) {
+            this._result    = edge;
+            this._adjusted  = adjusted;
+            this._allowBack = false;
           }
         }
         break;
 
       case Side.Left:
-        if (_allowTurn) {
-          if (!_hasLeft) {
-            _result = edge;
-            _hasLeft = true;
-            _allowBack = false;
-          } else if (Edge.side(_result, point) == Side.Right) {
-            _result = edge;
+        if (this._allowTurn) {
+          if (!this._hasLeft) {
+            this._result    = edge;
+            this._adjusted  = adjusted;
+            this._hasLeft   = true;
+            this._allowBack = false;
+          } else if (Edge.side(this._adjusted, point) == Side.Right) {
+            this._result   = edge;
+            this._adjusted = adjusted;
           }
         }
         break;
 
       case Side.Right:
-        if (!_hasRight) {
-          _result = edge;
-          _hasRight = true;
-          _allowFore = false;
-          _allowBack = false;
-          _allowTurn = false;
-        } else if (Edge.side(_result, point) == Side.Right) {
-          _result = edge;
+        if (!this._hasRight) {
+          this._result    = edge;
+          this._adjusted  = adjusted;
+          this._hasRight  = true;
+          this._allowFore = false;
+          this._allowBack = false;
+          this._allowTurn = false;
+        } else if (Edge.side(this._adjusted, point) == Side.Right) {
+          this._result   = edge;
+          this._adjusted = adjusted;
         }
         break;
     }
   }
 
   /// Updates the clockwise border neighbor.
-  void _cwNeighbor(IEdge edge) {
+  void _cwNeighbor(IEdge edge, IEdge adjusted) {
     // Get the far point in the other edge.
-    IPoint point = null;
-    if (Point.equals(edge.start, _query.start)) {
-      point = edge.end;
-    } else if (Point.equals(edge.end, _query.start)) {
-      point = edge.start;
-    } else if (Point.equals(edge.start, _query.end)) {
-      point = edge.end;
-    } else if (Point.equals(edge.end, _query.end)) {
-      point = edge.start;
-    } else
-      return;
+    IPoint point = adjusted.end;
 
     // Check if edge is opposite.
-    if (Point.equals(point, _query.end)) {
-      if (_allowBack) {
-        _result = edge;
-        _allowBack = false;
+    if (Point.equals(point, this._query.end)) {
+      if (this._allowBack) {
+        this._result    = edge;
+        this._adjusted  = adjusted;
+        this._allowBack = false;
       }
       return;
     }
 
     // Determine the side of the query edge that the other edge is on.
-    switch (Edge.side(_query, point)) {
+    switch (Edge.side(this._query, point)) {
       case Side.Inside:
-        if (_allowFore || _allowBack) {
+        if (this._allowFore || this._allowBack) {
           // Bias toward edges heading the same way.
-          if (Edge.acute(_query, edge)) {
-            if (_allowFore) {
-              _result = edge;
-              _allowFore = false;
-              _allowBack = false;
-              _allowTurn = false;
+          if (Edge.acute(this._query, edge)) {
+            if (this._allowFore) {
+              this._result    = edge;
+              this._adjusted  = adjusted;
+              this._allowFore = false;
+              this._allowBack = false;
+              this._allowTurn = false;
             }
-          } else if (_allowBack) {
-            _result = edge;
-            _allowBack = false;
+          } else if (this._allowBack) {
+            this._result    = edge;
+            this._adjusted  = adjusted;
+            this._allowBack = false;
           }
         }
         break;
 
       case Side.Left:
-        if (!_hasLeft) {
-          _result = edge;
-          _hasLeft = true;
-          _allowFore = false;
-          _allowBack = false;
-          _allowTurn = false;
-        } else if (Edge.side(_result, point) == Side.Left) {
-          _result = edge;
+        if (!this._hasLeft) {
+          this._result    = edge;
+          this._adjusted  = adjusted;
+          this._hasLeft   = true;
+          this._allowFore = false;
+          this._allowBack = false;
+          this._allowTurn = false;
+        } else if (Edge.side(this._adjusted, point) == Side.Left) {
+          this._result   = edge;
+          this._adjusted = adjusted;
         }
         break;
 
       case Side.Right:
-        if (_allowTurn) {
-          if (!_hasRight) {
-            _result = edge;
-            _hasRight = true;
-            _allowBack = false;
-          } else if (Edge.side(_result, point) == Side.Left) {
-            _result = edge;
+        if (this._allowTurn) {
+          if (!this._hasRight) {
+            this._result    = edge;
+            this._adjusted  = adjusted;
+            this._hasRight  = true;
+            this._allowBack = false;
+          } else if (Edge.side(this._adjusted, point) == Side.Left) {
+            this._result   = edge;
+            this._adjusted = adjusted;
           }
         }
         break;

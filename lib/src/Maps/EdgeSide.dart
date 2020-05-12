@@ -18,5 +18,5 @@ class EdgeSide extends Object {
   factory EdgeSide.copy(EdgeSide other) => new EdgeSide(other.left, other.right);
 
   /// A simple string displaying the data.
-  String toString() => "[$right|$left]";
+  String toString() => "[$left|$right]";
 }

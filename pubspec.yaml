@@ -10,11 +10,11 @@ dependencies:
   build_web_compilers: ^2.4.0
   intl: any
   plotterDart:
-    git: git://github.com/Grant-Nelson/plotterDart.git
+    git: git://github.com/Grant-Nelson/PlotterDart.git
 
 dev_dependencies:
   webdev: ^1.0.0
 
-dependency_overrides:
-  plotterDart:
-    path: ../plotterDart/
+# dependency_overrides:
+#   plotterDart:
+#     path: ../plotterDart/

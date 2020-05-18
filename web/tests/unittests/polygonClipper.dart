@@ -45,16 +45,12 @@ void addPolygonClipperTests(TestManager tests) {
   });
 
   tests.add("Polygon Clipper 8 - Degenerate", (TestArgs args) {
-    // RegionMapTester test = new RegionMapTester(args);
-    // test.add([ 20,  20,  20, -20, -30,  0], 1);
-    // test.add([-40,  21, -40,  21,   0,  0], 2); // Degenerate
-
-    // TODO: Update
-
-    // test.showPlot();
+    _testClipper(args, "(-40, 21) (-40, 21) (0, 0)", []);
   });
 
-  // TODO: Add zero area polygon
+  tests.add("Polygon Clipper 9 - Zero Area", (TestArgs args) {
+    _testClipper(args, "(-40, 20) (-20, 10) (0, 0)", []);
+  });
 }
 
 void _testClipper(TestArgs args, String input, List<String> results,

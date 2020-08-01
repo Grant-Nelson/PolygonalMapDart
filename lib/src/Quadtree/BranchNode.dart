@@ -424,14 +424,14 @@ class BranchNode extends BaseNode {
   }
 
   /// Determine if this node can be reduced.
-  /// Returns this grey node if not reduced,
+  /// Returns this branch node if not reduced,
   /// or the reduced node to replace this node with.
   INode reduce() {
     // A branch node can be reduced any time the all of the children
     // contain no points or only one point.
     int pointCount = _pointWeight(_ne) + _pointWeight(_nw) + _pointWeight(_se) + _pointWeight(_sw);
     if (pointCount == 0) {
-      // Find a dark node and populate it with the other dark nodes' lines.
+      // Find an pass node and populate it with the other pass nodes' lines.
       PassNode pass = null;
       for (Quadrant quad in Quadrant.All) {
         INode node = child(quad);
@@ -470,12 +470,12 @@ class BranchNode extends BaseNode {
       }
       if (point == null) return EmptyNode.instance;
 
-      // Find any dark nodes and copy all lines into the black node.
+      // Find any pass nodes and copy all lines into the point node.
       for (Quadrant quad in Quadrant.All) {
         INode node = child(quad);
         if (node is PassNode) {
-          // Add all passing lines to black node unless the line starts or ends
-          // on the black node, since the line will already be in the start or end line lists.
+          // Add all passing lines to point node unless the line starts or ends
+          // on the point node, since the line will already be in the start or end line lists.
           for (EdgeNode edge in node.passEdges) {
             if ((edge.startNode != point) && (edge.endNode != point)) point.passEdges.add(edge);
           }

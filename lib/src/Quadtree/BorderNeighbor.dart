@@ -58,7 +58,7 @@ class BorderNeighbor implements IEdgeHandler {
     this._hasRight  = false;
   }
 
-  /// The currently found edge border neighbor or nill.
+  /// The currently found edge border neighbor or null.
   IEdge get result => this._result;
 
   /// Updates the border neighbor with the given edge.
